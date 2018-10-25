@@ -1,0 +1,1 @@
+export type NumericObject = { [key: number]: any }
