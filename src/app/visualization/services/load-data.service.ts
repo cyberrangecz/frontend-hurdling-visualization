@@ -4,7 +4,7 @@ import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http'
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
-
+import {forkJoin} from "rxjs/observable/forkJoin";
 import { GenericObject } from '../models/generic-object.type';
 import { NumericObject } from '../models/numeric-object.type';
 
@@ -41,7 +41,7 @@ export class LoadDataService {
 		let gameUrl: string = apiUrl+"/games/"+gameId,
 			gameEventsUrl: string = gameUrl+"/events";
 
-		return Observable.forkJoin([this.loadData<Game>(gameUrl), this.loadData<Event>(gameEventsUrl)])
+		return forkJoin([this.loadData<Game>(gameUrl), this.loadData<Event>(gameEventsUrl)])
 			.map((data: any[]): Data => {
 				let games: Game[] = data[0].games,
 					game: Game;
@@ -57,12 +57,12 @@ export class LoadDataService {
 			});
 	}
 
-	private loadData<T>(url: string, params?: any): Observable<T[]> {
+	private loadData<T>(url: string, params?: any): Observable<any> {
 		if(typeof params !== "undefined") {
-			return this.httpClient.get<T[]>(url, params).pipe(catchError(this.handleError));
+			return this.httpClient.get<T[]>(url, params);//.pipe(catchError(this.handleError));
 		}
 		else {
-			return this.httpClient.get<T[]>(url).pipe(catchError(this.handleError));
+			return this.httpClient.get<T[]>(url)//.pipe(catchError(this.handleError));
 		}	
 	}
 
@@ -263,7 +263,7 @@ export class LoadDataService {
 				`body was: ${error.error}`);
 		}
 		// return an ErrorObservable with a user-facing error message
-		return new ErrorObservable('An error occured while trying to fetch the data.');
+		// return new ErrorObservable('An error occured while trying to fetch the data.');
 	};
 
 }

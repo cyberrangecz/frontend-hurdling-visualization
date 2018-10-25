@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PapaParseService, PapaParseResult } from 'ngx-papaparse';
+import { Papa } from 'ngx-papaparse';
 import { Observable } from 'rxjs/Observable';
-
+import {fromPromise} from "rxjs/observable/fromPromise";
 import { GenericObject } from '../models/generic-object.type';
 
 import { DataEntry } from '../models/data-entry';
@@ -12,7 +12,7 @@ import { Data } from '../models/data';
 @Injectable()
 export class LoadCsvDataService {
 
-	private papa: PapaParseService;
+	private papa: Papa;
 	private levelsTimePlan: number[];
 	private levelTimePlan: number = 1000;
 	private eventTypes: GenericObject = {
@@ -22,7 +22,7 @@ export class LoadCsvDataService {
 		"solution": "Returned from help level",
 	}
 
-	constructor(papa: PapaParseService) {
+	constructor(papa: Papa) {
 		this.papa = papa;
 	}
 
@@ -46,7 +46,7 @@ export class LoadCsvDataService {
 			}
 			this.papa.parse(file, {
 				header: false,
-				step: function (row: PapaParseResult): void {
+				step: function (row): void {
 					let d: string[]  = row.data[0],
 						datetime: Date = new Date(d[1]),
 						timestamp: number = datetime.getTime()/1000;
@@ -81,7 +81,7 @@ export class LoadCsvDataService {
 			});
 		}.bind(this));
 
-		return Observable.fromPromise(promise);
+		return fromPromise(promise);
 	}
 
 	private processCSVData(rawData: DataEntry[], startTime: number, endInPercents: number = 100): any {
