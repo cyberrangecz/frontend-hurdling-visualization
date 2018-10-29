@@ -23,6 +23,7 @@ import { GenericObject } from '../../models/generic-object.type';
 import { NumericObject } from '../../models/numeric-object.type';
 
 import { environment } from '../../../../environments/environment';
+import { SortingService } from '../../services/sorting.service';
 
 @Component({
 	selector: 'app-game-analysis',
@@ -99,7 +100,7 @@ export class GameAnalysisComponent implements OnInit {
 
 	@ViewChild('csvInput') csvInput: any;
 
-	constructor(config: AppConfig, d3Service: D3Service, loadDataService: LoadDataService, loadCsvDataService: LoadCsvDataService) {
+	constructor(config: AppConfig, d3Service: D3Service, loadDataService: LoadDataService, loadCsvDataService: LoadCsvDataService, private sortingService: SortingService) {
 		this.config = config;
 		this.d3 = d3Service.getD3();
 		this.loadDataService = loadDataService;
@@ -131,32 +132,11 @@ export class GameAnalysisComponent implements OnInit {
 			sortedPlandataset: GenericObject[];
 		
 		const filteredGamedataset = this.filter();
-		sortedGamedataset = this.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
+		sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
 		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
 
 		this.applyData(sortedGamedataset, sortedPlandataset);
 		this.pan();
-	}
-
-	sort(gamedataset: GenericObject[], sortReverse: boolean, sortType: string, sortLevel: number): GenericObject[] {
-		let order: Order,
-			sortedGamedataset: GenericObject[];
-		
-		order = sortReverse ? Order.desc : Order.asc;
-
-		switch (sortType) {
-			case "name":
-				sortedGamedataset = this.sortByName(gamedataset, order);
-				break;
-			case "time":
-				sortedGamedataset = this.sortByTime(gamedataset, order);
-				break;
-			case "level":
-				sortedGamedataset = this.sortByLevelTime(gamedataset, sortLevel, order);
-				break;
-		}
-
-		return sortedGamedataset;
 	}
 
 	filter(): GenericObject[] {
@@ -186,71 +166,6 @@ export class GameAnalysisComponent implements OnInit {
 		}
 
 		return filtered;
-	}
-
-	sortByTime(gamedataset: GenericObject[], order: Order): GenericObject[] {
-		let sorted: GenericObject[] = [];
-		if(typeof gamedataset !== "undefined") {
-			sorted = gamedataset.slice(0);
-			sorted.sort(function(teamA: GenericObject, teamB: GenericObject): number {
-				if(order === Order.asc) return this.d3.descending(teamA.totalTime, teamB.totalTime);
-				else return this.d3.ascending(teamA.totalTime, teamB.totalTime);
-			}.bind(this));
-		}
-
-		return sorted;
-	}
-
-	sortByLevelTime(gamedataset: GenericObject[], level: number, order: Order): GenericObject[] {
-		let sorted: GenericObject[] = [];
-		if(typeof gamedataset !== "undefined") {
-			sorted = gamedataset.slice(0);
-			sorted.sort(function(teamA: GenericObject, teamB: GenericObject): number {
-				let timeA: number = teamA["level" + level],
-					timeB: number = teamB["level" + level],
-					lastLevelIndex: number = (this.lastLevelIndex == 2) ? level-1 : level;
-				if(teamA["currentState"] == "level" + level) {
-					timeA = this.time;
-					this.levels.forEach(function (l: number, i: number): void {
-						if((i+1) < lastLevelIndex) timeA -= teamA[l];
-					}.bind(this));
-					if(this.view == View.overview && (typeof teamA["start"] !== "undefined")) timeA -= teamA["start"];
-				}
-				else if(typeof teamA["level" + level] === "undefined") {
-					timeA = this.time;
-				}
-
-				if(teamB["currentState"] == "level" + level) {
-					timeB = this.time;
-					this.levels.forEach(function (l: number, i: number): void {
-						if((i+1) < lastLevelIndex) timeB -= teamB[l];
-					}.bind(this));
-					if(this.view == View.overview && (typeof teamB["start"] !== "undefined")) timeB -= teamB["start"];
-				}
-				else if(typeof teamB["level" + level] === "undefined") {
-					timeB = this.time;
-				}
-				if(order === Order.asc) return this.d3.descending(timeA, timeB);
-				else return this.d3.ascending(timeA, timeB);
-			}.bind(this));
-		}
-
-		return sorted;
-	}
-
-	sortByName(gamedataset: GenericObject[], order: Order): GenericObject[] {
-		let sorted: GenericObject[] = [];
-		if(typeof gamedataset !== "undefined") {
-			sorted = gamedataset.slice(0);
-			sorted.sort(function(teamA: GenericObject, teamB: GenericObject): number {
-				let nameA: string = String(teamA.team).toLowerCase(),
-					nameB: string = String(teamB.team).toLowerCase();
-				let compared: boolean = (order == Order.asc) ? nameA > nameB : nameA < nameB;
-				return 0 - (compared ? 1 : -1);
-			}.bind(this));
-		}
-
-		return sorted;
 	}
 
 	updatePlandataset(gamedataset: GenericObject[]): GenericObject[] {
