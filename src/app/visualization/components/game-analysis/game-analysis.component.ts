@@ -79,8 +79,6 @@ export class GameAnalysisComponent implements OnInit {
 
 	public time = 0;
 
-	public legendIcons: GenericObject[];
-
 	public sortType = 'name';
 	public sortReverse = false;
 	public sortLevel = 0;
@@ -186,17 +184,17 @@ export class GameAnalysisComponent implements OnInit {
 	}
 
 	applyData(gamedataset: GenericObject[], plandataset: GenericObject[]): void {
-		const darkColor: string = this.config.darkColor,
-			eventShapePaths: GenericObject = this.config.eventShapePaths,
-			padding: Padding = {
-				top: 10,
-				bottom: 40
-			};
-
 		if (gamedataset.length === 0 || plandataset.length === 0) {
 			this.hasData = false;
 			return;
 		}
+
+		const darkColor: string = this.config.darkColor;
+		const eventShapePaths: GenericObject = this.config.eventShapePaths;
+		const padding: Padding = {
+				top: 10,
+				bottom: 40
+			};
 
 		const levelKeys: string[] = this.levels;
 		// in final overview align start of all teams - repan start time
@@ -204,20 +202,6 @@ export class GameAnalysisComponent implements OnInit {
 			const startLevelIndex: number = levelKeys.indexOf('start');
 			if (startLevelIndex >= 0) levelKeys.splice(startLevelIndex, 1);
 		}
-
-		this.legendIcons = [];
-		this.legendIcons.push({
-			label: 'Solution displayed',
-			path: this.config.eventShapePaths.solution
-		});
-		this.legendIcons.push({
-			label: 'Skip',
-			path: this.config.eventShapePaths.skip
-		});
-		this.legendIcons.push({
-			label: 'Hint',
-			path: this.config.eventShapePaths.hint
-		});
 
 		const gamedata: GameData = {
 			'time': this.time,
