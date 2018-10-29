@@ -63,7 +63,7 @@ export class GameAnalysisComponent implements OnInit {
 	private plandataset: GenericObject[] = [];
 	private levels: string[];
 	private levelsTimePlan: number[];
-	private loadTimer: number;
+	private loadTimer: any;
 
 	// zooming
 	private panValue: number = 0;
