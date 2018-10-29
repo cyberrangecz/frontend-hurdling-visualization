@@ -30,6 +30,7 @@ import { NumericObject } from '../../models/numeric-object.type';
 import { environment } from '../../../../environments/environment';
 import { SortingService } from '../../services/sorting.service';
 import { FilteringService } from '../../services/filtering.service';
+import { PreparedData } from '../../models/preparedData';
 
 @Component({
 	selector: 'app-game-analysis',
@@ -150,12 +151,16 @@ export class GameAnalysisComponent implements OnInit {
 	}
 
 	drawChart(): void {
+		const data: PreparedData = this.getPreparedData();
+		this.applyData(data.gameDataset, data.planDataset);
+		this.pan();
+	}
+
+	getPreparedData(): PreparedData {
 		const filteredGamedataset = this.filteringService.filter(this.gamedataset, this.selectedFilterValue);
 		const sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
 		const sortedPlandataset = this.updatePlandataset(sortedGamedataset);
-
-		this.applyData(sortedGamedataset, sortedPlandataset);
-		this.pan();
+		return {gameDataset: sortedGamedataset, planDataset: sortedPlandataset};
 	}
 
 	updatePlandataset(gamedataset: GenericObject[]): GenericObject[] {
