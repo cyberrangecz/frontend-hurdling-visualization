@@ -13,9 +13,9 @@ import { ColumnHeaderComponent } from '../column-header/column-header.component'
 import { LoadDataService } from '../../services/load-data.service';
 import { LoadCsvDataService } from '../../services/load-csv-data.service';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear, ScaleOrdinal } from 'd3-ng2-service';
-import { PapaParseService, PapaParseResult } from 'ngx-papaparse';
+import { PapaParseModule, Papa } from 'ngx-papaparse';
 import { Observable } from 'rxjs/Observable';
-
+import { fromPromise } from "rxjs/observable/fromPromise";
 describe('GameAnalysisComponent', () => {
   let component: GameAnalysisComponent;
   let fixture: ComponentFixture<GameAnalysisComponent>;
@@ -37,11 +37,13 @@ describe('GameAnalysisComponent', () => {
     maxBarHeight: 60,
     maxZoomValue: 10,
     zoomStep: 0.25,
+    simulationInterval: 800,
+    loadDataInterval: 5000,
     defaultView: View.overview
   };
   let loadServiceStub: any = {
     getGameAndPlanData: function(apiUrl: string, gameId: string, levelsTimePlan: number[]) {
-      return Observable.fromPromise(new Promise(function (resolve, reject) {
+      return fromPromise(new Promise(function (resolve, reject) {
             let data = {
               "gameDataset": [
                 {
@@ -147,11 +149,12 @@ describe('GameAnalysisComponent', () => {
         ColumnHeaderComponent
       ],
       imports: [
-        FormsModule
+        FormsModule,
+        PapaParseModule
       ],
       providers: [
         D3Service,
-        PapaParseService,
+        Papa,
         { provide: LoadDataService, useValue: loadServiceStub },
         { provide: LoadCsvDataService, useValue: loadServiceStub },
         { provide: AppConfig, useValue: testConfig }

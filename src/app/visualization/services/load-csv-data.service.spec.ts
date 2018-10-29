@@ -1,7 +1,7 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 
 import { LoadCsvDataService } from './load-csv-data.service';
-import { PapaParseService } from 'ngx-papaparse';
+import { Papa } from 'ngx-papaparse';
 import { Data } from '../models/data';
 
 describe('LoadCsvDataService', () => {
@@ -18,7 +18,7 @@ describe('LoadCsvDataService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LoadCsvDataService, PapaParseService]
+      providers: [LoadCsvDataService, Papa]
     });
     service = TestBed.get(LoadCsvDataService);
   });
