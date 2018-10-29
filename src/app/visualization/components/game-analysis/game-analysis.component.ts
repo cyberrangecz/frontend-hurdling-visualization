@@ -112,114 +112,6 @@ export class GameAnalysisComponent implements OnInit {
 		this.loadData();
 	}
 
-	onCsvFileChange($event): void {
-		clearInterval(this.loadTimer);
-		if ($event.target.files.length > 0) {
-			this.clear();
-			if (this.selectedViewValue === 1) {
-				this.simulateCSVGameProgress(0, 100, 1, this.config.simulationInterval);
-			} else {
-				this.loadDataFromCSV();
-			}
-			this.activeDataSource = DataSource.csv;
-			this.csvFilename = this.csvInput.nativeElement.files[0].name;
-		} else {
-			this.clearCsvFile();
-		}
-	}
-
-	clearCsvFile(): void {
-		this.clear();
-		clearInterval(this.loadTimer);
-		if (this.selectedViewValue === 1) {
-			this.watchGameProgress();
-		} else {
-			this.loadData();
-		}
-		this.activeDataSource = DataSource.api;
-		this.csvFilename = null;
-	}
-
-	onViewValueChange(): void {
-		clearInterval(this.loadTimer);
-		switch(this.selectedViewValue) {	
-			case 1:
-				this.switchToProgressView();
-				break;
-			case 2:
-				this.switchToFinalOverview();
-				break;
-		}
-	}
-
-	onResize() {
-		this.drawChart();
-	}
-
-	onMouseWheelUp($event: any) {
-		if(this.zoomValue < this.config.maxZoomValue) {
-			let newZoomValue = Math.min(this.config.maxZoomValue, this.zoomValue+this.config.zoomStep),
-				scale = newZoomValue / this.zoomValue,
-				dx = (-$event.left+this.panValue) * scale + $event.left - this.panValue;
-
-			this.zoomValue = newZoomValue;
-			this.drawChart();
-
-			//because of team highlighting animation, add class which cancels the animation after zoom
-			this.outerWrapper.classed("ctf-progress-zoom", true);
-			setTimeout(function() {
-				this.outerWrapper.classed("ctf-progress-zoom", false);
-			}.bind(this), 150);
-			
-			this.pan(dx);
-			this.updatePanValue();
-		}
-	}
-
-	onMouseWheelDown($event: any) {
-		if(this.zoomValue > 1) {
-			let newZoomValue = Math.max(1, this.zoomValue-this.config.zoomStep),
-				scale = newZoomValue / this.zoomValue,
-				dx = (-$event.left+this.panValue) * scale + $event.left - this.panValue;
-
-			this.zoomValue = newZoomValue;
-			this.drawChart();
-
-			//because of team highlighting animation, add class which cancels the animation after zoom
-			this.outerWrapper.classed("ctf-progress-zoom", true);
-			setTimeout(function() {
-				this.outerWrapper.classed("ctf-progress-zoom", false);
-			}.bind(this), 150);
-
-			this.pan(dx);
-			this.updatePanValue();
-		}
-	}
-
-	onMouseDrag($event: any) {
-		this.pan($event.left);
-	}
-
-	onMouseUp() {
-		this.updatePanValue();
-	}
-
-	onFilterValueChange(): void {
-		this.drawChart();
-	}
-
-	onSortValueChange(sortType: string, sortReverse: boolean, levelIndex?: number): void {
-		this.sortType = sortType;
-		this.sortReverse = sortReverse;
-		if(typeof levelIndex !== "undefined") {
-			this.sortLevel = levelIndex;
-		}
-		else {
-			this.sortLevel = 0;
-		}
-		this.drawChart();
-	}
-
 	loadData() {
 		this.errorMessage = null;
 		this.loadDataService.getGameAndPlanData(this.config.apiUrl, this.config.gameId, this.config.levelsTimePlan).subscribe((data: Data) => {
@@ -234,59 +126,15 @@ export class GameAnalysisComponent implements OnInit {
 		});
 	}
 
-	watchGameProgress() {
-		let interval: number = this.config.loadDataInterval
-		this.loadData();
-		this.loadTimer = setInterval(function (): void {
-			this.loadData();
-		}.bind(this), interval);
-	}
+	drawChart(): void {
+		let sortedGamedataset: GenericObject[],
+			sortedPlandataset: GenericObject[];
+		
+		sortedGamedataset = this.sort(this.filter());
+		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
 
-	loadDataFromCSV(endInPercents: number = 100) {
-		let file: File = this.csvInput.nativeElement.files[0];
-		this.errorMessage = null;
-		this.loadCsvDataService.getGameAndPlanData(file, this.config.levelsTimePlan, endInPercents).subscribe((data: Data) => {
-			this.gamedataset = data.gameDataset;
-			this.plandataset = data.planDataset;
-			this.levels = data.levels;
-			this.levelsTimePlan = data.levelsTimePlan;
-			this.time = data.time;
-			this.drawChart();
-		}, (error: string) => {
-			this.errorMessage = error;
-		});
-	}
-
-	simulateCSVGameProgress(start: number = 0, end: number = 100, step: number = 1, interval: number = 100): void {
-		let currentEnd = start;
-
-		this.loadDataFromCSV(currentEnd);
-		this.loadTimer = setInterval(function (): void {
-			currentEnd += step;
-			if (currentEnd > end) {
-				clearInterval(this.loadTimer);
-				return;
-			}
-			this.loadDataFromCSV(currentEnd);
-		}.bind(this), interval);
-	}
-
-	filter(): GenericObject[] {
-		let filteredGamedataset: GenericObject[];
-
-		switch(this.selectedFilterValue) {
-			case 1:
-				filteredGamedataset = this.gamedataset;
-				break; 
-			case 2:
-				filteredGamedataset = this.filterByFinished(true);
-				break;
-			case 3:
-				filteredGamedataset = this.filterByFinished(false);
-				break;
-		}
-
-		return filteredGamedataset;
+		this.applyData(sortedGamedataset, sortedPlandataset);
+		this.pan();
 	}
 
 	sort(gamedataset: GenericObject[]): GenericObject[] {
@@ -308,6 +156,35 @@ export class GameAnalysisComponent implements OnInit {
 		}
 
 		return sortedGamedataset;
+	}
+
+	filter(): GenericObject[] {
+		let filteredGamedataset: GenericObject[];
+
+		switch(this.selectedFilterValue) {
+			case 1:
+				filteredGamedataset = this.gamedataset;
+				break; 
+			case 2:
+				filteredGamedataset = this.filterByFinished(true);
+				break;
+			case 3:
+				filteredGamedataset = this.filterByFinished(false);
+				break;
+		}
+
+		return filteredGamedataset;
+	}
+
+	filterByFinished(byFinished: boolean): GenericObject[] {
+		let filtered: GenericObject[] = [];
+		if(typeof this.gamedataset !== "undefined") {
+			filtered =  this.gamedataset.filter(function(d: GenericObject): boolean {
+				return (d.currentState == "finished") == byFinished;
+			});
+		}
+
+		return filtered;
 	}
 
 	sortByTime(gamedataset: GenericObject[], order: Order): GenericObject[] {
@@ -373,65 +250,6 @@ export class GameAnalysisComponent implements OnInit {
 		}
 
 		return sorted;
-	}
-
-	filterByFinished(byFinished: boolean): GenericObject[] {
-		let filtered: GenericObject[] = [];
-		if(typeof this.gamedataset !== "undefined") {
-			filtered =  this.gamedataset.filter(function(d: GenericObject): boolean {
-				return (d.currentState == "finished") == byFinished;
-			});
-		}
-
-		return filtered;
-	}
-
-	switchToProgressView() {
-		this.zoomValue = 1;
-		this.view = View.progress;
-		if (this.activeDataSource === DataSource.csv) {
-			this.simulateCSVGameProgress(0, 100, 1, this.config.simulationInterval);
-		} else {
-			this.watchGameProgress();
-		}
-	}
-
-	switchToFinalOverview() {
-		this.view = View.overview;
-		if (this.activeDataSource === DataSource.csv) {
-			this.loadDataFromCSV();
-		} else {
-			this.loadData();
-		}
-	}
-
-	pan(left?: number) {
-		if (typeof this.gameChart === 'undefined') {
-			return;
-		}
-
-		if(typeof left == "undefined") left = 0;
-		let pan: number = this.panValue + left;
-		pan = Math.max(-(this.width-this.wrapperWidth), pan);
-		pan = Math.min(0, pan);
-		this.gameChart.style("transform", "translate("+pan+"px, 0)");
-		
-		this.levelSortOptions.forEach(function(level) {
-			level.translate = "translate(calc(-50% + "+(pan+15)+"px), 0)";
-		});
-	}
-
-	updatePanValue() {
-		if (typeof this.gameChart === 'undefined') {
-			return;
-		}
-
-		let transform: string = this.gameChart.style("transform"),
-			translate: string[] = transform.substring(transform.indexOf("translate(")+10, transform.indexOf(")")).split(","),
-			xStr: string = translate[0],
-			x: number = parseInt(xStr.substr(0, xStr.length-2));
-		if(!x) x = 0;
-		this.panValue = x;
 	}
 
 	updatePlandataset(gamedataset: GenericObject[]): GenericObject[] {
@@ -525,23 +343,6 @@ export class GameAnalysisComponent implements OnInit {
 		this.hasData = true;
 	}
 
-	clear(): void {
-		this.d3.select("#ctf-progress-chart").html("");
-		this.d3.selectAll(".ctf-progress-column-data").html("");
-		this.hasData = false;
-	}
-
-	drawChart(): void {
-		let sortedGamedataset: GenericObject[],
-			sortedPlandataset: GenericObject[];
-		
-		sortedGamedataset = this.sort(this.filter());
-		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
-
-		this.applyData(sortedGamedataset, sortedPlandataset);
-		this.pan();
-	}
-
 	drawChartBase(baseConfig: BaseConfig): void {
 		let d3: D3 = this.d3,
 			element: string = baseConfig.element,
@@ -609,6 +410,11 @@ export class GameAnalysisComponent implements OnInit {
 			.attr("class", "axis axis-x")
 			.attr("transform", "translate(0,"+(this.height+10)+")")
 			.call(this.xAxis);
+	}
+
+	getXAxisTickInterval(): number {
+		let interval: number = (this.wrapperWidth > 500) ? 900 : 2000;
+		return Math.floor(interval/Math.floor(this.zoomValue));
 	}
 
 	drawPlan(planConfig: PlanConfig): void {
@@ -1025,40 +831,6 @@ export class GameAnalysisComponent implements OnInit {
 		}
 	}
 
-	addDataColumns(dataColumns: GenericObject, gamedata: GameData) {
-		let d3: D3 = this.d3;
-
-		//append columns with data (team, time, score)
-		d3.select("#" + dataColumns["time"]).html("");
-		d3.select("#" + dataColumns["team"]).html("");
-
-		let teamData: any = d3.select("#" + dataColumns["team"]).append("svg")
-				.attr("height", this.wrapperHeight);
-		let teamDataLayer: any = teamData.append("g")
-			.attr("class", "data");
-
-		let teams: any = teamDataLayer.selectAll("text.data-team")
-			.data(gamedata.teams)
-			.enter().append("text")
-			.text(function (d: GenericObject): string { return d.team; }.bind(this))
-			.attr("y", function (d: GenericObject): string { return this.yScale(d.team)+this.yScale.bandwidth()*0.6 + this.padding.top; }.bind(this))
-			.attr("x", 130)
-			.style("text-anchor", "end");
-
-
-		let timeData: any = d3.select("#" + dataColumns["time"]).append("svg")
-				.attr("height", this.wrapperHeight);
-		let timeDataLayer: any = timeData.append("g")
-			.attr("class", "data");
-
-		let times: any = timeDataLayer.selectAll("text.data-time")
-			.data(gamedata.teams)
-			.enter().append("text")
-			.text(function (d: GenericObject): string { return !isNaN(d.totalTime) ? this.getTimeString(d.totalTime) : "" }.bind(this))
-			.attr("y", function (d: GenericObject): string { return this.yScale(d.team)+this.yScale.bandwidth()*0.6 + this.padding.top; }.bind(this))
-			.attr("x", 0);
-	}
-
 	updatePlan(gamedata: GameData): void {
 		let d3: D3 = this.d3,
 			offset: number[] = [],
@@ -1130,9 +902,237 @@ export class GameAnalysisComponent implements OnInit {
 		}
 	}
 
-	getXAxisTickInterval(): number {
-		let interval: number = (this.wrapperWidth > 500) ? 900 : 2000;
-		return Math.floor(interval/Math.floor(this.zoomValue));
+	addDataColumns(dataColumns: GenericObject, gamedata: GameData) {
+		let d3: D3 = this.d3;
+
+		//append columns with data (team, time, score)
+		d3.select("#" + dataColumns["time"]).html("");
+		d3.select("#" + dataColumns["team"]).html("");
+
+		let teamData: any = d3.select("#" + dataColumns["team"]).append("svg")
+				.attr("height", this.wrapperHeight);
+		let teamDataLayer: any = teamData.append("g")
+			.attr("class", "data");
+
+		let teams: any = teamDataLayer.selectAll("text.data-team")
+			.data(gamedata.teams)
+			.enter().append("text")
+			.text(function (d: GenericObject): string { return d.team; }.bind(this))
+			.attr("y", function (d: GenericObject): string { return this.yScale(d.team)+this.yScale.bandwidth()*0.6 + this.padding.top; }.bind(this))
+			.attr("x", 130)
+			.style("text-anchor", "end");
+
+
+		let timeData: any = d3.select("#" + dataColumns["time"]).append("svg")
+				.attr("height", this.wrapperHeight);
+		let timeDataLayer: any = timeData.append("g")
+			.attr("class", "data");
+
+		let times: any = timeDataLayer.selectAll("text.data-time")
+			.data(gamedata.teams)
+			.enter().append("text")
+			.text(function (d: GenericObject): string { return !isNaN(d.totalTime) ? this.getTimeString(d.totalTime) : "" }.bind(this))
+			.attr("y", function (d: GenericObject): string { return this.yScale(d.team)+this.yScale.bandwidth()*0.6 + this.padding.top; }.bind(this))
+			.attr("x", 0);
+	}
+
+	pan(left?: number) {
+		if (typeof this.gameChart === 'undefined') {
+			return;
+		}
+
+		if(typeof left == "undefined") left = 0;
+		let pan: number = this.panValue + left;
+		pan = Math.max(-(this.width-this.wrapperWidth), pan);
+		pan = Math.min(0, pan);
+		this.gameChart.style("transform", "translate("+pan+"px, 0)");
+		
+		this.levelSortOptions.forEach(function(level) {
+			level.translate = "translate(calc(-50% + "+(pan+15)+"px), 0)";
+		});
+	}
+
+	onCsvFileChange($event): void {
+		clearInterval(this.loadTimer);
+		if ($event.target.files.length > 0) {
+			this.clear();
+			if (this.selectedViewValue === 1) {
+				this.simulateCSVGameProgress(0, 100, 1, this.config.simulationInterval);
+			} else {
+				this.loadDataFromCSV();
+			}
+			this.activeDataSource = DataSource.csv;
+			this.csvFilename = this.csvInput.nativeElement.files[0].name;
+		} else {
+			this.clearCsvFile();
+		}
+	}
+
+	clearCsvFile(): void {
+		this.clear();
+		clearInterval(this.loadTimer);
+		if (this.selectedViewValue === 1) {
+			this.watchGameProgress();
+		} else {
+			this.loadData();
+		}
+		this.activeDataSource = DataSource.api;
+		this.csvFilename = null;
+	}
+
+	onViewValueChange(): void {
+		clearInterval(this.loadTimer);
+		switch(this.selectedViewValue) {	
+			case 1:
+				this.switchToProgressView();
+				break;
+			case 2:
+				this.switchToFinalOverview();
+				break;
+		}
+	}
+
+	onResize() {
+		this.drawChart();
+	}
+
+	onMouseWheelUp($event: any) {
+		if(this.zoomValue < this.config.maxZoomValue) {
+			let newZoomValue = Math.min(this.config.maxZoomValue, this.zoomValue+this.config.zoomStep),
+				scale = newZoomValue / this.zoomValue,
+				dx = (-$event.left+this.panValue) * scale + $event.left - this.panValue;
+
+			this.zoomValue = newZoomValue;
+			this.drawChart();
+
+			//because of team highlighting animation, add class which cancels the animation after zoom
+			this.outerWrapper.classed("ctf-progress-zoom", true);
+			setTimeout(function() {
+				this.outerWrapper.classed("ctf-progress-zoom", false);
+			}.bind(this), 150);
+			
+			this.pan(dx);
+			this.updatePanValue();
+		}
+	}
+
+	onMouseWheelDown($event: any) {
+		if(this.zoomValue > 1) {
+			let newZoomValue = Math.max(1, this.zoomValue-this.config.zoomStep),
+				scale = newZoomValue / this.zoomValue,
+				dx = (-$event.left+this.panValue) * scale + $event.left - this.panValue;
+
+			this.zoomValue = newZoomValue;
+			this.drawChart();
+
+			//because of team highlighting animation, add class which cancels the animation after zoom
+			this.outerWrapper.classed("ctf-progress-zoom", true);
+			setTimeout(function() {
+				this.outerWrapper.classed("ctf-progress-zoom", false);
+			}.bind(this), 150);
+
+			this.pan(dx);
+			this.updatePanValue();
+		}
+	}
+
+	onMouseDrag($event: any) {
+		this.pan($event.left);
+	}
+
+	onMouseUp() {
+		this.updatePanValue();
+	}
+
+	onFilterValueChange(): void {
+		this.drawChart();
+	}
+
+	onSortValueChange(sortType: string, sortReverse: boolean, levelIndex?: number): void {
+		this.sortType = sortType;
+		this.sortReverse = sortReverse;
+		if(typeof levelIndex !== "undefined") {
+			this.sortLevel = levelIndex;
+		}
+		else {
+			this.sortLevel = 0;
+		}
+		this.drawChart();
+	}
+
+	watchGameProgress() {
+		let interval: number = this.config.loadDataInterval
+		this.loadData();
+		this.loadTimer = setInterval(function (): void {
+			this.loadData();
+		}.bind(this), interval);
+	}
+
+	loadDataFromCSV(endInPercents: number = 100) {
+		let file: File = this.csvInput.nativeElement.files[0];
+		this.errorMessage = null;
+		this.loadCsvDataService.getGameAndPlanData(file, this.config.levelsTimePlan, endInPercents).subscribe((data: Data) => {
+			this.gamedataset = data.gameDataset;
+			this.plandataset = data.planDataset;
+			this.levels = data.levels;
+			this.levelsTimePlan = data.levelsTimePlan;
+			this.time = data.time;
+			this.drawChart();
+		}, (error: string) => {
+			this.errorMessage = error;
+		});
+	}
+
+	simulateCSVGameProgress(start: number = 0, end: number = 100, step: number = 1, interval: number = 100): void {
+		let currentEnd = start;
+
+		this.loadDataFromCSV(currentEnd);
+		this.loadTimer = setInterval(function (): void {
+			currentEnd += step;
+			if (currentEnd > end) {
+				clearInterval(this.loadTimer);
+				return;
+			}
+			this.loadDataFromCSV(currentEnd);
+		}.bind(this), interval);
+	}
+
+	switchToProgressView() {
+		this.zoomValue = 1;
+		this.view = View.progress;
+		if (this.activeDataSource === DataSource.csv) {
+			this.simulateCSVGameProgress(0, 100, 1, this.config.simulationInterval);
+		} else {
+			this.watchGameProgress();
+		}
+	}
+
+	switchToFinalOverview() {
+		this.view = View.overview;
+		if (this.activeDataSource === DataSource.csv) {
+			this.loadDataFromCSV();
+		} else {
+			this.loadData();
+		}
+	}
+
+	updatePanValue() {
+		if (typeof this.gameChart === 'undefined') {
+			return;
+		}
+
+		let transform: string = this.gameChart.style("transform"),
+			translate: string[] = transform.substring(transform.indexOf("translate(")+10, transform.indexOf(")")).split(","),
+			xStr: string = translate[0],
+			x: number = parseInt(xStr.substr(0, xStr.length-2));
+		if(!x) x = 0;
+		this.panValue = x;
+	}
+
+	clear(): void {
+		this.d3.select("#ctf-progress-chart").html("");
+		this.d3.selectAll(".ctf-progress-column-data").html("");
+		this.hasData = false;
 	}
 
 	getXAxisTickFormat(data: any): string {
