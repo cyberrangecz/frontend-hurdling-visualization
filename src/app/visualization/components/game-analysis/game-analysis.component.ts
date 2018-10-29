@@ -189,13 +189,6 @@ export class GameAnalysisComponent implements OnInit {
 			return;
 		}
 
-		const darkColor: string = this.config.darkColor;
-		const eventShapePaths: GenericObject = this.config.eventShapePaths;
-		const padding: Padding = {
-				top: 10,
-				bottom: 40
-			};
-
 		const levelKeys: string[] = this.levels;
 		// in final overview align start of all teams - repan start time
 		if (this.view === View.overview) {
@@ -214,21 +207,19 @@ export class GameAnalysisComponent implements OnInit {
 			'teams': plandataset
 		};
 
-		const elementId = 'ctf-progress-chart',
-			outerWrapperId = 'ctf-progress-wrapper';
-
 		this.levelSortOptions = [];
-		const levelsTimePlanSum = this.levelsTimePlan.reduce(function (a, b) {
-			return a + b;
-		}, 0);
-		const estimatedTime = (this.view === View.progress) ? levelsTimePlanSum * 1.25 : levelsTimePlanSum;
+
+		const estimatedTime = this.getEstimatedTime();
 
 		this.drawChartBase({
 			data: plandata,
-			element: elementId,
-			outerWrapperElement: outerWrapperId,
+			element: 'ctf-progress-chart',
+			outerWrapperElement: 'ctf-progress-wrapper',
 			time: 0,
-			padding: padding,
+			padding: {
+				top: 10,
+				bottom: 40
+			},
 			minBarHeight: this.config.minBarHeight,
 			maxBarHeight: this.config.maxBarHeight,
 			estimatedTime: estimatedTime
@@ -242,8 +233,8 @@ export class GameAnalysisComponent implements OnInit {
 
 		this.drawGame({
 			data: gamedata,
-			eventShapePaths: eventShapePaths,
-			currentLevelColor: darkColor,
+			eventShapePaths: this.config.eventShapePaths,
+			currentLevelColor: this.config.darkColor,
 			time: gamedata.time,
 		});
 
@@ -255,6 +246,13 @@ export class GameAnalysisComponent implements OnInit {
 		this.addDataColumns(dataColumns, gamedata);
 
 		this.hasData = true;
+	}
+
+	getEstimatedTime(): number {
+		const levelsTimePlanSum = this.levelsTimePlan.reduce(function (a, b) {
+			return a + b;
+		}, 0);
+		return (this.view === View.progress) ? levelsTimePlanSum * 1.25 : levelsTimePlanSum;
 	}
 
 	drawChartBase(baseConfig: BaseConfig): void {
