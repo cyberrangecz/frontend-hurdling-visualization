@@ -131,20 +131,20 @@ export class GameAnalysisComponent implements OnInit {
 			sortedPlandataset: GenericObject[];
 		
 		const filteredGamedataset = this.filter();
-		sortedGamedataset = this.sort(filteredGamedataset);
+		sortedGamedataset = this.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
 		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
 
 		this.applyData(sortedGamedataset, sortedPlandataset);
 		this.pan();
 	}
 
-	sort(gamedataset: GenericObject[]): GenericObject[] {
+	sort(gamedataset: GenericObject[], sortReverse: boolean, sortType: string, sortLevel: number): GenericObject[] {
 		let order: Order,
 			sortedGamedataset: GenericObject[];
 		
-		order = this.sortReverse ? Order.desc : Order.asc;
+		order = sortReverse ? Order.desc : Order.asc;
 
-		switch (this.sortType) {
+		switch (sortType) {
 			case "name":
 				sortedGamedataset = this.sortByName(gamedataset, order);
 				break;
@@ -152,7 +152,7 @@ export class GameAnalysisComponent implements OnInit {
 				sortedGamedataset = this.sortByTime(gamedataset, order);
 				break;
 			case "level":
-				sortedGamedataset = this.sortByLevelTime(gamedataset, this.sortLevel, order);
+				sortedGamedataset = this.sortByLevelTime(gamedataset, sortLevel, order);
 				break;
 		}
 
