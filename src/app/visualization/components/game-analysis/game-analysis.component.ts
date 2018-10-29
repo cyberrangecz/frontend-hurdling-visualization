@@ -35,11 +35,8 @@ import { FilteringService } from '../../services/filtering.service';
 export class GameAnalysisComponent implements OnInit {
 
 	public assetsRoot: string = environment.assetsRoot;
-	private config: AppConfig;
 	private d3: D3;
 	private activeDataSource: DataSource = DataSource.api;
-	private loadDataService: LoadDataService;
-	private loadCsvDataService: LoadCsvDataService;
 	private wrapperWidth: number;
 	private wrapperHeight: number;
 	private width: number;
@@ -82,16 +79,16 @@ export class GameAnalysisComponent implements OnInit {
 	public levelSortOptions: GenericObject[] = [];
 
 	public viewOptions: GenericObject[] = [
-	   { id: 1, name: "Progress" },
-	   { id: 2, name: "Final overview" }
-	 ];
+		{ id: 1, name: "Progress" },
+		{ id: 2, name: "Final overview" }
+	];
 	public selectedViewValue: number = 2;
 
 	public filterOptions: GenericObject[] = [
-	   { id: 1, name: "All" },
-	   { id: 2, name: "Game finished" },
-	   { id: 3, name: "Game not finished" }
-	 ];
+		{ id: 1, name: "All" },
+		{ id: 2, name: "Game finished" },
+		{ id: 3, name: "Game not finished" }
+	];
 	public selectedFilterValue: number = 1;
 
 	public csvFilename: string = null;
@@ -101,11 +98,14 @@ export class GameAnalysisComponent implements OnInit {
 
 	@ViewChild('csvInput') csvInput: any;
 
-	constructor(config: AppConfig, d3Service: D3Service, loadDataService: LoadDataService, loadCsvDataService: LoadCsvDataService, private sortingService: SortingService, private filteringService: FilteringService) {
-		this.config = config;
+	constructor(
+		private config: AppConfig,
+		d3Service: D3Service, private loadDataService: LoadDataService,
+		private loadCsvDataService: LoadCsvDataService,
+		private sortingService: SortingService,
+		private filteringService: FilteringService
+	) {
 		this.d3 = d3Service.getD3();
-		this.loadDataService = loadDataService;
-		this.loadCsvDataService = loadCsvDataService;
 	}
 
 	ngOnInit(): void {
@@ -131,7 +131,7 @@ export class GameAnalysisComponent implements OnInit {
 	drawChart(): void {
 		let sortedGamedataset: GenericObject[],
 			sortedPlandataset: GenericObject[];
-		
+
 		const filteredGamedataset = this.filteringService.filter(this.gamedataset, this.selectedFilterValue);
 		sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
 		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
@@ -147,12 +147,12 @@ export class GameAnalysisComponent implements OnInit {
 			levelsTimePlan = this.levelsTimePlan;
 		gamedataset.forEach(function (d: GenericObject): void {
 			let teamData: GenericObject = { team: d.team };
-			
+
 			let levelIndex: number = 0;
 			levels.forEach(function (level): void {
 				let timePlan: number = levelsTimePlan[levelIndex];
 				teamData[level] = (level != "start") ? timePlan : 0;
-				if(level != "start") levelIndex++;
+				if (level != "start") levelIndex++;
 			});
 
 			newPlandataset.push(teamData);
@@ -172,33 +172,33 @@ export class GameAnalysisComponent implements OnInit {
 
 		let levelKeys: string[] = this.levels;
 		// in final overview align start of all teams - repan start time
-		if(this.view == View.overview) {
+		if (this.view == View.overview) {
 			let startLevelIndex: number = levelKeys.indexOf("start");
-			if(startLevelIndex >= 0) levelKeys.splice(startLevelIndex, 1);
+			if (startLevelIndex >= 0) levelKeys.splice(startLevelIndex, 1);
 		}
 
 		this.legendIcons = [];
-		this.legendIcons.push({label: 'Solution displayed', path: this.config.eventShapePaths.solution});
-		this.legendIcons.push({label: 'Skip', path: this.config.eventShapePaths.skip});
-		this.legendIcons.push({label: 'Hint', path: this.config.eventShapePaths.hint});
-		
+		this.legendIcons.push({ label: 'Solution displayed', path: this.config.eventShapePaths.solution });
+		this.legendIcons.push({ label: 'Skip', path: this.config.eventShapePaths.skip });
+		this.legendIcons.push({ label: 'Hint', path: this.config.eventShapePaths.hint });
+
 		let gamedata: GameData = {
-			"time" : this.time,
-			"keys" : levelKeys,
-			"teams" : gamedataset
+			"time": this.time,
+			"keys": levelKeys,
+			"teams": gamedataset
 		}
 
 		let plandata: PlanData = {
-			"keys" : levelKeys,
-			"teams" : plandataset
+			"keys": levelKeys,
+			"teams": plandataset
 		}
 
 		let elementId: string = 'ctf-progress-chart',
-			outerWrapperId: string = 'ctf-progress-wrapper'; 
+			outerWrapperId: string = 'ctf-progress-wrapper';
 
 		this.levelSortOptions = [];
-		let levelsTimePlanSum = this.levelsTimePlan.reduce(function(a, b) { return a + b; }, 0);
-		let estimatedTime = (this.view == View.progress) ? levelsTimePlanSum*1.25 : levelsTimePlanSum;
+		let levelsTimePlanSum = this.levelsTimePlan.reduce(function (a, b) { return a + b; }, 0);
+		let estimatedTime = (this.view == View.progress) ? levelsTimePlanSum * 1.25 : levelsTimePlanSum;
 
 		this.drawChartBase({
 			data: plandata,
@@ -224,7 +224,7 @@ export class GameAnalysisComponent implements OnInit {
 			time: gamedata.time,
 		});
 
-		let dataColumns = { "team":  "ctf-progress-teamcolumn", "time" : "ctf-progress-timecolumn"};
+		let dataColumns = { "team": "ctf-progress-teamcolumn", "time": "ctf-progress-timecolumn" };
 
 		this.addDataColumns(dataColumns, gamedata);
 
@@ -250,18 +250,18 @@ export class GameAnalysisComponent implements OnInit {
 		// create svg
 		// calculate the height first, width can change when the scrollbar is added
 		let wrapperWidth = document.getElementById(element).getBoundingClientRect().width,
-			maxHeight: number = Math.min(wrapperWidth*0.7, window.innerHeight-130, baseConfig.maxBarHeight*plandata.teams.length),
-			minHeight: number = baseConfig.minBarHeight*plandata.teams.length+80;
+			maxHeight: number = Math.min(wrapperWidth * 0.7, window.innerHeight - 130, baseConfig.maxBarHeight * plandata.teams.length),
+			minHeight: number = baseConfig.minBarHeight * plandata.teams.length + 80;
 		this.wrapperHeight = Math.max(maxHeight, minHeight);
 		this.chart = d3.select("#" + element).append("svg").attr("class", "ctf-progress-chart");
 		this.chart.attr("height", this.wrapperHeight);
 
 		this.wrapperWidth = document.getElementById(element).getBoundingClientRect().width;
 		this.chart.attr("width", this.wrapperWidth)
-				.attr("transform", "translate(0, "+padding.top+")");			
-		let width: number = (this.wrapperWidth*this.zoomValue),
+			.attr("transform", "translate(0, " + padding.top + ")");
+		let width: number = (this.wrapperWidth * this.zoomValue),
 			height: number = this.wrapperHeight - padding.top - padding.bottom;
-		
+
 		this.width = width;
 		this.height = height;
 
@@ -269,7 +269,7 @@ export class GameAnalysisComponent implements OnInit {
 
 		// init x and y scales
 		let yScalePadding: number;
-		if(this.wrapperHeight > 550) yScalePadding = 0.02;
+		if (this.wrapperHeight > 550) yScalePadding = 0.02;
 		else yScalePadding = 0.05;
 
 		this.xScale = d3.scaleLinear().rangeRound([0, width]);
@@ -277,14 +277,14 @@ export class GameAnalysisComponent implements OnInit {
 
 		// create axis
 		this.xAxis = d3.axisBottom(this.xScale)
-						.tickFormat(function(d: any) {
-							return this.getXAxisTickFormat(d);
-						}.bind(this))
-						.tickSize(5)
-						.tickValues(d3.range(0, estimatedTime, this.getXAxisTickInterval()));
+			.tickFormat(function (d: any) {
+				return this.getXAxisTickFormat(d);
+			}.bind(this))
+			.tickSize(5)
+			.tickValues(d3.range(0, estimatedTime, this.getXAxisTickInterval()));
 		this.yAxis = d3.axisLeft(this.yScale);
 
-		this.yScale.domain(plandata.teams.map(function(d: GenericObject): string { return d.team; }));
+		this.yScale.domain(plandata.teams.map(function (d: GenericObject): string { return d.team; }));
 		this.xScale.domain([0, this.planDomain]);
 		this.yScale.domain(plandata.teams.map(function (d: GenericObject): string { return d.team; }));
 
@@ -296,13 +296,13 @@ export class GameAnalysisComponent implements OnInit {
 		// append x axis
 		this.gameChart.append("g")
 			.attr("class", "axis axis-x")
-			.attr("transform", "translate(0,"+(this.height+10)+")")
+			.attr("transform", "translate(0," + (this.height + 10) + ")")
 			.call(this.xAxis);
 	}
 
 	getXAxisTickInterval(): number {
 		let interval: number = (this.wrapperWidth > 500) ? 900 : 2000;
-		return Math.floor(interval/Math.floor(this.zoomValue));
+		return Math.floor(interval / Math.floor(this.zoomValue));
 	}
 
 	drawPlan(planConfig: PlanConfig): void {
@@ -323,7 +323,7 @@ export class GameAnalysisComponent implements OnInit {
 		let pattern = defs.selectAll("pattern")
 			.data(plandata.keys)
 			.enter().append("pattern")
-			.attr("id", function (d: GenericObject, i: string): string { return "diagonalHatch"+i; })
+			.attr("id", function (d: GenericObject, i: string): string { return "diagonalHatch" + i; })
 			.attr("patternUnits", "userSpaceOnUse")
 			.attr("width", "7")
 			.attr("height", "4")
@@ -340,11 +340,11 @@ export class GameAnalysisComponent implements OnInit {
 			.data(layers)
 			.enter().append("g")
 			.attr("class", "plan-layer")
-			.style("fill", function (d: GenericObject, i: string): string { return "url(#diagonalHatch" + i +")"; });
+			.style("fill", function (d: GenericObject, i: string): string { return "url(#diagonalHatch" + i + ")"; });
 
 		// draw segment (row in column) for each team
 		this.planSegments = planLayers.selectAll(".plan-segment")
-			.data(function (d: GenericObject): GenericObject {return d; })
+			.data(function (d: GenericObject): GenericObject { return d; })
 			.enter().append("rect")
 			.attr("y", function (d: GenericObject): string { return this.yScale(String(d.data.team)); }.bind(this))
 			.attr("x", function (d: GenericObject): string { return this.xScale(d[0]); }.bind(this))
@@ -355,7 +355,7 @@ export class GameAnalysisComponent implements OnInit {
 		let boundWidth: number = 2;
 		this.bounds = this.gameChart.append("g")
 			.attr("class", "bounds");
-		if(this.view == View.overview) {
+		if (this.view == View.overview) {
 			let boundGroups = this.bounds.selectAll(".bounds-layer")
 				.data(layers)
 				.enter().append("g")
@@ -363,10 +363,10 @@ export class GameAnalysisComponent implements OnInit {
 				.style("fill", function (d: GenericObject, i: string): string { return getPlanColor(i); });
 
 			this.boundSegments = boundGroups.selectAll("rect.plan-bound")
-				.data(function (d: GenericObject):GenericObject { return d; })
+				.data(function (d: GenericObject): GenericObject { return d; })
 				.enter().append("rect")
 				.attr("y", function (d: GenericObject): string { return this.yScale(String(d.data.team)); }.bind(this))
-				.attr("x", function (d: GenericObject): string { return (<number>this.xScale(d[1])-boundWidth).toString(); }.bind(this))
+				.attr("x", function (d: GenericObject): string { return (<number>this.xScale(d[1]) - boundWidth).toString(); }.bind(this))
 				.attr("height", this.yScale.bandwidth())
 				.attr("width", boundWidth);
 		}
@@ -401,11 +401,11 @@ export class GameAnalysisComponent implements OnInit {
 
 		// update x axis
 		this.xAxis = d3.axisBottom(this.xScale)
-						.tickFormat(function(d: any) {
-							return this.getXAxisTickFormat(d);
-						}.bind(this))
-						.tickSize(5)
-						.tickValues(d3.range(0, this.time, this.getXAxisTickInterval()));
+			.tickFormat(function (d: any) {
+				return this.getXAxisTickFormat(d);
+			}.bind(this))
+			.tickSize(5)
+			.tickValues(d3.range(0, this.time, this.getXAxisTickInterval()));
 		d3.select(".axis.axis-x")
 			.call(this.xAxis);
 
@@ -429,19 +429,19 @@ export class GameAnalysisComponent implements OnInit {
 			.attr("x", function (d: GenericObject, i: number): string {
 				let x: number = d[0];
 				// when sorting by level, align the teams by this level
-				if(this.view == View.overview && this.sortType == "level") {
-					if(typeof gamedata.teams[i].offsets === "undefined") {
+				if (this.view == View.overview && this.sortType == "level") {
+					if (typeof gamedata.teams[i].offsets === "undefined") {
 						gamedata.teams[i].offsets = [];
 					}
-					if(typeof gamedata.teams[i].offsets[this.sortLevel] === "undefined") {
-						if(typeof this.sortLevel === "undefined") {
+					if (typeof gamedata.teams[i].offsets[this.sortLevel] === "undefined") {
+						if (typeof this.sortLevel === "undefined") {
 							gamedata.teams[i].offsets[this.sortLevel] = 0;
 						}
 						else {
-							let levelsTimePlanSum = this.levelsTimePlan.slice(0, this.sortLevel-1).reduce(function(a, b) { return a + b; }, 0);
+							let levelsTimePlanSum = this.levelsTimePlan.slice(0, this.sortLevel - 1).reduce(function (a, b) { return a + b; }, 0);
 							let levelBound = levelsTimePlanSum,
-							teamLevelStart = layers[this.sortLevel-1][i][0],
-							teamOffset = levelBound - teamLevelStart;
+								teamLevelStart = layers[this.sortLevel - 1][i][0],
+								teamOffset = levelBound - teamLevelStart;
 							gamedata.teams[i].offsets[this.sortLevel] = teamOffset;
 						}
 					}
@@ -450,47 +450,47 @@ export class GameAnalysisComponent implements OnInit {
 				else {
 					return this.xScale(x);
 				}
-				
+
 			}.bind(this))
 			.attr("height", this.yScale.bandwidth())
 			.attr("width", function (d: GenericObject, i: number) {
 				let level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
 					levelIndex: number = level.index,
-					levelKey: string = (view == View.overview) ? "level" + (levelIndex+1) : "level" + levelIndex,
+					levelKey: string = (view == View.overview) ? "level" + (levelIndex + 1) : "level" + levelIndex,
 					teamIndex: number = i,
 					data: NumericObject = layers[levelIndex][teamIndex]["data"],
 					currentLevelData: number = layers[levelIndex][teamIndex]["data"][levelKey],
 					currentState: string = data["currentState"];
 
-				if(typeof currentLevelData !== "undefined") {
+				if (typeof currentLevelData !== "undefined") {
 					d3.select(this).attr("class", "game-segment-finished")
 						.attr("opacity", "0.3");
 					return xScale(d[1]) - xScale(d[0]);
 				}
-				else if(currentState == levelKey) {
-					if(view == View.overview) return xScale(time) - xScale(d[0]) - xScale(d.data["start"]);
+				else if (currentState == levelKey) {
+					if (view == View.overview) return xScale(time) - xScale(d[0]) - xScale(d.data["start"]);
 					else return xScale(time) - xScale(d[0]);
 				}
 				else {
 					return 0;
 				}
 			})
-			.on("mouseover", function(d: GenericObject, teamIndex: number) {
+			.on("mouseover", function (d: GenericObject, teamIndex: number) {
 				//highlight team on hover
 				outerWrapper.classed("ctf-progress-hover", true);
-				d3.selectAll(".data text:nth-child("+(teamIndex+1)+")").classed("data-hover", true);
+				d3.selectAll(".data text:nth-child(" + (teamIndex + 1) + ")").classed("data-hover", true);
 			})
-			.on("mouseout", function(d: GenericObject, teamIndex: number) {
+			.on("mouseout", function (d: GenericObject, teamIndex: number) {
 				//remove team highlighting
 				outerWrapper.classed("ctf-progress-hover", false);
-				d3.selectAll(".data text:nth-child("+(teamIndex+1)+")").classed("data-hover", false);
+				d3.selectAll(".data text:nth-child(" + (teamIndex + 1) + ")").classed("data-hover", false);
 			});
 
 		// update plan according to actual data
 		this.updatePlan(gamedata);
 
 		// tooltip for events
-		if(typeof this.tooltip != "undefined") this.tooltip.remove();
+		if (typeof this.tooltip != "undefined") this.tooltip.remove();
 
 		let tooltip: any = d3.select('#ctf-progress-chart')
 			.append("div")
@@ -500,32 +500,32 @@ export class GameAnalysisComponent implements OnInit {
 
 		//group events
 		let eventsDataset: GenericObject[] = gamedata.teams.slice(0);
-		eventsDataset.forEach(function(team) {
+		eventsDataset.forEach(function (team) {
 			let eventsGroups: GenericObject[] = [];
-			if(Array.isArray(team.events) && team.events.length > 0) {
+			if (Array.isArray(team.events) && team.events.length > 0) {
 				let first: any = team.events[0],
-					lastIndex: number = team.events.length-1,
+					lastIndex: number = team.events.length - 1,
 					previousEvent: any = null,
 					group: any = { "events": [], "level": first.level },
 					previousOffset: boolean = false,
 					isDuplicated: boolean = false;
-				team.events.forEach(function(event, index) {
-					if(previousEvent != null) {
-						let levelX: number = xScale(team["level"+event.level]),
+				team.events.forEach(function (event, index) {
+					if (previousEvent != null) {
+						let levelX: number = xScale(team["level" + event.level]),
 							eventX: number = xScale(event.time),
-							currentEventX: number = ((levelX-eventX) < eventIconWidth/2) ? eventX -  eventIconWidth/2 : eventX,
-							previousEventX: number = (previousOffset) ? xScale(previousEvent.time)+eventIconWidth/2 : xScale(previousEvent.time),
+							currentEventX: number = ((levelX - eventX) < eventIconWidth / 2) ? eventX - eventIconWidth / 2 : eventX,
+							previousEventX: number = (previousOffset) ? xScale(previousEvent.time) + eventIconWidth / 2 : xScale(previousEvent.time),
 							diff: number = currentEventX - previousEventX;
-						isDuplicated = event.name == previousEvent.name && event.time == previousEvent.time &&  event.level == previousEvent.level;
+						isDuplicated = event.name == previousEvent.name && event.time == previousEvent.time && event.level == previousEvent.level;
 
-						if((diff > 7) || (event.level != previousEvent.level)) {
+						if ((diff > 7) || (event.level != previousEvent.level)) {
 							let groupCopy: any = Object.assign({}, group);
 							eventsGroups.push(groupCopy);
 							group = { "events": [], "level": event.level };
 						}
 					}
 
-					if(xScale(event.time) < eventIconWidth/2) {
+					if (xScale(event.time) < eventIconWidth / 2) {
 						previousOffset = true;
 					}
 					else {
@@ -533,36 +533,36 @@ export class GameAnalysisComponent implements OnInit {
 					}
 
 					// don't push duplicated events
-					if(!isDuplicated) {
+					if (!isDuplicated) {
 						group.events.push(event);
 					}
 					previousEvent = event;
 
-					if(index == lastIndex) {
+					if (index == lastIndex) {
 						let groupCopy: any = Object.assign({}, group);
 						eventsGroups.push(groupCopy);
 					}
 				});
 			}
 
-			eventsGroups.forEach(function(group, index) {
+			eventsGroups.forEach(function (group, index) {
 				let events = group.events,
-					groupLevelX: number = xScale(team["level"+group.level]),
+					groupLevelX: number = xScale(team["level" + group.level]),
 					firstGroupEvent: any = events[0],
-					lastGroupEvent: any = events[events.length-1],
+					lastGroupEvent: any = events[events.length - 1],
 					firstX: number = xScale(firstGroupEvent.time),
 					lastX: number = xScale(lastGroupEvent.time),
-					x: number = firstX + ((lastX - firstX)/2);
-				if(view == View.progress) x += xScale(team["start"]);
-				if(x < eventIconWidth/2) {
-					x += eventIconWidth/2;
+					x: number = firstX + ((lastX - firstX) / 2);
+				if (view == View.progress) x += xScale(team["start"]);
+				if (x < eventIconWidth / 2) {
+					x += eventIconWidth / 2;
 				}
-				if((typeof groupLevelX !== "undefined") && (groupLevelX-x) < eventIconWidth/2) {
-					x -= eventIconWidth/2;
+				if ((typeof groupLevelX !== "undefined") && (groupLevelX - x) < eventIconWidth / 2) {
+					x -= eventIconWidth / 2;
 				}
 				for (var l: number = 1; l < group.level; l++) {
-					if(typeof team["level"+l] !== "undefined") {
-						x += xScale(team["level"+l]);
+					if (typeof team["level" + l] !== "undefined") {
+						x += xScale(team["level" + l]);
 					}
 				}
 				group["x"] = x;
@@ -578,22 +578,22 @@ export class GameAnalysisComponent implements OnInit {
 			.data(gamedata.teams)
 			.enter().append("g")
 			.attr("class", "events-row")
-			.style("transform", function (d: GenericObject, i:number): string {
-				let teamOffset: number =  0;
-				if(typeof gamedata.teams[i].offsets !== "undefined" && typeof gamedata.teams[i].offsets[this.sortLevel] !== "undefined") {
+			.style("transform", function (d: GenericObject, i: number): string {
+				let teamOffset: number = 0;
+				if (typeof gamedata.teams[i].offsets !== "undefined" && typeof gamedata.teams[i].offsets[this.sortLevel] !== "undefined") {
 					teamOffset = gamedata.teams[i].offsets[this.sortLevel];
 				}
-				return "translateX(" + xScale(teamOffset) +"px)";
+				return "translateX(" + xScale(teamOffset) + "px)";
 			}.bind(this))
-			.attr("data-index", function(d: GenericObject, i: number): number { return i; })
-			.on("mouseover", function(d: any, teamIndex: number) {
+			.attr("data-index", function (d: GenericObject, i: number): number { return i; })
+			.on("mouseover", function (d: any, teamIndex: number) {
 				// preserve teamhighlight
 				outerWrapper.classed("ctf-progress-hover", true);
-				d3.selectAll(".data text:nth-child("+(teamIndex+1)+")").classed("data-hover", true);
+				d3.selectAll(".data text:nth-child(" + (teamIndex + 1) + ")").classed("data-hover", true);
 			})
-			.on("mouseout", function(d: any, teamIndex: number) {
+			.on("mouseout", function (d: any, teamIndex: number) {
 				outerWrapper.classed("ctf-progress-hover", false);
-				d3.selectAll(".data text:nth-child("+(teamIndex+1)+")").classed("data-hover", false);
+				d3.selectAll(".data text:nth-child(" + (teamIndex + 1) + ")").classed("data-hover", false);
 			});
 
 		let eventsGroups: any = eventLayers.selectAll("path.event")
@@ -601,7 +601,7 @@ export class GameAnalysisComponent implements OnInit {
 			.enter().append("path")
 			.attr("class", "event")
 			.attr("d", function (group: GenericObject): string {
-				if(group.events.length == 1) {
+				if (group.events.length == 1) {
 					let event: any = group.events[0];
 					return eventShapePaths[event.type];
 				}
@@ -612,82 +612,82 @@ export class GameAnalysisComponent implements OnInit {
 			.attr("fill", function (d: GenericObject): string {
 				let teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum();
 				let colorIndex: number = +d.level;
-				if(view == View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
+				if (view == View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
 				// check if the event is in current unfinished level
-				return ((teamStruct["currentState"] == "level"+d.level) ? currentLevelColor : getColor(colorIndex.toString()));
+				return ((teamStruct["currentState"] == "level" + d.level) ? currentLevelColor : getColor(colorIndex.toString()));
 			})
 			.attr("stroke", function (d: GenericObject): string {
 				let teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum();
 				let colorIndex: number = +d.level;
-				if(view == View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
+				if (view == View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
 				// check if the event is in current unfinished level
-				return ((teamStruct["currentState"] == "level"+d.level) ? getColor(colorIndex.toString()) : getLightenedColor(colorIndex.toString()));
+				return ((teamStruct["currentState"] == "level" + d.level) ? getColor(colorIndex.toString()) : getLightenedColor(colorIndex.toString()));
 			})
-			.attr("transform", function (group: GenericObject, i:number): string {
+			.attr("transform", function (group: GenericObject, i: number): string {
 				// event absolute time from game start
 				let iconWidth: number = (group.events.length > 1) ? groupCircleWidth : eventIconWidth;
-				let	teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum(),
-					y = (yScale(teamStruct.team) + yScale.bandwidth()*0.5-(iconWidth/2));
-				let levelEnd: number = teamStruct['level'+group.level];
-				let x = group.x-(iconWidth/2);
+				let teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum(),
+					y = (yScale(teamStruct.team) + yScale.bandwidth() * 0.5 - (iconWidth / 2));
+				let levelEnd: number = teamStruct['level' + group.level];
+				let x = group.x - (iconWidth / 2);
 				return "translate(" + x + "," + y + ")";
 			})
-			.on("mouseover", function(d: any, i: number) {
+			.on("mouseover", function (d: any, i: number) {
 				tooltip.transition()
 					.duration(200)
 					.style("opacity", 0.9);
-				let	teamNode = d3.select(this.parentNode),
+				let teamNode = d3.select(this.parentNode),
 					teamStruct: DataEntry = <DataEntry>teamNode.datum(),
-					y = (yScale(teamStruct.team) + yScale.bandwidth()*0.5+3);
-				let teamOffset: number =  0,
+					y = (yScale(teamStruct.team) + yScale.bandwidth() * 0.5 + 3);
+				let teamOffset: number = 0,
 					teamIndex: string = teamNode.attr("data-index");
-				if(typeof gamedata.teams[teamIndex].offsets !== "undefined" && typeof gamedata.teams[teamIndex].offsets[sortLevel] !== "undefined") {
+				if (typeof gamedata.teams[teamIndex].offsets !== "undefined" && typeof gamedata.teams[teamIndex].offsets[sortLevel] !== "undefined") {
 					teamOffset = gamedata.teams[teamIndex].offsets[sortLevel];
 				}
-				let x = d.x+2+getPanValue()+xScale(teamOffset);
+				let x = d.x + 2 + getPanValue() + xScale(teamOffset);
 				tooltip.html(function (): string {
-						let text: string = "";
-						d.events.forEach(function(event, index) {
-							let item = [];
-							item.push(
-								'<span class="ctf-progress-tooltip-item">',
-								'<svg width="14" height="14" viewbox="0 0 16 16">',
-								'<path d="'+eventShapePaths[event.type]+'"/>',
-								'</svg>',
-								event.name,
-								'</span>'
-							);
-							text += item.join("");
-						});
-						return text;
-					})
+					let text: string = "";
+					d.events.forEach(function (event, index) {
+						let item = [];
+						item.push(
+							'<span class="ctf-progress-tooltip-item">',
+							'<svg width="14" height="14" viewbox="0 0 16 16">',
+							'<path d="' + eventShapePaths[event.type] + '"/>',
+							'</svg>',
+							event.name,
+							'</span>'
+						);
+						text += item.join("");
+					});
+					return text;
+				})
 					.style("left", x + "px")
 					.style("top", y + "px");
 			})
-			.on("mouseout", function(d: any) {
+			.on("mouseout", function (d: any) {
 				tooltip.transition()
-				.duration(500)
-				.style("opacity", 0);
+					.duration(500)
+					.style("opacity", 0);
 			});
 
 		let eventsGroupsText: any = eventLayers.selectAll("text.event-number")
 			.data(function (d: GenericObject): Event[] { return d.eventsGroups; })
 			.enter().append("text")
-			.filter(function(group) { return group.events.length > 1; })
+			.filter(function (group) { return group.events.length > 1; })
 			.attr("class", "event-number")
-			.attr("y", function (d: GenericObject, i:number): string {
-				let	teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum(),
-					y = (yScale(teamStruct.team) + yScale.bandwidth()*0.5)+groupCircleWidth/5;
+			.attr("y", function (d: GenericObject, i: number): string {
+				let teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum(),
+					y = (yScale(teamStruct.team) + yScale.bandwidth() * 0.5) + groupCircleWidth / 5;
 				return y.toString();
 			})
-			.attr("x", function (group: GenericObject, i:number): string {
+			.attr("x", function (group: GenericObject, i: number): string {
 				let x = group.x;
 				return x.toString();
 			})
 			.attr("fill", "#fff")
 			.attr("font-size", "12px")
 			.attr("text-anchor", "middle")
-			.text(function(group): string {
+			.text(function (group): string {
 				return group.events.length.toString();
 			});
 
@@ -695,26 +695,26 @@ export class GameAnalysisComponent implements OnInit {
 		this.bounds.raise();
 
 		// append time axis
-		if(this.view == View.progress) {
+		if (this.view == View.progress) {
 			this.timeline = this.gameChart.append("line")
 				.attr("class", "timeline")
-				.attr("x1", this.xScale(this.time)-2)
+				.attr("x1", this.xScale(this.time) - 2)
 				.attr("y1", 0)
-				.attr("x2", this.xScale(this.time)-2)
+				.attr("x2", this.xScale(this.time) - 2)
 				.attr("y2", this.height)
 				.attr("stroke-width", 3);
 		}
 
 		// add labels to header above the bounds, for sorting by level time
-		if(this.view == View.overview && gamedata["teams"].length) {
+		if (this.view == View.overview && gamedata["teams"].length) {
 			gamedata["keys"].forEach(function (levelKey: string, index: number): void {
 				//let levelTime: number = this.levelTimePlan;
-				let levelsTimePlanSum = this.levelsTimePlan.slice(0, index+1).reduce(function(a, b) { return a + b; }, 0);
+				let levelsTimePlanSum = this.levelsTimePlan.slice(0, index + 1).reduce(function (a, b) { return a + b; }, 0);
 				let x: number = this.xScale(levelsTimePlanSum);
 
 				let sortLevelName: string;
-				sortLevelName = (this.wrapperWidth > 530) ? "Level "+(index+1) : "L"+(index+1);
-				this.levelSortOptions.push({ index: (index+1), key: levelKey, name: sortLevelName, x: x+"px", translate: "translate(calc(-50% + 15px), 0)" });
+				sortLevelName = (this.wrapperWidth > 530) ? "Level " + (index + 1) : "L" + (index + 1);
+				this.levelSortOptions.push({ index: (index + 1), key: levelKey, name: sortLevelName, x: x + "px", translate: "translate(calc(-50% + 15px), 0)" });
 			}.bind(this));
 		}
 	}
@@ -736,7 +736,7 @@ export class GameAnalysisComponent implements OnInit {
 			.attr("opacity", function (d: GenericObject, i: number): number {
 				let level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
 					levelIndex: number = level.index,
-					levelKey: string = (view == View.overview) ? "level" + (levelIndex+1) : "level" + levelIndex,
+					levelKey: string = (view == View.overview) ? "level" + (levelIndex + 1) : "level" + levelIndex,
 					teamIndex: number = i,
 					data: NumericObject = layers[levelIndex][teamIndex]["data"],
 					currentState: string = data["currentState"];
@@ -746,7 +746,7 @@ export class GameAnalysisComponent implements OnInit {
 				}
 				else {
 					return 0;
-				}	
+				}
 			})
 			.attr("x", function (d: any, i: number): number {
 				let level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
@@ -757,9 +757,9 @@ export class GameAnalysisComponent implements OnInit {
 					x: number = d[0];
 
 				if (isCurrentLevel) {
-					offset[teamIndex] = currentData[0] - d[0];	
+					offset[teamIndex] = currentData[0] - d[0];
 				}
-				
+
 				if (offset[teamIndex] != undefined) {
 					let xShifted = x + offset[teamIndex];
 					// if next level should start in past, must be shifted to present (as same as all next level)
@@ -769,22 +769,22 @@ export class GameAnalysisComponent implements OnInit {
 					}
 					x = xShifted;
 				}
-				return xScale(Math.max(1,x));
+				return xScale(Math.max(1, x));
 			})
 			.attr("width", function (d: GenericObject): number {
 				// rescale to new x domain
 				return this.xScale(d[1]) - this.xScale(d[0]);
 			}.bind(this))
-			.style("transform", function (d: GenericObject, i:number): string {
-				let teamOffset: number =  0;
-				if(typeof gamedata.teams[i].offsets !== "undefined" && typeof gamedata.teams[i].offsets[this.sortLevel] !== "undefined") {
+			.style("transform", function (d: GenericObject, i: number): string {
+				let teamOffset: number = 0;
+				if (typeof gamedata.teams[i].offsets !== "undefined" && typeof gamedata.teams[i].offsets[this.sortLevel] !== "undefined") {
 					teamOffset = gamedata.teams[i].offsets[this.sortLevel];
 				}
-				return "translateX(" + xScale(teamOffset) +"px)";
+				return "translateX(" + xScale(teamOffset) + "px)";
 			}.bind(this));
 
 		// rescale bounds (xScale could change)
-		if(this.view == View.overview) {
+		if (this.view == View.overview) {
 			this.boundSegments
 				.attr("x", function (d: GenericObject): string { return this.xScale(d[1]); }.bind(this));
 		}
@@ -798,7 +798,7 @@ export class GameAnalysisComponent implements OnInit {
 		d3.select("#" + dataColumns["team"]).html("");
 
 		let teamData: any = d3.select("#" + dataColumns["team"]).append("svg")
-				.attr("height", this.wrapperHeight);
+			.attr("height", this.wrapperHeight);
 		let teamDataLayer: any = teamData.append("g")
 			.attr("class", "data");
 
@@ -806,13 +806,13 @@ export class GameAnalysisComponent implements OnInit {
 			.data(gamedata.teams)
 			.enter().append("text")
 			.text(function (d: GenericObject): string { return d.team; }.bind(this))
-			.attr("y", function (d: GenericObject): string { return this.yScale(d.team)+this.yScale.bandwidth()*0.6 + this.padding.top; }.bind(this))
+			.attr("y", function (d: GenericObject): string { return this.yScale(d.team) + this.yScale.bandwidth() * 0.6 + this.padding.top; }.bind(this))
 			.attr("x", 130)
 			.style("text-anchor", "end");
 
 
 		let timeData: any = d3.select("#" + dataColumns["time"]).append("svg")
-				.attr("height", this.wrapperHeight);
+			.attr("height", this.wrapperHeight);
 		let timeDataLayer: any = timeData.append("g")
 			.attr("class", "data");
 
@@ -820,7 +820,7 @@ export class GameAnalysisComponent implements OnInit {
 			.data(gamedata.teams)
 			.enter().append("text")
 			.text(function (d: GenericObject): string { return !isNaN(d.totalTime) ? this.getTimeString(d.totalTime) : "" }.bind(this))
-			.attr("y", function (d: GenericObject): string { return this.yScale(d.team)+this.yScale.bandwidth()*0.6 + this.padding.top; }.bind(this))
+			.attr("y", function (d: GenericObject): string { return this.yScale(d.team) + this.yScale.bandwidth() * 0.6 + this.padding.top; }.bind(this))
 			.attr("x", 0);
 	}
 
@@ -829,14 +829,14 @@ export class GameAnalysisComponent implements OnInit {
 			return;
 		}
 
-		if(typeof left == "undefined") left = 0;
+		if (typeof left == "undefined") left = 0;
 		let pan: number = this.panValue + left;
-		pan = Math.max(-(this.width-this.wrapperWidth), pan);
+		pan = Math.max(-(this.width - this.wrapperWidth), pan);
 		pan = Math.min(0, pan);
-		this.gameChart.style("transform", "translate("+pan+"px, 0)");
-		
-		this.levelSortOptions.forEach(function(level) {
-			level.translate = "translate(calc(-50% + "+(pan+15)+"px), 0)";
+		this.gameChart.style("transform", "translate(" + pan + "px, 0)");
+
+		this.levelSortOptions.forEach(function (level) {
+			level.translate = "translate(calc(-50% + " + (pan + 15) + "px), 0)";
 		});
 	}
 
@@ -870,7 +870,7 @@ export class GameAnalysisComponent implements OnInit {
 
 	onViewValueChange(): void {
 		clearInterval(this.loadTimer);
-		switch(this.selectedViewValue) {	
+		switch (this.selectedViewValue) {
 			case 1:
 				this.switchToProgressView();
 				break;
@@ -885,37 +885,37 @@ export class GameAnalysisComponent implements OnInit {
 	}
 
 	onMouseWheelUp($event: any) {
-		if(this.zoomValue < this.config.maxZoomValue) {
-			let newZoomValue = Math.min(this.config.maxZoomValue, this.zoomValue+this.config.zoomStep),
+		if (this.zoomValue < this.config.maxZoomValue) {
+			let newZoomValue = Math.min(this.config.maxZoomValue, this.zoomValue + this.config.zoomStep),
 				scale = newZoomValue / this.zoomValue,
-				dx = (-$event.left+this.panValue) * scale + $event.left - this.panValue;
+				dx = (-$event.left + this.panValue) * scale + $event.left - this.panValue;
 
 			this.zoomValue = newZoomValue;
 			this.drawChart();
 
 			//because of team highlighting animation, add class which cancels the animation after zoom
 			this.outerWrapper.classed("ctf-progress-zoom", true);
-			setTimeout(function() {
+			setTimeout(function () {
 				this.outerWrapper.classed("ctf-progress-zoom", false);
 			}.bind(this), 150);
-			
+
 			this.pan(dx);
 			this.updatePanValue();
 		}
 	}
 
 	onMouseWheelDown($event: any) {
-		if(this.zoomValue > 1) {
-			let newZoomValue = Math.max(1, this.zoomValue-this.config.zoomStep),
+		if (this.zoomValue > 1) {
+			let newZoomValue = Math.max(1, this.zoomValue - this.config.zoomStep),
 				scale = newZoomValue / this.zoomValue,
-				dx = (-$event.left+this.panValue) * scale + $event.left - this.panValue;
+				dx = (-$event.left + this.panValue) * scale + $event.left - this.panValue;
 
 			this.zoomValue = newZoomValue;
 			this.drawChart();
 
 			//because of team highlighting animation, add class which cancels the animation after zoom
 			this.outerWrapper.classed("ctf-progress-zoom", true);
-			setTimeout(function() {
+			setTimeout(function () {
 				this.outerWrapper.classed("ctf-progress-zoom", false);
 			}.bind(this), 150);
 
@@ -939,7 +939,7 @@ export class GameAnalysisComponent implements OnInit {
 	onSortValueChange(sortType: string, sortReverse: boolean, levelIndex?: number): void {
 		this.sortType = sortType;
 		this.sortReverse = sortReverse;
-		if(typeof levelIndex !== "undefined") {
+		if (typeof levelIndex !== "undefined") {
 			this.sortLevel = levelIndex;
 		}
 		else {
@@ -1010,10 +1010,10 @@ export class GameAnalysisComponent implements OnInit {
 		}
 
 		let transform: string = this.gameChart.style("transform"),
-			translate: string[] = transform.substring(transform.indexOf("translate(")+10, transform.indexOf(")")).split(","),
+			translate: string[] = transform.substring(transform.indexOf("translate(") + 10, transform.indexOf(")")).split(","),
 			xStr: string = translate[0],
-			x: number = parseInt(xStr.substr(0, xStr.length-2));
-		if(!x) x = 0;
+			x: number = parseInt(xStr.substr(0, xStr.length - 2));
+		if (!x) x = 0;
 		this.panValue = x;
 	}
 
@@ -1036,29 +1036,29 @@ export class GameAnalysisComponent implements OnInit {
 	}
 
 	getColor(level: number): string {
-		if(this.view == View.progress) {
-			if(level == 0) return "transparent";
+		if (this.view == View.progress) {
+			if (level == 0) return "transparent";
 			else level -= 1;
 		}
 		let colorsCount: number = this.config.gameColors.length;
-		return this.config.gameColors[level%colorsCount];
+		return this.config.gameColors[level % colorsCount];
 	}
 
 	getPlanColor(level: number): string {
-		if(this.view == View.progress) {
-			if(level == 0) return "transparent";
+		if (this.view == View.progress) {
+			if (level == 0) return "transparent";
 			else level -= 1;
 		}
 		let colorsCount: number = this.config.planColors.length;
-		return this.config.planColors[level%colorsCount];
+		return this.config.planColors[level % colorsCount];
 	}
 
 	getLightenedColor(level: number): string {
-		if(this.view == View.progress) {
-			if(level == 0) return "transparent";
+		if (this.view == View.progress) {
+			if (level == 0) return "transparent";
 			else level -= 1;
 		}
 		let colorsCount: number = this.config.lightenedColors.length;
-		return this.config.lightenedColors[level%colorsCount];
+		return this.config.lightenedColors[level % colorsCount];
 	}
 }
