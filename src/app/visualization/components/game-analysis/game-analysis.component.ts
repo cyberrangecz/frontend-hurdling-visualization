@@ -24,6 +24,7 @@ import { NumericObject } from '../../models/numeric-object.type';
 
 import { environment } from '../../../../environments/environment';
 import { SortingService } from '../../services/sorting.service';
+import { FilteringService } from '../../services/filtering.service';
 
 @Component({
 	selector: 'app-game-analysis',
@@ -100,7 +101,7 @@ export class GameAnalysisComponent implements OnInit {
 
 	@ViewChild('csvInput') csvInput: any;
 
-	constructor(config: AppConfig, d3Service: D3Service, loadDataService: LoadDataService, loadCsvDataService: LoadCsvDataService, private sortingService: SortingService) {
+	constructor(config: AppConfig, d3Service: D3Service, loadDataService: LoadDataService, loadCsvDataService: LoadCsvDataService, private sortingService: SortingService, private filteringService: FilteringService) {
 		this.config = config;
 		this.d3 = d3Service.getD3();
 		this.loadDataService = loadDataService;
@@ -131,41 +132,12 @@ export class GameAnalysisComponent implements OnInit {
 		let sortedGamedataset: GenericObject[],
 			sortedPlandataset: GenericObject[];
 		
-		const filteredGamedataset = this.filter();
+		const filteredGamedataset = this.filteringService.filter(this.gamedataset, this.selectedFilterValue);
 		sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
 		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
 
 		this.applyData(sortedGamedataset, sortedPlandataset);
 		this.pan();
-	}
-
-	filter(): GenericObject[] {
-		let filteredGamedataset: GenericObject[];
-
-		switch(this.selectedFilterValue) {
-			case 1:
-				filteredGamedataset = this.gamedataset;
-				break; 
-			case 2:
-				filteredGamedataset = this.filterByFinished(true);
-				break;
-			case 3:
-				filteredGamedataset = this.filterByFinished(false);
-				break;
-		}
-
-		return filteredGamedataset;
-	}
-
-	filterByFinished(byFinished: boolean): GenericObject[] {
-		let filtered: GenericObject[] = [];
-		if(typeof this.gamedataset !== "undefined") {
-			filtered =  this.gamedataset.filter(function(d: GenericObject): boolean {
-				return (d.currentState == "finished") == byFinished;
-			});
-		}
-
-		return filtered;
 	}
 
 	updatePlandataset(gamedataset: GenericObject[]): GenericObject[] {

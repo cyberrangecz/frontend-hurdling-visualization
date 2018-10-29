@@ -15,6 +15,7 @@ import { MouseWheelDirective } from './visualization/directives/mousewheel.direc
 import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 import { SortingService } from './visualization/services/sorting.service';
+import { FilteringService } from './visualization/services/filtering.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { SortingService } from './visualization/services/sorting.service';
     LoadDataService,
     LoadCsvDataService,
     { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
-    SortingService
+    SortingService,
+    FilteringService
   ],
   bootstrap: [AppComponent]
 })
