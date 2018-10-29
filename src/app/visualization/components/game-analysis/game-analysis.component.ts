@@ -159,11 +159,11 @@ export class GameAnalysisComponent implements OnInit {
 	getPreparedData(): PreparedData {
 		const filteredGamedataset = this.filteringService.filter(this.gamedataset, this.selectedFilterValue);
 		const sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
-		const sortedPlandataset = this.updatePlandataset(sortedGamedataset);
+		const sortedPlandataset = this.getUpdatedPlandataset(sortedGamedataset);
 		return {gameDataset: sortedGamedataset, planDataset: sortedPlandataset};
 	}
 
-	updatePlandataset(gamedataset: GenericObject[]): GenericObject[] {
+	getUpdatedPlandataset(gamedataset: GenericObject[]): GenericObject[] {
 		// create new plan by sorted/filtered teams in gamedataset
 		const newPlandataset: GenericObject[] = [],
 			levels = this.levels,
