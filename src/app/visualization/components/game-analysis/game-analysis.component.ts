@@ -130,7 +130,8 @@ export class GameAnalysisComponent implements OnInit {
 		let sortedGamedataset: GenericObject[],
 			sortedPlandataset: GenericObject[];
 		
-		sortedGamedataset = this.sort(this.filter());
+		const filteredGamedataset = this.filter();
+		sortedGamedataset = this.sort(filteredGamedataset);
 		sortedPlandataset = this.updatePlandataset(sortedGamedataset);
 
 		this.applyData(sortedGamedataset, sortedPlandataset);
