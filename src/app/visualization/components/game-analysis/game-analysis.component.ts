@@ -54,13 +54,13 @@ export class GameAnalysisComponent implements OnInit {
 	private xAxis: Axis<number | {
 		valueOf(): number
 	}>;
-	private yAxis: Axis<string>;
 	private chart: any;
 	private plan: any;
 	private gameChartWrapper: any;
 	private gameChart: any;
 	private outerWrapper: any;
 	private planDomain: number;
+	private yDomain;
 	private gameDomain: number;
 	private planSegments: any;
 	private boundSegments: any;
@@ -277,46 +277,50 @@ export class GameAnalysisComponent implements OnInit {
 			maxHeight: number = Math.min(wrapperWidth * 0.7, window.innerHeight - 130, baseConfig.maxBarHeight * plandata.teams.length),
 			minHeight: number = baseConfig.minBarHeight * plandata.teams.length + 80;
 		this.wrapperHeight = Math.max(maxHeight, minHeight);
-		this.chart = d3.select('#' + element).append('svg').attr('class', 'ctf-progress-chart');
-		this.chart.attr('height', this.wrapperHeight);
-
 		this.wrapperWidth = document.getElementById(element).getBoundingClientRect().width;
-		this.chart.attr('width', this.wrapperWidth)
-			.attr('transform', 'translate(0, ' + padding.top + ')');
-		const width: number = (this.wrapperWidth * this.zoomValue),
-			height: number = this.wrapperHeight - padding.top - padding.bottom;
 
-		this.width = width;
-		this.height = height;
+		this.chart = d3.select('#' + element)
+			.append('svg')
+			.attr('class', 'ctf-progress-chart')
+			.attr('height', this.wrapperHeight)
+			.attr('width', this.wrapperWidth)
+			.attr('transform', 'translate(0, ' + padding.top + ')');
+
+		this.width = this.wrapperWidth * this.zoomValue;
+		this.height = this.wrapperHeight - padding.top - padding.bottom;
 
 		this.planDomain = Math.max(estimatedTime, d3.max(layers[layers.length - 1], function (d: number[]): number {
 			return d[1];
 		}));
 
+		this.yDomain = plandata.teams.map(function (d: GenericObject): string {
+			return d.team;
+		});
+
+		this.initializeScales();
+		this.createAxis(estimatedTime);
+
+	}
+
+	initializeScales() {
 		// init x and y scales
 		let yScalePadding: number;
 		if (this.wrapperHeight > 550) yScalePadding = 0.02;
 		else yScalePadding = 0.05;
 
-		this.xScale = d3.scaleLinear().rangeRound([0, width]);
-		this.yScale = d3.scaleBand().rangeRound([height, 0]).padding(yScalePadding);
-
-		// create axis
-		this.xAxis = d3.axisBottom(this.xScale)
-			.tickFormat(function (d: any) {
-				return this.getXAxisTickFormat(d);
-			}.bind(this))
-			.tickSize(5)
-			.tickValues(d3.range(0, estimatedTime, this.getXAxisTickInterval()));
-		this.yAxis = d3.axisLeft(this.yScale);
-
-		this.yScale.domain(plandata.teams.map(function (d: GenericObject): string {
-			return d.team;
-		}));
+		this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]);
 		this.xScale.domain([0, this.planDomain]);
-		this.yScale.domain(plandata.teams.map(function (d: GenericObject): string {
-			return d.team;
-		}));
+		this.yScale = this.d3.scaleBand().rangeRound([this.height, 0]).padding(yScalePadding);
+		this.yScale.domain(this.yDomain);
+	}
+
+	createAxis(estimatedTime) {
+		this.xAxis = this.d3.axisBottom(this.xScale)
+		.tickFormat(function (d: any) {
+			return this.getXAxisTickFormat(d);
+		}.bind(this))
+		.tickSize(5)
+		.tickValues(this.d3.range(0, estimatedTime, this.getXAxisTickInterval()));
 
 		this.gameChartWrapper = this.chart.append('g')
 			.attr('class', 'ctf-game-wrapper');
@@ -328,6 +332,10 @@ export class GameAnalysisComponent implements OnInit {
 			.attr('class', 'axis axis-x')
 			.attr('transform', 'translate(0,' + (this.height + 10) + ')')
 			.call(this.xAxis);
+	}
+
+	getXAxisTickFormat(data: any): string {
+		return (this.wrapperWidth > 650) ? this.getTimeString(data) : this.getTimeString(data).substring(0, 5);
 	}
 
 	getXAxisTickInterval(): number {
@@ -1110,10 +1118,6 @@ export class GameAnalysisComponent implements OnInit {
 		this.d3.select('#ctf-progress-chart').html('');
 		this.d3.selectAll('.ctf-progress-column-data').html('');
 		this.hasData = false;
-	}
-
-	getXAxisTickFormat(data: any): string {
-		return (this.wrapperWidth > 650) ? this.getTimeString(data) : this.getTimeString(data).substring(0, 5);
 	}
 
 	getTimeString(seconds: number): string {
