@@ -156,7 +156,8 @@ export class GameAnalysisComponent implements OnInit {
 
 	getPreparedData(): PreparedData {
 		const filteredGamedataset = this.filteringService.filter(this.gamedataset, this.selectedFilterValue);
-		const sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType, this.sortLevel);
+		const sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType,
+			this.sortLevel, this.view, this.levels);
 		const sortedPlandataset = this.getUpdatedPlandataset(sortedGamedataset);
 		return {gameDataset: sortedGamedataset, planDataset: sortedPlandataset};
 	}
@@ -273,11 +274,10 @@ export class GameAnalysisComponent implements OnInit {
 		this.outerWrapper = d3.select('.' + baseConfig.outerWrapperElement);
 		// create svg
 		// calculate the height first, width can change when the scrollbar is added
-		const wrapperWidth = document.getElementById(element).getBoundingClientRect().width,
-			maxHeight: number = Math.min(wrapperWidth * 0.7, window.innerHeight - 130, baseConfig.maxBarHeight * plandata.teams.length),
-			minHeight: number = baseConfig.minBarHeight * plandata.teams.length + 80;
-		this.wrapperHeight = Math.max(maxHeight, minHeight);
 		this.wrapperWidth = document.getElementById(element).getBoundingClientRect().width;
+		const maxHeight: number = Math.min(this.wrapperWidth * 0.7, window.innerHeight - 130, baseConfig.maxBarHeight * plandata.teams.length);
+		const minHeight: number = baseConfig.minBarHeight * plandata.teams.length + 80;
+		this.wrapperHeight = Math.max(maxHeight, minHeight);
 
 		this.chart = d3.select('#' + element)
 			.append('svg')
