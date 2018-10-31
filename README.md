@@ -1,28 +1,16 @@
-# D3Visualization
+# KYPO Trainings Hurdling Visualization
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.2.
+## Authors
+- [Diploma thesis](https://is.muni.cz/auth/th/ks5tu/) by Andrea Navratilova
 
-## Development server
+## How to deploy on surge.sh
+### Prerequisites
+- recent version of [Node.js](nodejs.org) and npm. (I'd recommend using [https://github.com/creationix/nvm](nvm) to prevent conflicts with different versions of various projects)
+- recent version of [Angular CLI](https://cli.angular.io/): `npm install -g @angular/cli`
+- surge: `npm install -g surge`
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Steps
+1. Clone this repository `git clone git@gitlab.ics.muni.cz:kypo2/frontend-new/kypo2-trainings-hurdling-visualization.git`
+2. Build the app in app's folder `ng build --prod`
+3. Change directory to dist files `cd dist`.
+4. Run `surge` and follow CLI instructions.
