@@ -135,16 +135,16 @@ export class GameAnalysisComponent implements OnInit {
 	loadData() {
 		this.errorMessage = null;
 		this.loadDataService.getGameAndPlanData(this.config.apiUrl, this.config.gameId, this.config.levelsTimePlan)
-		.subscribe((data: Data) => {
-			this.gamedataset = data.gameDataset;
-			this.plandataset = data.planDataset;
-			this.levels = data.levels;
-			this.levelsTimePlan = data.levelsTimePlan;
-			this.time = data.time;
-			this.drawChart();
-		}, (error: string) => {
-			this.errorMessage = error;
-		});
+			.subscribe((data: Data) => {
+				this.gamedataset = data.gameDataset;
+				this.plandataset = data.planDataset;
+				this.levels = data.levels;
+				this.levelsTimePlan = data.levelsTimePlan;
+				this.time = data.time;
+				this.drawChart();
+			}, (error: string) => {
+				this.errorMessage = error;
+			});
 	}
 
 	drawChart(): void {
@@ -158,7 +158,7 @@ export class GameAnalysisComponent implements OnInit {
 		const sortedGamedataset = this.sortingService.sort(filteredGamedataset, this.sortReverse, this.sortType,
 			this.sortLevel, this.view, this.levels);
 		const sortedPlandataset = this.getUpdatedPlandataset(sortedGamedataset);
-		return {gameDataset: sortedGamedataset, planDataset: sortedPlandataset};
+		return { gameDataset: sortedGamedataset, planDataset: sortedPlandataset };
 	}
 
 	getUpdatedPlandataset(gamedataset: GenericObject[]): GenericObject[] {
@@ -315,11 +315,11 @@ export class GameAnalysisComponent implements OnInit {
 
 	createAxis(estimatedTime) {
 		this.xAxis = this.d3.axisBottom(this.xScale)
-		.tickFormat(function (d: any) {
-			return this.getXAxisTickFormat(d);
-		}.bind(this))
-		.tickSize(5)
-		.tickValues(this.d3.range(0, estimatedTime, this.getXAxisTickInterval()));
+			.tickFormat(function (d: any) {
+				return this.getXAxisTickFormat(d);
+			}.bind(this))
+			.tickSize(5)
+			.tickValues(this.d3.range(0, estimatedTime, this.getXAxisTickInterval()));
 
 		this.gameChartWrapper = this.chart.append('g')
 			.attr('class', 'ctf-game-wrapper');
@@ -396,20 +396,20 @@ export class GameAnalysisComponent implements OnInit {
 	createPlanSegments(planLayers) {
 		// draw segment (row in column) for each team
 		this.planSegments = planLayers.selectAll('.plan-segment')
-		.data(function (d: GenericObject): GenericObject {
-			return d;
-		})
-		.enter().append('rect')
-		.attr('y', function (d: GenericObject): string {
-			return this.yScale(String(d.data.team));
-		}.bind(this))
-		.attr('x', function (d: GenericObject): string {
-			return this.xScale(d[0]);
-		}.bind(this))
-		.attr('height', this.yScale.bandwidth())
-		.attr('width', function (d: GenericObject): number {
-			return this.xScale(d[1]) - this.xScale(d[0]);
-		}.bind(this));
+			.data(function (d: GenericObject): GenericObject {
+				return d;
+			})
+			.enter().append('rect')
+			.attr('y', function (d: GenericObject): string {
+				return this.yScale(String(d.data.team));
+			}.bind(this))
+			.attr('x', function (d: GenericObject): string {
+				return this.xScale(d[0]);
+			}.bind(this))
+			.attr('height', this.yScale.bandwidth())
+			.attr('width', function (d: GenericObject): number {
+				return this.xScale(d[1]) - this.xScale(d[0]);
+			}.bind(this));
 	}
 
 	createBoundingLines(layers) {
@@ -460,8 +460,6 @@ export class GameAnalysisComponent implements OnInit {
 				return this.panValue;
 			};
 
-		const eventIconWidth = 17,
-			groupCircleWidth = 18;
 
 		this.time = gameConfig.time;
 
@@ -473,349 +471,38 @@ export class GameAnalysisComponent implements OnInit {
 			this.xScale.domain([0, Math.max(this.planDomain, this.gameDomain)]);
 		}
 
-		// update x axis
-		this.xAxis = d3.axisBottom(this.xScale)
-			.tickFormat(function (d: any) {
-				return this.getXAxisTickFormat(d);
-			}.bind(this))
-			.tickSize(5)
-			.tickValues(d3.range(0, this.time, this.getXAxisTickInterval()));
-		d3.select('.axis.axis-x')
-			.call(this.xAxis);
-
-		// create column for each level
-		const game = this.gameChart.append('g')
-			.attr('class', 'game');
-		const layer = game.selectAll('.game-layer')
-			.data(layers)
-			.enter().append('g')
-			.attr('class', 'game-layer')
-			.attr('fill', function (d: GenericObject, i: string): string {
-				return getColor(i);
-			});
+		this.updateXAxis();
+		const layer = this.createColumnForEachLevel(layers);
 
 		// draw segment (row in column) for each team
-		const xScale: ScaleLinear<number, number> = this.xScale;
-		const yScale: ScaleBand<string> = this.yScale;
-		const time: number = this.time;
-		layer.selectAll('rect.game-segment')
-			.data(function (d: GenericObject): GenericObject {
-				return d;
-			})
-			.enter().append('rect')
-			.attr('y', function (d: GenericObject): string {
-				return this.yScale(d.data.team);
-			}.bind(this))
-			.attr('x', function (d: GenericObject, i: number): string {
-				const x: number = d[0];
-				// when sorting by level, align the teams by this level
-				if (this.view === View.overview && this.sortType === 'level') {
-					if (typeof gamedata.teams[i].offsets === 'undefined') {
-						gamedata.teams[i].offsets = [];
-					}
-					if (typeof gamedata.teams[i].offsets[this.sortLevel] === 'undefined') {
-						if (typeof this.sortLevel === 'undefined') {
-							gamedata.teams[i].offsets[this.sortLevel] = 0;
-						} else {
-							const levelsTimePlanSum = this.levelsTimePlan.slice(0, this.sortLevel - 1).reduce(function (a, b) {
-								return a + b;
-							}, 0);
-							const levelBound = levelsTimePlanSum,
-								teamLevelStart = layers[this.sortLevel - 1][i][0],
-								teamOffset = levelBound - teamLevelStart;
-							gamedata.teams[i].offsets[this.sortLevel] = teamOffset;
-						}
-					}
-					return (this.xScale(x) + this.xScale(gamedata.teams[i].offsets[this.sortLevel]));
-				} else {
-					return this.xScale(x);
-				}
-
-			}.bind(this))
-			.attr('height', this.yScale.bandwidth())
-			.attr('width', function (d: GenericObject, i: number) {
-				const level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
-					levelIndex: number = level.index,
-					levelKey: string = (view === View.overview) ? 'level' + (levelIndex + 1) : 'level' + levelIndex,
-					teamIndex: number = i,
-					data: NumericObject = layers[levelIndex][teamIndex]['data'],
-					currentLevelData: number = layers[levelIndex][teamIndex]['data'][levelKey],
-					currentState: string = data['currentState'];
-
-				if (typeof currentLevelData !== 'undefined') {
-					d3.select(this).attr('class', 'game-segment-finished')
-						.attr('opacity', '0.3');
-					return xScale(d[1]) - xScale(d[0]);
-				} else if (currentState === levelKey) {
-					if (view === View.overview) return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
-					else return xScale(time) - xScale(d[0]);
-				} else {
-					return 0;
-				}
-			})
-			.on('mouseover', function (d: GenericObject, teamIndex: number) {
-				// highlight team on hover
-				outerWrapper.classed('ctf-progress-hover', true);
-				d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', true);
-			})
-			.on('mouseout', function (d: GenericObject, teamIndex: number) {
-				// remove team highlighting
-				outerWrapper.classed('ctf-progress-hover', false);
-				d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', false);
-			});
+		this.createSegmentForEachTeam({layer: layer, gamedata: gamedata, layers: layers, view: view});
 
 		// update plan according to actual data
 		this.updatePlan(gamedata);
 
 		// tooltip for events
-		if (typeof this.tooltip !== 'undefined') this.tooltip.remove();
+		this.createEventTooltips();
 
-		const tooltip: any = d3.select('#ctf-progress-chart')
-			.append('div')
-			.attr('class', 'ctf-progress-tooltip')
-			.style('opacity', 0);
-		this.tooltip = tooltip;
+		const eventIconWidth = 17,
+		groupCircleWidth = 18;
 
 		// group events
-		const eventsDataset: GenericObject[] = gamedata.teams.slice(0);
-		eventsDataset.forEach(function (team) {
-			const eventsGroups: GenericObject[] = [];
-			if (Array.isArray(team.events) && team.events.length > 0) {
-				const first: any = team.events[0],
-					lastIndex: number = team.events.length - 1;
-				let previousEvent: any = null,
-					group: any = {
-						'events': [],
-						'level': first.level
-					},
-					previousOffset = false,
-					isDuplicated = false;
-				team.events.forEach(function (event, index) {
-					if (previousEvent != null) {
-						const levelX: number = xScale(team['level' + event.level]),
-							eventX: number = xScale(event.time),
-							currentEventX: number = ((levelX - eventX) < eventIconWidth / 2) ? eventX - eventIconWidth / 2 : eventX,
-							previousEventX: number = (previousOffset) ? xScale(previousEvent.time) + eventIconWidth / 2 : xScale(previousEvent.time),
-							diff: number = currentEventX - previousEventX;
-						isDuplicated = event.name === previousEvent.name && event.time === previousEvent.time && event.level === previousEvent.level;
+		this.groupEvents({gamedata: gamedata, eventIconWidth: eventIconWidth});
 
-						if ((diff > 7) || (event.level !== previousEvent.level)) {
-							const groupCopy: any = Object.assign({}, group);
-							eventsGroups.push(groupCopy);
-							group = {
-								'events': [],
-								'level': event.level
-							};
-						}
-					}
-
-					if (xScale(event.time) < eventIconWidth / 2) {
-						previousOffset = true;
-					} else {
-						previousOffset = false;
-					}
-
-					// don't push duplicated events
-					if (!isDuplicated) {
-						group.events.push(event);
-					}
-					previousEvent = event;
-
-					if (index === lastIndex) {
-						const groupCopy: any = Object.assign({}, group);
-						eventsGroups.push(groupCopy);
-					}
-				});
-			}
-
-			eventsGroups.forEach(function (group, index) {
-				const events = group.events,
-					groupLevelX: number = xScale(team['level' + group.level]),
-					firstGroupEvent: any = events[0],
-					lastGroupEvent: any = events[events.length - 1],
-					firstX: number = xScale(firstGroupEvent.time),
-					lastX: number = xScale(lastGroupEvent.time);
-				let x: number = firstX + ((lastX - firstX) / 2);
-				if (view === View.progress) x += xScale(team['start']);
-				if (x < eventIconWidth / 2) {
-					x += eventIconWidth / 2;
-				}
-				if ((typeof groupLevelX !== 'undefined') && (groupLevelX - x) < eventIconWidth / 2) {
-					x -= eventIconWidth / 2;
-				}
-				for (let l = 1; l < group.level; l++) {
-					if (typeof team['level' + l] !== 'undefined') {
-						x += xScale(team['level' + l]);
-					}
-				}
-				group['x'] = x;
-			});
-
-			team.eventsGroups = eventsGroups;
-		});
-
-		const eventsLayer: any = this.gameChart.append('g')
-			.attr('class', 'events');
-
-		const eventLayers: any = eventsLayer.selectAll('g.events-row')
-			.data(gamedata.teams)
-			.enter().append('g')
-			.attr('class', 'events-row')
-			.style('transform', function (d: GenericObject, i: number): string {
-				let teamOffset = 0;
-				if (typeof gamedata.teams[i].offsets !== 'undefined' && typeof gamedata.teams[i].offsets[this.sortLevel] !== 'undefined') {
-					teamOffset = gamedata.teams[i].offsets[this.sortLevel];
-				}
-				return 'translateX(' + xScale(teamOffset) + 'px)';
-			}.bind(this))
-			.attr('data-index', function (d: GenericObject, i: number): number {
-				return i;
-			})
-			.on('mouseover', function (d: any, teamIndex: number) {
-				// preserve teamhighlight
-				outerWrapper.classed('ctf-progress-hover', true);
-				d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', true);
-			})
-			.on('mouseout', function (d: any, teamIndex: number) {
-				outerWrapper.classed('ctf-progress-hover', false);
-				d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', false);
-			});
-
-		const eventsGroups: any = eventLayers.selectAll('path.event')
-			.data(function (d: GenericObject): Event[] {
-				return d.eventsGroups;
-			})
-			.enter().append('path')
-			.attr('class', 'event')
-			.attr('d', function (group: GenericObject): string {
-				if (group.events.length === 1) {
-					const event: any = group.events[0];
-					return eventShapePaths[event.type];
-				} else {
-					return eventShapePaths['group'];
-				}
-			})
-			.attr('fill', function (d: GenericObject): string {
-				const teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum();
-				let colorIndex: number = +d.level;
-				if (view === View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
-				// check if the event is in current unfinished level
-				return ((teamStruct['currentState'] === 'level' + d.level) ? currentLevelColor : getColor(colorIndex.toString()));
-			})
-			.attr('stroke', function (d: GenericObject): string {
-				const teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum();
-				let colorIndex: number = +d.level;
-				if (view === View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
-				// check if the event is in current unfinished level
-				return ((teamStruct['currentState'] === 'level' + d.level) ?
-					getColor(colorIndex.toString()) : getLightenedColor(colorIndex.toString()));
-			})
-			.attr('transform', function (group: GenericObject, i: number): string {
-				// event absolute time from game start
-				const iconWidth: number = (group.events.length > 1) ? groupCircleWidth : eventIconWidth;
-				const teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum(),
-					y = (yScale(teamStruct.team) + yScale.bandwidth() * 0.5 - (iconWidth / 2));
-				const levelEnd: number = teamStruct['level' + group.level];
-				const x = group.x - (iconWidth / 2);
-				return 'translate(' + x + ',' + y + ')';
-			})
-			.on('mouseover', function (d: any, i: number) {
-				tooltip.transition()
-					.duration(200)
-					.style('opacity', 0.9);
-				const teamNode = d3.select(this.parentNode),
-					teamStruct: DataEntry = <DataEntry>teamNode.datum(),
-					y = (yScale(teamStruct.team) + yScale.bandwidth() * 0.5 + 3);
-				let teamOffset = 0;
-				const teamIndex: string = teamNode.attr('data-index');
-				if (typeof gamedata.teams[teamIndex].offsets !== 'undefined' && typeof gamedata.teams[teamIndex].offsets[sortLevel] !== 'undefined') {
-					teamOffset = gamedata.teams[teamIndex].offsets[sortLevel];
-				}
-				const x = d.x + 2 + getPanValue() + xScale(teamOffset);
-				tooltip.html(function (): string {
-					let text = '';
-					d.events.forEach(function (event, index) {
-						const item = [];
-						item.push(
-							'<span class="ctf-progress-tooltip-item">',
-							'<svg width="14" height="14" viewbox="0 0 16 16">',
-							'<path d="' + eventShapePaths[event.type] + '"/>',
-							'</svg>',
-							event.name,
-							'</span>'
-						);
-						text += item.join('');
-					});
-					return text;
-				})
-					.style('left', x + 'px')
-					.style('top', y + 'px');
-			})
-			.on('mouseout', function (d: any) {
-				tooltip.transition()
-					.duration(500)
-					.style('opacity', 0);
-			});
-
-		const eventsGroupsText: any = eventLayers.selectAll('text.event-number')
-			.data(function (d: GenericObject): Event[] {
-				return d.eventsGroups;
-			})
-			.enter().append('text')
-			.filter(function (group) {
-				return group.events.length > 1;
-			})
-			.attr('class', 'event-number')
-			.attr('y', function (d: GenericObject, i: number): string {
-				const teamStruct: DataEntry = <DataEntry>d3.select(this.parentNode).datum(),
-					y = (yScale(teamStruct.team) + yScale.bandwidth() * 0.5) + groupCircleWidth / 5;
-				return y.toString();
-			})
-			.attr('x', function (group: GenericObject, i: number): string {
-				const x = group.x;
-				return x.toString();
-			})
-			.attr('fill', '#fff')
-			.attr('font-size', '12px')
-			.attr('text-anchor', 'middle')
-			.text(function (group): string {
-				return group.events.length.toString();
-			});
+		this.createEvents({gamedata: gamedata,
+			eventShapePaths: eventShapePaths,
+			currentLevelColor: currentLevelColor,
+			groupCircleWidth: groupCircleWidth,
+			eventIconWidth: eventIconWidth});
 
 		// pan bounds to top
 		this.bounds.raise();
 
 		// append time axis
-		if (this.view === View.progress) {
-			this.timeline = this.gameChart.append('line')
-				.attr('class', 'timeline')
-				.attr('x1', this.xScale(this.time) - 2)
-				.attr('y1', 0)
-				.attr('x2', this.xScale(this.time) - 2)
-				.attr('y2', this.height)
-				.attr('stroke-width', 3);
-		}
+		this.createTimeline();
 
 		// add labels to header above the bounds, for sorting by level time
-		if (this.view === View.overview && gamedata['teams'].length) {
-			gamedata['keys'].forEach(function (levelKey: string, index: number): void {
-				// let levelTime: number = this.levelTimePlan;
-				const levelsTimePlanSum = this.levelsTimePlan.slice(0, index + 1).reduce(function (a, b) {
-					return a + b;
-				}, 0);
-				const x: number = this.xScale(levelsTimePlanSum);
-
-				let sortLevelName: string;
-				sortLevelName = (this.wrapperWidth > 530) ? 'Level ' + (index + 1) : 'L' + (index + 1);
-				this.levelSortOptions.push({
-					index: (index + 1),
-					key: levelKey,
-					name: sortLevelName,
-					x: x + 'px',
-					translate: 'translate(calc(-50% + 15px), 0)'
-				});
-			}.bind(this));
-		}
+		this.createSortingLabels(gamedata);
 	}
 
 	updatePlan(gamedata: GameData): void {
@@ -887,6 +574,356 @@ export class GameAnalysisComponent implements OnInit {
 				.attr('x', function (d: GenericObject): string {
 					return this.xScale(d[1]);
 				}.bind(this));
+		}
+	}
+
+	updateXAxis() {
+		this.xAxis = this.d3.axisBottom(this.xScale)
+			.tickFormat(function (d: any) {
+				return this.getXAxisTickFormat(d);
+			}.bind(this))
+			.tickSize(5)
+			.tickValues(this.d3.range(0, this.time, this.getXAxisTickInterval()));
+		this.d3.select('.axis.axis-x')
+			.call(this.xAxis);
+	}
+
+	createColumnForEachLevel(layers) {
+		const game = this.gameChart.append('g')
+			.attr('class', 'game');
+		const layer = game.selectAll('.game-layer')
+			.data(layers)
+			.enter().append('g')
+			.attr('class', 'game-layer')
+			.attr('fill', (d: GenericObject, i: string): string => {
+				return this.getColor(+i);
+			});
+		return layer;
+	}
+
+	createSegmentForEachTeam({layer, gamedata, layers, view}) {
+		const xScale: ScaleLinear<number, number> = this.xScale;
+		const yScale: ScaleBand<string> = this.yScale;
+		const time: number = this.time;
+		layer.selectAll('rect.game-segment')
+			.data(function (d: GenericObject): GenericObject {
+				return d;
+			})
+			.enter().append('rect')
+			.attr('y', function (d: GenericObject): string {
+				return this.yScale(d.data.team);
+			}.bind(this))
+			.attr('x', function (d: GenericObject, i: number): string {
+				const x: number = d[0];
+				// when sorting by level, align the teams by this level
+				if (this.view === View.overview && this.sortType === 'level') {
+					if (typeof gamedata.teams[i].offsets === 'undefined') {
+						gamedata.teams[i].offsets = [];
+					}
+					if (typeof gamedata.teams[i].offsets[this.sortLevel] === 'undefined') {
+						if (typeof this.sortLevel === 'undefined') {
+							gamedata.teams[i].offsets[this.sortLevel] = 0;
+						} else {
+							const levelsTimePlanSum = this.levelsTimePlan.slice(0, this.sortLevel - 1).reduce(function (a, b) {
+								return a + b;
+							}, 0);
+							const levelBound = levelsTimePlanSum,
+								teamLevelStart = layers[this.sortLevel - 1][i][0],
+								teamOffset = levelBound - teamLevelStart;
+							gamedata.teams[i].offsets[this.sortLevel] = teamOffset;
+						}
+					}
+					return (this.xScale(x) + this.xScale(gamedata.teams[i].offsets[this.sortLevel]));
+				} else {
+					return this.xScale(x);
+				}
+
+			}.bind(this))
+			.attr('height', this.yScale.bandwidth())
+			.attr('width', (d: GenericObject, i: number, nodes) => {
+				const level: GenericObject = <GenericObject>this.d3.select(nodes[i].parentNode).datum(),
+					levelIndex: number = level.index,
+					levelKey: string = (view === View.overview) ? 'level' + (levelIndex + 1) : 'level' + levelIndex,
+					teamIndex: number = i,
+					data: NumericObject = layers[levelIndex][teamIndex]['data'],
+					currentLevelData: number = layers[levelIndex][teamIndex]['data'][levelKey],
+					currentState: string = data['currentState'];
+
+				if (typeof currentLevelData !== 'undefined') {
+					this.d3.select(nodes[i]).attr('class', 'game-segment-finished')
+						.attr('opacity', '0.3');
+					return xScale(d[1]) - xScale(d[0]);
+				} else if (currentState === levelKey) {
+					if (view === View.overview) return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
+					else return xScale(time) - xScale(d[0]);
+				} else {
+					return 0;
+				}
+			})
+			.on('mouseover', (d: GenericObject, teamIndex: number) => {
+				// highlight team on hover
+				this.outerWrapper.classed('ctf-progress-hover', true);
+				this.d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', true);
+			})
+			.on('mouseout', (d: GenericObject, teamIndex: number) => {
+				// remove team highlighting
+				this.outerWrapper.classed('ctf-progress-hover', false);
+				this.d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', false);
+			});
+	}
+
+	createEventTooltips() {
+		if (typeof this.tooltip !== 'undefined') this.tooltip.remove();
+
+		const tooltip: any = this.d3.select('#ctf-progress-chart')
+			.append('div')
+			.attr('class', 'ctf-progress-tooltip')
+			.style('opacity', 0);
+		this.tooltip = tooltip;
+	}
+
+	groupEvents({gamedata, eventIconWidth}) {
+		const eventsDataset: GenericObject[] = gamedata.teams.slice(0);
+		eventsDataset.forEach( (team) => {
+			const eventsGroups: GenericObject[] = [];
+			if (Array.isArray(team.events) && team.events.length > 0) {
+				const first: any = team.events[0],
+					lastIndex: number = team.events.length - 1;
+				let previousEvent: any = null,
+					group: any = {
+						'events': [],
+						'level': first.level
+					},
+					previousOffset = false,
+					isDuplicated = false;
+				team.events.forEach((event, index) => {
+					if (previousEvent != null) {
+						const levelX: number = this.xScale(team['level' + event.level]),
+							eventX: number = this.xScale(event.time),
+							currentEventX: number = ((levelX - eventX) < eventIconWidth / 2) ? eventX - eventIconWidth / 2 : eventX,
+							previousEventX: number = (previousOffset) ? this.xScale(previousEvent.time) + eventIconWidth / 2 : this.xScale(previousEvent.time),
+							diff: number = currentEventX - previousEventX;
+						isDuplicated = event.name === previousEvent.name && event.time === previousEvent.time && event.level === previousEvent.level;
+
+						if ((diff > 7) || (event.level !== previousEvent.level)) {
+							const groupCopy: any = Object.assign({}, group);
+							eventsGroups.push(groupCopy);
+							group = {
+								'events': [],
+								'level': event.level
+							};
+						}
+					}
+
+					if (this.xScale(event.time) < eventIconWidth / 2) {
+						previousOffset = true;
+					} else {
+						previousOffset = false;
+					}
+
+					// don't push duplicated events
+					if (!isDuplicated) {
+						group.events.push(event);
+					}
+					previousEvent = event;
+
+					if (index === lastIndex) {
+						const groupCopy: any = Object.assign({}, group);
+						eventsGroups.push(groupCopy);
+					}
+				});
+			}
+
+			eventsGroups.forEach( (group, index) => {
+				const events = group.events,
+					groupLevelX: number = this.xScale(team['level' + group.level]),
+					firstGroupEvent: any = events[0],
+					lastGroupEvent: any = events[events.length - 1],
+					firstX: number = this.xScale(firstGroupEvent.time),
+					lastX: number = this.xScale(lastGroupEvent.time);
+				let x: number = firstX + ((lastX - firstX) / 2);
+				if (this.view === View.progress) x += this.xScale(team['start']);
+				if (x < eventIconWidth / 2) {
+					x += eventIconWidth / 2;
+				}
+				if ((typeof groupLevelX !== 'undefined') && (groupLevelX - x) < eventIconWidth / 2) {
+					x -= eventIconWidth / 2;
+				}
+				for (let l = 1; l < group.level; l++) {
+					if (typeof team['level' + l] !== 'undefined') {
+						x += this.xScale(team['level' + l]);
+					}
+				}
+				group['x'] = x;
+			});
+
+			team.eventsGroups = eventsGroups;
+		});
+	}
+
+	createEvents({gamedata, eventShapePaths, currentLevelColor, groupCircleWidth, eventIconWidth}) {
+		const d3 = this.d3;
+		const eventsLayer: any = this.gameChart.append('g')
+			.attr('class', 'events');
+
+		const eventLayers: any = eventsLayer.selectAll('g.events-row')
+			.data(gamedata.teams)
+			.enter().append('g')
+			.attr('class', 'events-row')
+			.style('transform', function (d: GenericObject, i: number): string {
+				let teamOffset = 0;
+				if (typeof gamedata.teams[i].offsets !== 'undefined' && typeof gamedata.teams[i].offsets[this.sortLevel] !== 'undefined') {
+					teamOffset = gamedata.teams[i].offsets[this.sortLevel];
+				}
+				return 'translateX(' + this.xScale(teamOffset) + 'px)';
+			}.bind(this))
+			.attr('data-index', function (d: GenericObject, i: number): number {
+				return i;
+			})
+			.on('mouseover', (d: any, teamIndex: number) => {
+				// preserve teamhighlight
+				this.outerWrapper.classed('ctf-progress-hover', true);
+				d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', true);
+			})
+			.on('mouseout', (d: any, teamIndex: number) => {
+				this.outerWrapper.classed('ctf-progress-hover', false);
+				d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', false);
+			});
+
+		const eventsGroups: any = eventLayers.selectAll('path.event')
+			.data(function (d: GenericObject): Event[] {
+				return d.eventsGroups;
+			})
+			.enter().append('path')
+			.attr('class', 'event')
+			.attr('d', function (group: GenericObject): string {
+				if (group.events.length === 1) {
+					const event: any = group.events[0];
+					return eventShapePaths[event.type];
+				} else {
+					return eventShapePaths['group'];
+				}
+			})
+			.attr('fill', (d: GenericObject, i, nodes): string => {
+				const teamStruct: DataEntry = <DataEntry>d3.select(nodes[i].parentNode).datum();
+				let colorIndex: number = +d.level;
+				if (this.view === View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
+				// check if the event is in current unfinished level
+				return ((teamStruct['currentState'] === 'level' + d.level) ? currentLevelColor : this.getColor(colorIndex));
+			})
+			.attr('stroke', (d: GenericObject, i, nodes): string => {
+				const teamStruct: DataEntry = <DataEntry>d3.select(nodes[i].parentNode).datum();
+				let colorIndex: number = +d.level;
+				if (this.view === View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
+				// check if the event is in current unfinished level
+				return ((teamStruct['currentState'] === 'level' + d.level) ?
+					this.getColor(colorIndex) : this.getLightenedColor(colorIndex));
+			})
+			.attr('transform', (group: GenericObject, i: number, nodes): string => {
+				// event absolute time from game start
+				const iconWidth: number = (group.events.length > 1) ? groupCircleWidth : eventIconWidth;
+				const teamStruct: DataEntry = <DataEntry>d3.select(nodes[i].parentNode).datum(),
+					y = (this.yScale(teamStruct.team) + this.yScale.bandwidth() * 0.5 - (iconWidth / 2));
+				const levelEnd: number = teamStruct['level' + group.level];
+				const x = group.x - (iconWidth / 2);
+				return 'translate(' + x + ',' + y + ')';
+			})
+			.on('mouseover',  (d: any, i: number, nodes) => {
+				this.tooltip.transition()
+					.duration(200)
+					.style('opacity', 0.9);
+				const teamNode = d3.select(nodes[i].parentNode),
+					teamStruct: DataEntry = <DataEntry>teamNode.datum(),
+					y = (this.yScale(teamStruct.team) + this.yScale.bandwidth() * 0.5 + 3);
+				let teamOffset = 0;
+				const teamIndex: string = teamNode.attr('data-index');
+				if (typeof gamedata.teams[teamIndex].offsets !== 'undefined' &&
+				typeof gamedata.teams[teamIndex].offsets[this.sortLevel] !== 'undefined') {
+					teamOffset = gamedata.teams[teamIndex].offsets[this.sortLevel];
+				}
+				const x = d.x + 2 + this.panValue + this.xScale(teamOffset);
+				this.tooltip.html(function (): string {
+					let text = '';
+					d.events.forEach(function (event, index) {
+						const item = [];
+						item.push(
+							'<span class="ctf-progress-tooltip-item">',
+							'<svg width="14" height="14" viewbox="0 0 16 16">',
+							'<path d="' + eventShapePaths[event.type] + '"/>',
+							'</svg>',
+							event.name,
+							'</span>'
+						);
+						text += item.join('');
+					});
+					return text;
+				})
+					.style('left', x + 'px')
+					.style('top', y + 'px');
+			})
+			.on('mouseout',  (d: any) => {
+				this.tooltip.transition()
+					.duration(500)
+					.style('opacity', 0);
+			});
+
+		const eventsGroupsText: any = eventLayers.selectAll('text.event-number')
+			.data(function (d: GenericObject): Event[] {
+				return d.eventsGroups;
+			})
+			.enter().append('text')
+			.filter(function (group) {
+				return group.events.length > 1;
+			})
+			.attr('class', 'event-number')
+			.attr('y',  (d: GenericObject, i: number, nodes): string => {
+				const teamStruct: DataEntry = <DataEntry>d3.select(nodes[i].parentNode).datum(),
+					y = (this.yScale(teamStruct.team) + this.yScale.bandwidth() * 0.5) + groupCircleWidth / 5;
+				return y.toString();
+			})
+			.attr('x', function (group: GenericObject, i: number): string {
+				const x = group.x;
+				return x.toString();
+			})
+			.attr('fill', '#fff')
+			.attr('font-size', '12px')
+			.attr('text-anchor', 'middle')
+			.text(function (group): string {
+				return group.events.length.toString();
+			});
+	}
+
+	createTimeline() {
+		if (this.view === View.progress) {
+			this.timeline = this.gameChart.append('line')
+				.attr('class', 'timeline')
+				.attr('x1', this.xScale(this.time) - 2)
+				.attr('y1', 0)
+				.attr('x2', this.xScale(this.time) - 2)
+				.attr('y2', this.height)
+				.attr('stroke-width', 3);
+		}
+	}
+
+	createSortingLabels(gamedata) {
+		if (this.view === View.overview && gamedata['teams'].length) {
+			gamedata['keys'].forEach(function (levelKey: string, index: number): void {
+				// let levelTime: number = this.levelTimePlan;
+				const levelsTimePlanSum = this.levelsTimePlan.slice(0, index + 1).reduce(function (a, b) {
+					return a + b;
+				}, 0);
+				const x: number = this.xScale(levelsTimePlanSum);
+
+				let sortLevelName: string;
+				sortLevelName = (this.wrapperWidth > 530) ? 'Level ' + (index + 1) : 'L' + (index + 1);
+				this.levelSortOptions.push({
+					index: (index + 1),
+					key: levelKey,
+					name: sortLevelName,
+					x: x + 'px',
+					translate: 'translate(calc(-50% + 15px), 0)'
+				});
+			}.bind(this));
 		}
 	}
 
