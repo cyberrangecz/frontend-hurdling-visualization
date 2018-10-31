@@ -60,7 +60,6 @@ export class GameAnalysisComponent implements OnInit {
 	private gameChart: any;
 	private outerWrapper: any;
 	private planDomain: number;
-	private yDomain;
 	private gameDomain: number;
 	private planSegments: any;
 	private boundSegments: any;
@@ -293,25 +292,25 @@ export class GameAnalysisComponent implements OnInit {
 			return d[1];
 		}));
 
-		this.yDomain = plandata.teams.map(function (d: GenericObject): string {
-			return d.team;
-		});
-
-		this.initializeScales();
+		this.initializeScales(plandata);
 		this.createAxis(estimatedTime);
 
 	}
 
-	initializeScales() {
+	initializeScales(plandata) {
 		// init x and y scales
 		let yScalePadding: number;
 		if (this.wrapperHeight > 550) yScalePadding = 0.02;
 		else yScalePadding = 0.05;
 
+		const yDomain = plandata.teams.map(function (d: GenericObject): string {
+			return d.team;
+		});
+
 		this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]);
 		this.xScale.domain([0, this.planDomain]);
 		this.yScale = this.d3.scaleBand().rangeRound([this.height, 0]).padding(yScalePadding);
-		this.yScale.domain(this.yDomain);
+		this.yScale.domain(yDomain);
 	}
 
 	createAxis(estimatedTime) {
@@ -356,7 +355,13 @@ export class GameAnalysisComponent implements OnInit {
 		this.plan = this.gameChart.append('g')
 			.attr('class', 'plan');
 
-		// create hatched pattern defs
+		this.createPattern(plandata);
+		const planLayers = this.createPlanLayersAndReturnThem(layers);
+		this.createPlanSegments(planLayers);
+		this.createBoundingLines(layers);
+	}
+
+	createPattern(plandata) {
 		const defs = this.plan.append('defs');
 		const pattern = defs.selectAll('pattern')
 			.data(plandata.keys)
@@ -372,37 +377,42 @@ export class GameAnalysisComponent implements OnInit {
 			.attr('width', '3')
 			.attr('height', '4')
 			.attr('transform', 'translate(0,0)')
-			.attr('fill', function (r: GenericObject, i: string): string {
-				return getPlanColor(i);
+			.attr('fill', (r: GenericObject, i: string): string => {
+				return this.getPlanColor(+i);
 			})
 			.attr('opacity', '0.5');
+	}
 
-		// create column for each level
-		const planLayers = this.plan.selectAll('.plan-layer')
+	createPlanLayersAndReturnThem(layers) {
+		return this.plan.selectAll('.plan-layer')
 			.data(layers)
 			.enter().append('g')
 			.attr('class', 'plan-layer')
 			.style('fill', function (d: GenericObject, i: string): string {
 				return 'url(#diagonalHatch' + i + ')';
 			});
+	}
 
+	createPlanSegments(planLayers) {
 		// draw segment (row in column) for each team
 		this.planSegments = planLayers.selectAll('.plan-segment')
-			.data(function (d: GenericObject): GenericObject {
-				return d;
-			})
-			.enter().append('rect')
-			.attr('y', function (d: GenericObject): string {
-				return this.yScale(String(d.data.team));
-			}.bind(this))
-			.attr('x', function (d: GenericObject): string {
-				return this.xScale(d[0]);
-			}.bind(this))
-			.attr('height', this.yScale.bandwidth())
-			.attr('width', function (d: GenericObject): number {
-				return this.xScale(d[1]) - this.xScale(d[0]);
-			}.bind(this));
+		.data(function (d: GenericObject): GenericObject {
+			return d;
+		})
+		.enter().append('rect')
+		.attr('y', function (d: GenericObject): string {
+			return this.yScale(String(d.data.team));
+		}.bind(this))
+		.attr('x', function (d: GenericObject): string {
+			return this.xScale(d[0]);
+		}.bind(this))
+		.attr('height', this.yScale.bandwidth())
+		.attr('width', function (d: GenericObject): number {
+			return this.xScale(d[1]) - this.xScale(d[0]);
+		}.bind(this));
+	}
 
+	createBoundingLines(layers) {
 		// draw bounding lines for each team
 		const boundWidth = 2;
 		this.bounds = this.gameChart.append('g')
@@ -412,8 +422,8 @@ export class GameAnalysisComponent implements OnInit {
 				.data(layers)
 				.enter().append('g')
 				.attr('class', 'bounds-layer')
-				.style('fill', function (d: GenericObject, i: string): string {
-					return getPlanColor(i);
+				.style('fill', (d: GenericObject, i: string): string => {
+					return this.getPlanColor(+i);
 				});
 
 			this.boundSegments = boundGroups.selectAll('rect.plan-bound')

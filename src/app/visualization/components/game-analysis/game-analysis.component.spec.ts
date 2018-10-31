@@ -15,17 +15,17 @@ import { LoadCsvDataService } from '../../services/load-csv-data.service';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear, ScaleOrdinal } from 'd3-ng2-service';
 import { PapaParseModule, Papa } from 'ngx-papaparse';
 import { Observable } from 'rxjs/Observable';
-import { fromPromise } from "rxjs/observable/fromPromise";
+import { fromPromise } from 'rxjs/observable/fromPromise';
 describe('GameAnalysisComponent', () => {
   let component: GameAnalysisComponent;
   let fixture: ComponentFixture<GameAnalysisComponent>;
-  let testConfig: AppConfig = {
-    apiUrl: "http://example.com",
-    gameId: "1",
+  const testConfig: AppConfig = {
+    apiUrl: 'http://example.com',
+    gameId: '1',
     levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
-    gameColors: ["#1c89b8", "#20ac4c", "#ff9d3c", "#fc5248"],
-    planColors: ["#0e6f90", "#158136", "#ec7e26", "#d82f36"],
-    lightenedColors: ["#bbdcea", "#bce6c9", "#ffe2c5", "#fecbc8"],
+    gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
+    planColors: ['#0e6f90', '#158136', '#ec7e26', '#d82f36'],
+    lightenedColors: ['#bbdcea', '#bce6c9', '#ffe2c5', '#fecbc8'],
     darkColor: '#2f2f2f',
     eventShapePaths: {
         'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',
@@ -41,101 +41,101 @@ describe('GameAnalysisComponent', () => {
     loadDataInterval: 5000,
     defaultView: View.overview
   };
-  let loadServiceStub: any = {
+  const loadServiceStub: any = {
     getGameAndPlanData: function(apiUrl: string, gameId: string, levelsTimePlan: number[]) {
       return fromPromise(new Promise(function (resolve, reject) {
-            let data = {
-              "gameDataset": [
+            const data = {
+              'gameDataset': [
                 {
-                  "team": "9003585",
-                  "events": [],
-                  "totalTime": 4599,
-                  "start": 311,
-                  "level1": 430,
-                  "level2": 2343,
-                  "currentState": "level3"
+                  'team': '9003585',
+                  'events': [],
+                  'totalTime': 4599,
+                  'start': 311,
+                  'level1': 430,
+                  'level2': 2343,
+                  'currentState': 'level3'
                 },
                 {
-                  "team": "9003580",
-                  "events": [
+                  'team': '9003580',
+                  'events': [
                     {
-                      "type": "hint",
-                      "name": "Hint 3 taken",
-                      "time": 284,
-                      "level": 3
+                      'type': 'hint',
+                      'name': 'Hint 3 taken',
+                      'time': 284,
+                      'level': 3
                     }
                   ],
-                  "totalTime": 4594,
-                  "start": 316,
-                  "level1": 647,
-                  "level2": 960,
-                  "currentState": "level3"
+                  'totalTime': 4594,
+                  'start': 316,
+                  'level1': 647,
+                  'level2': 960,
+                  'currentState': 'level3'
                 },
                 {
-                  "team": "9003584",
-                  "events": [
+                  'team': '9003584',
+                  'events': [
                     {
-                      "type": "solution",
-                      "name": "Returned from help level",
-                      "time": 587,
-                      "level": 1
+                      'type': 'solution',
+                      'name': 'Returned from help level',
+                      'time': 587,
+                      'level': 1
                     },
                     {
-                      "type": "skip",
-                      "name": "Level cowardly skipped",
-                      "time": 1869,
-                      "level": 1
+                      'type': 'skip',
+                      'name': 'Level cowardly skipped',
+                      'time': 1869,
+                      'level': 1
                     },
                     {
-                      "type": "hint",
-                      "name": "Hint 1 taken",
-                      "time": 321,
-                      "level": 2
+                      'type': 'hint',
+                      'name': 'Hint 1 taken',
+                      'time': 321,
+                      'level': 2
                     },
                   ],
-                  "totalTime": 4176,
-                  "start": 734,
-                  "level1": 1869,
-                  "level2": 575,
-                  "level3": 993,
-                  "currentState": "level4"
+                  'totalTime': 4176,
+                  'start': 734,
+                  'level1': 1869,
+                  'level2': 575,
+                  'level3': 993,
+                  'currentState': 'level4'
                 },
               ],
-              "planDataset": [
+              'planDataset': [
                 {
-                  "team": "9003585",
-                  "start": 0,
-                  "level1": 1000,
-                  "level2": 1000,
-                  "level3": 1000,
-                  "level4": 1000
+                  'team': '9003585',
+                  'start': 0,
+                  'level1': 1000,
+                  'level2': 1000,
+                  'level3': 1000,
+                  'level4': 1000
                 },
                 {
-                  "team": "9003580",
-                  "start": 0,
-                  "level1": 1000,
-                  "level2": 1000,
-                  "level3": 1000,
-                  "level4": 1000
+                  'team': '9003580',
+                  'start': 0,
+                  'level1': 1000,
+                  'level2': 1000,
+                  'level3': 1000,
+                  'level4': 1000
                 },
                 {
-                  "team": "9003584",
-                  "start": 0,
-                  "level1": 1000,
-                  "level2": 1000,
-                  "level3": 1000,
-                  "level4": 1000
+                  'team': '9003584',
+                  'start': 0,
+                  'level1': 1000,
+                  'level2': 1000,
+                  'level3': 1000,
+                  'level4': 1000
                 },
               ],
-              "levels": [
-                "start",
-                "level1",
-                "level2",
-                "level3",
-                "level4"
+              'levels': [
+                'start',
+                'level1',
+                'level2',
+                'level3',
+                'level4'
               ],
-              "levelsTimePlan": [1000, 1000, 1000, 1000],
-              "time": 4910
+              'levelsTimePlan': [1000, 1000, 1000, 1000],
+              'time': 4910
             };
             resolve(data);
         }));
@@ -225,9 +225,9 @@ describe('GameAnalysisComponent', () => {
   it('should contain 4 level columns in final overview', async(() => {
     component.switchToFinalOverview();
     fixture.whenStable().then(() => {
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let levelElements = nativeElement.querySelectorAll('.game-layer');
+        const levelElements = nativeElement.querySelectorAll('.game-layer');
         expect(levelElements.length).toEqual(4);
     });
   }));
@@ -235,9 +235,9 @@ describe('GameAnalysisComponent', () => {
   it('should contain 1 empty column before game start and 4 level columns in progress view', async(() => {
     component.switchToProgressView();
     fixture.whenStable().then(() => {
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let levelElements = nativeElement.querySelectorAll('.game-layer');
+        const levelElements = nativeElement.querySelectorAll('.game-layer');
         expect(levelElements.length).toEqual(5);
     });
   }));
@@ -245,27 +245,27 @@ describe('GameAnalysisComponent', () => {
    it('each level should have the right color in final overview', async(() => {
     component.switchToFinalOverview();
     fixture.whenStable().then(() => {
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let levelElements = nativeElement.querySelectorAll('.game-layer');
-        expect(levelElements[0].getAttribute("fill")).toEqual("#1c89b8");
-        expect(levelElements[1].getAttribute("fill")).toEqual("#20ac4c");
-        expect(levelElements[2].getAttribute("fill")).toEqual("#ff9d3c");
-        expect(levelElements[3].getAttribute("fill")).toEqual("#fc5248");
+        const levelElements = nativeElement.querySelectorAll('.game-layer');
+        expect(levelElements[0].getAttribute('fill')).toEqual('#1c89b8');
+        expect(levelElements[1].getAttribute('fill')).toEqual('#20ac4c');
+        expect(levelElements[2].getAttribute('fill')).toEqual('#ff9d3c');
+        expect(levelElements[3].getAttribute('fill')).toEqual('#fc5248');
     });
   }));
 
   it('each level should have the right color in progress view', async(() => {
     component.switchToProgressView();
     fixture.whenStable().then(() => {
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let levelElements = nativeElement.querySelectorAll('.game-layer');
-        expect(levelElements[0].getAttribute("fill")).toEqual("transparent");
-        expect(levelElements[1].getAttribute("fill")).toEqual("#1c89b8");
-        expect(levelElements[2].getAttribute("fill")).toEqual("#20ac4c");
-        expect(levelElements[3].getAttribute("fill")).toEqual("#ff9d3c");
-        expect(levelElements[4].getAttribute("fill")).toEqual("#fc5248");
+        const levelElements = nativeElement.querySelectorAll('.game-layer');
+        expect(levelElements[0].getAttribute('fill')).toEqual('transparent');
+        expect(levelElements[1].getAttribute('fill')).toEqual('#1c89b8');
+        expect(levelElements[2].getAttribute('fill')).toEqual('#20ac4c');
+        expect(levelElements[3].getAttribute('fill')).toEqual('#ff9d3c');
+        expect(levelElements[4].getAttribute('fill')).toEqual('#fc5248');
     });
   }));
 
@@ -273,71 +273,71 @@ describe('GameAnalysisComponent', () => {
 
   it('should contain a row for each team', async(() => {
     fixture.whenStable().then(() => {
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let levelElement = nativeElement.querySelector('.game-layer');
-        let levelSegment = levelElement.querySelectorAll('rect');
+        const levelElement = nativeElement.querySelector('.game-layer');
+        const levelSegment = levelElement.querySelectorAll('rect');
         expect(levelSegment.length).toEqual(3);
     });
   }));
 
   it('should sort by name correctly', async(() => {
     fixture.whenStable().then(() => {
-        component.onSortValueChange("name", true);
+        component.onSortValueChange('name', true);
         let teamsWraper: any = fixture.debugElement.query(By.css('#ctf-progress-teamcolumn')).nativeElement;
         fixture.detectChanges();
         let teams = teamsWraper.querySelectorAll('.data text');
-        expect(teams[0].textContent).toEqual("9003580");
-        expect(teams[1].textContent).toEqual("9003584");
-        expect(teams[2].textContent).toEqual("9003585");
+        expect(teams[0].textContent).toEqual('9003580');
+        expect(teams[1].textContent).toEqual('9003584');
+        expect(teams[2].textContent).toEqual('9003585');
 
-        component.onSortValueChange("name", false);
+        component.onSortValueChange('name', false);
         teamsWraper = fixture.debugElement.query(By.css('#ctf-progress-teamcolumn')).nativeElement;
         fixture.detectChanges();
         teams = teamsWraper.querySelectorAll('.data text');
-        expect(teams[0].textContent).toEqual("9003585");
-        expect(teams[1].textContent).toEqual("9003584");
-        expect(teams[2].textContent).toEqual("9003580");
+        expect(teams[0].textContent).toEqual('9003585');
+        expect(teams[1].textContent).toEqual('9003584');
+        expect(teams[2].textContent).toEqual('9003580');
     });
   }));
 
    it('should sort by time correctly', async(() => {
     fixture.whenStable().then(() => {
-        component.onSortValueChange("time", true);
+        component.onSortValueChange('time', true);
         let teamsWraper: any = fixture.debugElement.query(By.css('#ctf-progress-teamcolumn')).nativeElement;
         fixture.detectChanges();
         let teams = teamsWraper.querySelectorAll('.data text');
-        expect(teams[0].textContent).toEqual("9003584");
-        expect(teams[1].textContent).toEqual("9003580");
-        expect(teams[2].textContent).toEqual("9003585");
+        expect(teams[0].textContent).toEqual('9003584');
+        expect(teams[1].textContent).toEqual('9003580');
+        expect(teams[2].textContent).toEqual('9003585');
 
-        component.onSortValueChange("time", false);
+        component.onSortValueChange('time', false);
         teamsWraper = fixture.debugElement.query(By.css('#ctf-progress-teamcolumn')).nativeElement;
         fixture.detectChanges();
         teams = teamsWraper.querySelectorAll('.data text');
-        expect(teams[0].textContent).toEqual("9003585");
-        expect(teams[1].textContent).toEqual("9003580");
-        expect(teams[2].textContent).toEqual("9003584");
+        expect(teams[0].textContent).toEqual('9003585');
+        expect(teams[1].textContent).toEqual('9003580');
+        expect(teams[2].textContent).toEqual('9003584');
     });
   }));
 
   it('should sort by level correctly', async(() => {
     fixture.whenStable().then(() => {
-        component.onSortValueChange("level", true, 3);
+        component.onSortValueChange('level', true, 3);
         let teamsWraper: any = fixture.debugElement.query(By.css('#ctf-progress-teamcolumn')).nativeElement;
         fixture.detectChanges();
         let teams = teamsWraper.querySelectorAll('.data text');
-        expect(teams[0].textContent).toEqual("9003584");
-        expect(teams[1].textContent).toEqual("9003585");
-        expect(teams[2].textContent).toEqual("9003580");
+        expect(teams[0].textContent).toEqual('9003584');
+        expect(teams[1].textContent).toEqual('9003585');
+        expect(teams[2].textContent).toEqual('9003580');
 
-        component.onSortValueChange("level", false, 3);
+        component.onSortValueChange('level', false, 3);
         teamsWraper = fixture.debugElement.query(By.css('#ctf-progress-teamcolumn')).nativeElement;
         fixture.detectChanges();
         teams = teamsWraper.querySelectorAll('.data text');
-        expect(teams[0].textContent).toEqual("9003580");
-        expect(teams[1].textContent).toEqual("9003585");
-        expect(teams[2].textContent).toEqual("9003584");
+        expect(teams[0].textContent).toEqual('9003580');
+        expect(teams[1].textContent).toEqual('9003585');
+        expect(teams[2].textContent).toEqual('9003584');
     });
   }));
 
@@ -345,10 +345,10 @@ describe('GameAnalysisComponent', () => {
 
   it('should have the right count of events', async(() => {
     fixture.whenStable().then(() => {
-        component.onSortValueChange("name", false);
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        component.onSortValueChange('name', false);
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let eventsWrapper = nativeElement.querySelector('.events'),
+        const eventsWrapper = nativeElement.querySelector('.events'),
             allEvents = eventsWrapper.querySelectorAll('.event'),
             eventRows = eventsWrapper.querySelectorAll('.events-row'),
             firstTeamEvents = eventRows[0].querySelectorAll('.event'),
@@ -361,27 +361,27 @@ describe('GameAnalysisComponent', () => {
 
   it('events should have the right color as the level', async(() => {
     fixture.whenStable().then(() => {
-        component.onSortValueChange("name", false);
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        component.onSortValueChange('name', false);
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let eventsWrapper = nativeElement.querySelector('.events'),
+        const eventsWrapper = nativeElement.querySelector('.events'),
             eventRows = eventsWrapper.querySelectorAll('.events-row'),
             secondTeamEvents = eventRows[1].querySelectorAll('.event');
-        expect(secondTeamEvents[0].getAttribute("fill")).toEqual("#1c89b8");
-        expect(secondTeamEvents[1].getAttribute("fill")).toEqual("#1c89b8");
-        expect(secondTeamEvents[2].getAttribute("fill")).toEqual("#20ac4c");
+        expect(secondTeamEvents[0].getAttribute('fill')).toEqual('#1c89b8');
+        expect(secondTeamEvents[1].getAttribute('fill')).toEqual('#1c89b8');
+        expect(secondTeamEvents[2].getAttribute('fill')).toEqual('#20ac4c');
     });
   }));
 
   it('events in unfinished level should have dark color', async(() => {
     fixture.whenStable().then(() => {
-        component.onSortValueChange("name", false);
-        let nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
+        component.onSortValueChange('name', false);
+        const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        let eventsWrapper = nativeElement.querySelector('.events'),
+        const eventsWrapper = nativeElement.querySelector('.events'),
             eventRows = eventsWrapper.querySelectorAll('.events-row'),
             thirdTeamEvents = eventRows[2].querySelectorAll('.event');
-        expect(thirdTeamEvents[0].getAttribute("fill")).toEqual("#2f2f2f");
+        expect(thirdTeamEvents[0].getAttribute('fill')).toEqual('#2f2f2f');
     });
   }));
 
