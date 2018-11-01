@@ -505,78 +505,6 @@ export class GameAnalysisComponent implements OnInit {
 		this.createSortingLabels(gamedata);
 	}
 
-	updatePlan(gamedata: GameData): void {
-		const d3: D3 = this.d3,
-			offset: number[] = [],
-			xScale: ScaleLinear<number, number> = this.xScale,
-			stack = d3.stack()
-				.keys(gamedata.keys)
-				.offset(d3.stackOffsetNone),
-			layers = stack(gamedata.teams),
-			view = this.view;
-
-		// pan plan to top
-		this.plan.raise();
-
-		this.planSegments
-			.attr('opacity', function (d: GenericObject, i: number): number {
-				const level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
-					levelIndex: number = level.index,
-					levelKey: string = (view === View.overview) ? 'level' + (levelIndex + 1) : 'level' + levelIndex,
-					teamIndex: number = i,
-					data: NumericObject = layers[levelIndex][teamIndex]['data'],
-					currentState: string = data['currentState'];
-
-				if (currentState === levelKey) {
-					return 1;
-				} else {
-					return 0;
-				}
-			})
-			.attr('x', function (d: any, i: number): number {
-				const level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
-					levelIndex: number = level.index,
-					teamIndex: number = i,
-					currentData: NumericObject = layers[levelIndex][teamIndex],
-					isCurrentLevel: boolean = isNaN(currentData[1]);
-				let x: number = d[0];
-
-				if (isCurrentLevel) {
-					offset[teamIndex] = currentData[0] - d[0];
-				}
-
-				if (offset[teamIndex] !== undefined) {
-					let xShifted = x + offset[teamIndex];
-					// if next level should start in past, must be shifted to present (as same as all next level)
-					if (!isCurrentLevel && xShifted < this.time) {
-						offset[teamIndex] += (this.time - xShifted);
-						xShifted = this.time;
-					}
-					x = xShifted;
-				}
-				return xScale(Math.max(1, x));
-			})
-			.attr('width', function (d: GenericObject): number {
-				// rescale to new x domain
-				return this.xScale(d[1]) - this.xScale(d[0]);
-			}.bind(this))
-			.style('transform', function (d: GenericObject, i: number): string {
-				let teamOffset = 0;
-				if (typeof gamedata.teams[i].offsets !== 'undefined' && typeof gamedata.teams[i].offsets[this.sortLevel] !== 'undefined') {
-					teamOffset = gamedata.teams[i].offsets[this.sortLevel];
-				}
-				return 'translateX(' + xScale(teamOffset) + 'px)';
-			}.bind(this));
-
-		// rescale bounds (xScale could change)
-		if (this.view === View.overview) {
-			this.boundSegments
-				.attr('x', function (d: GenericObject): string {
-					return this.xScale(d[1]);
-				}.bind(this));
-		}
-	}
-
 	updateXAxis() {
 		this.xAxis = this.d3.axisBottom(this.xScale)
 			.tickFormat(function (d: any) {
@@ -670,6 +598,78 @@ export class GameAnalysisComponent implements OnInit {
 				this.outerWrapper.classed('ctf-progress-hover', false);
 				this.d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed('data-hover', false);
 			});
+	}
+
+	updatePlan(gamedata: GameData): void {
+		const d3: D3 = this.d3,
+			offset: number[] = [],
+			xScale: ScaleLinear<number, number> = this.xScale,
+			stack = d3.stack()
+				.keys(gamedata.keys)
+				.offset(d3.stackOffsetNone),
+			layers = stack(gamedata.teams),
+			view = this.view;
+
+		// pan plan to top
+		this.plan.raise();
+
+		this.planSegments
+			.attr('opacity', function (d: GenericObject, i: number): number {
+				const level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
+					levelIndex: number = level.index,
+					levelKey: string = (view === View.overview) ? 'level' + (levelIndex + 1) : 'level' + levelIndex,
+					teamIndex: number = i,
+					data: NumericObject = layers[levelIndex][teamIndex]['data'],
+					currentState: string = data['currentState'];
+
+				if (currentState === levelKey) {
+					return 1;
+				} else {
+					return 0;
+				}
+			})
+			.attr('x', function (d: any, i: number): number {
+				const level: GenericObject = <GenericObject>d3.select(this.parentNode).datum(),
+					levelIndex: number = level.index,
+					teamIndex: number = i,
+					currentData: NumericObject = layers[levelIndex][teamIndex],
+					isCurrentLevel: boolean = isNaN(currentData[1]);
+				let x: number = d[0];
+
+				if (isCurrentLevel) {
+					offset[teamIndex] = currentData[0] - d[0];
+				}
+
+				if (offset[teamIndex] !== undefined) {
+					let xShifted = x + offset[teamIndex];
+					// if next level should start in past, must be shifted to present (as same as all next level)
+					if (!isCurrentLevel && xShifted < this.time) {
+						offset[teamIndex] += (this.time - xShifted);
+						xShifted = this.time;
+					}
+					x = xShifted;
+				}
+				return xScale(Math.max(1, x));
+			})
+			.attr('width', function (d: GenericObject): number {
+				// rescale to new x domain
+				return this.xScale(d[1]) - this.xScale(d[0]);
+			}.bind(this))
+			.style('transform', function (d: GenericObject, i: number): string {
+				let teamOffset = 0;
+				if (typeof gamedata.teams[i].offsets !== 'undefined' && typeof gamedata.teams[i].offsets[this.sortLevel] !== 'undefined') {
+					teamOffset = gamedata.teams[i].offsets[this.sortLevel];
+				}
+				return 'translateX(' + xScale(teamOffset) + 'px)';
+			}.bind(this));
+
+		// rescale bounds (xScale could change)
+		if (this.view === View.overview) {
+			this.boundSegments
+				.attr('x', function (d: GenericObject): string {
+					return this.xScale(d[1]);
+				}.bind(this));
+		}
 	}
 
 	createEventTooltips() {
