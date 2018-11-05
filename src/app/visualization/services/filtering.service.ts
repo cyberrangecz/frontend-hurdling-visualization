@@ -5,36 +5,37 @@ import { GenericObject } from '../models/generic-object.type';
   providedIn: 'root'
 })
 export class FilteringService {
-
-  constructor() { }
+  constructor() {}
 
   filter(gamedataset: GenericObject[], selectedFilterValue): GenericObject[] {
-		let filteredGamedataset: GenericObject[];
+    let filteredGamedataset: GenericObject[];
 
-		switch(selectedFilterValue) {
-			case 1:
-				filteredGamedataset = gamedataset;
-				break; 
-			case 2:
-				filteredGamedataset = this.filterByFinished(gamedataset, true);
-				break;
-			case 3:
-				filteredGamedataset = this.filterByFinished(gamedataset, false);
-				break;
-		}
+    switch (selectedFilterValue) {
+      case 1:
+        filteredGamedataset = gamedataset;
+        break;
+      case 2:
+        filteredGamedataset = this.filterByFinished(gamedataset, true);
+        break;
+      case 3:
+        filteredGamedataset = this.filterByFinished(gamedataset, false);
+        break;
+    }
 
-		return filteredGamedataset;
-	}
-
-	filterByFinished(gamedataset: GenericObject[], byFinished: boolean): GenericObject[] {
-		let filtered: GenericObject[] = [];
-		if(typeof gamedataset !== "undefined") {
-			filtered =  gamedataset.filter(function(d: GenericObject): boolean {
-				return (d.currentState == "finished") == byFinished;
-			});
-		}
-
-		return filtered;
+    return filteredGamedataset;
   }
-  
+
+  filterByFinished(
+    gamedataset: GenericObject[],
+    byFinished: boolean
+  ): GenericObject[] {
+    let filtered: GenericObject[] = [];
+    if (typeof gamedataset !== 'undefined') {
+      filtered = gamedataset.filter(function(d: GenericObject): boolean {
+        return (d.currentState === 'finished') === byFinished;
+      });
+    }
+
+    return filtered;
+  }
 }
