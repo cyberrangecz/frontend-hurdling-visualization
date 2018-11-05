@@ -1238,12 +1238,9 @@ export class GameAnalysisComponent implements OnInit {
 
       // because of team highlighting animation, add class which cancels the animation after zoom
       this.outerWrapper.classed('ctf-progress-zoom', true);
-      setTimeout(
-        () => {
-          this.outerWrapper.classed('ctf-progress-zoom', false);
-        },
-        150
-      );
+      setTimeout(() => {
+        this.outerWrapper.classed('ctf-progress-zoom', false);
+      }, 150);
 
       this.pan(dx);
       this.updatePanValue();
@@ -1280,12 +1277,9 @@ export class GameAnalysisComponent implements OnInit {
   watchGameProgress() {
     const interval: number = this.config.loadDataInterval;
     this.loadData();
-    this.loadTimer = setInterval(
-      (): void => {
-        this.loadData();
-      },
-      interval
-    );
+    this.loadTimer = setInterval((): void => {
+      this.loadData();
+    }, interval);
   }
 
   loadDataFromCSV(endInPercents: number = 100) {
@@ -1317,17 +1311,14 @@ export class GameAnalysisComponent implements OnInit {
     let currentEnd = start;
 
     this.loadDataFromCSV(currentEnd);
-    this.loadTimer = setInterval(
-      (): void => {
-        currentEnd += step;
-        if (currentEnd > end) {
-          clearInterval(this.loadTimer);
-          return;
-        }
-        this.loadDataFromCSV(currentEnd);
-      },
-      interval
-    );
+    this.loadTimer = setInterval((): void => {
+      currentEnd += step;
+      if (currentEnd > end) {
+        clearInterval(this.loadTimer);
+        return;
+      }
+      this.loadDataFromCSV(currentEnd);
+    }, interval);
   }
 
   switchToProgressView() {
