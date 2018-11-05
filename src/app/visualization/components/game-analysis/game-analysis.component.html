@@ -25,7 +25,7 @@
 								</select>
 							</div>
 						</div>
-						<div class="ctf-progress-select-wrapper ctf-progress-csv-file-wrapper" [ngClass]="{'ctf-progress-file-uploaded': (csvFilename)}">					
+						<div class="ctf-progress-select-wrapper ctf-progress-csv-file-wrapper" [ngClass]="{'ctf-progress-file-uploaded': (csvFilename)}">
 							<label for="ctf-progress-csv-file" class="ctf-progress-file-label">
 								<svg class="ctf-progress-select-icon ctf-progress-file-icon" width="22" height="22" viewBox="0 0 24 24">
 									<path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
@@ -37,8 +37,10 @@
 									Upload CSV file
 								</span>
 							</label>
-							<input class="ctf-progress-file-input" id="ctf-progress-csv-file" type="file" (change)="onCsvFileChange($event)" placeholder="Upload file" accept=".csv" #csvInput>
-							<svg  *ngIf="csvFilename" (click)="clearCsvFile()" class="ctf-progress-file-remove" width="24" height="24" viewBox="0 0 24 24">
+							<input class="ctf-progress-file-input" id="ctf-progress-csv-file" type="file" (change)="onCsvFileChange($event)"
+							 placeholder="Upload file" accept=".csv" #csvInput>
+							<svg *ngIf="csvFilename" (click)="clearCsvFile()" class="ctf-progress-file-remove" width="24" height="24"
+							 viewBox="0 0 24 24">
 								<path d="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
 							</svg>
 						</div>
@@ -49,13 +51,16 @@
 		<div class="row align-items-end no-gutters">
 			<div class="col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-teamcolumn">
-					<app-column-header (onSort)="onSortValueChange('name', $event.sortReverse)" [sortType]="'name'" [selectedSortType]="sortType" [selectedSortReverse]="sortReverse" [label]="'Team'"></app-column-header>
+					<app-column-header (onSort)="onSortValueChange('name', $event.sortReverse)" [sortType]="'name'" [selectedSortType]="sortType"
+					 [selectedSortReverse]="sortReverse" [label]="'Team'"></app-column-header>
 				</div>
 			</div>
-			
+
 			<div class="col-8" *ngIf="hasData">
 				<div class="ctf-progress-header-levels">
-					<app-column-header *ngFor="let level of levelSortOptions" (onSort)="onSortValueChange('level', $event.sortReverse, level.index)" [sortType]="'level'+level.index" [selectedSortType]="sortType+sortLevel" [selectedSortReverse]="sortReverse" [label]="level.name" [level]="level"></app-column-header>
+					<app-column-header *ngFor="let level of levelSortOptions" (onSort)="onSortValueChange('level', $event.sortReverse, level.index)"
+					 [sortType]="'level'+level.index" [selectedSortType]="sortType+sortLevel" [selectedSortReverse]="sortReverse"
+					 [label]="level.name" [level]="level"></app-column-header>
 
 					<span *ngIf="time&&selectedViewValue == 1" class="ctf-progress-header-column" id="ctf-progress-time">
 						{{ getTimeString(time) }}
@@ -65,7 +70,8 @@
 
 			<div class="col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-timecolumn">
-					<app-column-header (onSort)="onSortValueChange('time', $event.sortReverse)" [sortType]="'time'" [selectedSortType]="sortType" [selectedSortReverse]="sortReverse" [label]="'Time'"></app-column-header>
+					<app-column-header (onSort)="onSortValueChange('time', $event.sortReverse)" [sortType]="'time'" [selectedSortType]="sortType"
+					 [selectedSortReverse]="sortReverse" [label]="'Time'"></app-column-header>
 				</div>
 			</div>
 		</div>
@@ -77,7 +83,9 @@
 
 			<div class="col-8">
 				<div class="ctf-progress-chart-wrapper">
-					<div id="ctf-progress-chart" class="ctf-progress" mouseWheel (mouseWheelUp)="onMouseWheelUp($event)" (mouseWheelDown)="onMouseWheelDown($event)" mouseMove (mouseDrag)="onMouseDrag($event)" (mouseUp)="onMouseUp()" (window:resize)="onResize()"></div>
+					<div id="ctf-progress-chart" class="ctf-progress" mouseWheel (mouseWheelUp)="onMouseWheelUp($event)"
+					 (mouseWheelDown)="onMouseWheelDown($event)" mouseMove (mouseDrag)="onMouseDrag($event)" (mouseUp)="onMouseUp()"
+					 (window:resize)="onResize()"></div>
 				</div>
 			</div>
 
@@ -95,7 +103,7 @@
 					</svg>
 					{{errorMessage}}
 				</p>
-			</div>	
+			</div>
 		</div>
 	</div>
 	<div class="container-fluid" *ngIf="hasData && legendIcons">
@@ -105,13 +113,13 @@
 					<div class="ctf-progress-legend-left">
 						<div class="ctf-progress-legend-left-top">
 							<span class="ctf-progress-legend-item ctf-progress-legend-limit">
-								<svg class="ctf-progress-legend-icon" height="18" width="2"  viewBox="0 0 2 18">
+								<svg class="ctf-progress-legend-icon" height="18" width="2" viewBox="0 0 2 18">
 									<rect y="0" x="0" height="18" width="2"></rect>
 								</svg>
 								Level time limit
 							</span>
 							<span class="ctf-progress-legend-item ctf-progress-legend-estimate">
-								<svg class="ctf-progress-legend-icon" height="18" width="35"  viewBox="0 0 35 18" fill="#8c8b8b">
+								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18" fill="#8c8b8b">
 									<defs>
 										<pattern id="diagonalHatchGray" patternUnits="userSpaceOnUse" width="7" height="4" patternTransform="rotate(45)">
 											<rect width="3" height="4" transform="translate(0,0)" opacity="0.5"></rect>
@@ -122,13 +130,13 @@
 								Estimated time
 							</span>
 							<span class="ctf-progress-legend-item ctf-progress-legend-finished">
-								<svg class="ctf-progress-legend-icon" height="18" width="35"  viewBox="0 0 35 18">
+								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#cccccc"></rect>
 								</svg>
 								Finished level
 							</span>
 							<span class="ctf-progress-legend-item ctf-progress-legend-active">
-								<svg class="ctf-progress-legend-icon" height="18" width="35"  viewBox="0 0 35 18">
+								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#848282"></rect>
 								</svg>
 								Active level
@@ -136,21 +144,21 @@
 						</div>
 						<span class="ctf-progress-legend-item" *ngFor="let icon of legendIcons">
 							<svg class="ctf-progress-legend-icon" width="16px" height="16px" viewBox="0 0 16 16">
-								<path attr.d="{{icon.path}}"/>
+								<path attr.d="{{icon.path}}" />
 							</svg>
-							{{icon.label}} 
+							{{icon.label}}
 						</span>
 					</div>
 					<div class="ctf-progress-legend-right">
 						<span class="ctf-progress-legend-item ctf-progress-legend-zoom">
 							<svg class="ctf-progress-legend-icon" width="20" height="20" viewBox="0 0 24 24">
-							    <path d="M9,2A7,7 0 0,1 16,9C16,10.57 15.5,12 14.61,13.19L15.41,14H16L22,20L20,22L14,16V15.41L13.19,14.61C12,15.5 10.57,16 9,16A7,7 0 0,1 2,9A7,7 0 0,1 9,2M8,5V8H5V10H8V13H10V10H13V8H10V5H8Z" />
+								<path d="M9,2A7,7 0 0,1 16,9C16,10.57 15.5,12 14.61,13.19L15.41,14H16L22,20L20,22L14,16V15.41L13.19,14.61C12,15.5 10.57,16 9,16A7,7 0 0,1 2,9A7,7 0 0,1 9,2M8,5V8H5V10H8V13H10V10H13V8H10V5H8Z" />
 							</svg>
 							Ctrl + Scroll
 						</span>
 					</div>
 				</div>
-			</div>	
+			</div>
 		</div>
 	</div>
 </div>
