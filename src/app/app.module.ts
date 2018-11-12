@@ -14,6 +14,8 @@ import { GameAnalysisComponent } from './visualization/components/game-analysis/
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
 import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
+import { SortingService } from './visualization/services/sorting.service';
+import { FilteringService } from './visualization/services/filtering.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { ColumnHeaderComponent } from './visualization/components/column-header/
     D3Service,
     LoadDataService,
     LoadCsvDataService,
-    { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG }
+    { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
+    SortingService,
+    FilteringService
   ],
   bootstrap: [AppComponent]
 })

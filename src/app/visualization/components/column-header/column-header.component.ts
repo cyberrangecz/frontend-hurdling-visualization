@@ -28,7 +28,7 @@ export class ColumnHeaderComponent implements OnInit {
 	}
 
 	sort() {
-		let event: any = { 'sortReverse': !this.selectedSortReverse };
+		const event: any = { 'sortReverse': !this.selectedSortReverse };
 		this.onSort.emit(event);
 	}
 }
