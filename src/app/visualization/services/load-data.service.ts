@@ -56,7 +56,7 @@ export class LoadDataService {
         const games: Game[] = data[0].games;
 		let game: Game;
         games.forEach(function(el: Game) {
-          if (el.id === gameId) {
+          if (+el.id === +gameId) {
             game = el;
           }
         });
