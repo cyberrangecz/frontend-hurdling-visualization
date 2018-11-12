@@ -54,7 +54,7 @@ export class LoadDataService {
     ]).map(
       (data: any[]): Data => {
         const games: Game[] = data[0].games;
-		let game: Game;
+        let game: Game;
         games.forEach(function(el: Game) {
           if (+el.id === +gameId) {
             game = el;
@@ -144,8 +144,8 @@ export class LoadDataService {
         switch (event.type) {
           case this.eventTypes.gameStart:
             eventType = null;
-			// if the first level started, save the team start (it must be as timestamp,
-			// later when the game start timestamp will be known, it will be deducted)
+            // if the first level started, save the team start (it must be as timestamp,
+            // later when the game start timestamp will be known, it will be deducted)
             gamedataset[teamIndex]['start'] = event.timestamp;
             break;
           case this.eventTypes.solution:
