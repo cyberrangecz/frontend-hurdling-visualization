@@ -692,7 +692,7 @@ export class GameAnalysisComponent implements OnInit {
           .classed('data-hover', true);
 
         if (this.eventService) {
-          this.eventService.gameAnalysisOnBarMouseover(teamIndex);
+          this.eventService.gameAnalysisOnBarMouseover(+d.data.team);
         }
       })
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
@@ -702,7 +702,7 @@ export class GameAnalysisComponent implements OnInit {
           .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
           .classed('data-hover', false);
         if (this.eventService) {
-          this.eventService.gameAnalysisOnBarMouseout(teamIndex);
+          this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
         }
       });
   }
