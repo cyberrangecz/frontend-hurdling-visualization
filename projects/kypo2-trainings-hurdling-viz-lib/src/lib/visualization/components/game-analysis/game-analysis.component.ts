@@ -22,7 +22,7 @@ import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 
 @Component({
-  selector: 'lib-game-analysis',
+  selector: 'kypo2-viz-hurdling',
   templateUrl: './game-analysis.component.html',
   styleUrls: ['./game-analysis.component.css'],
   encapsulation: ViewEncapsulation.None
