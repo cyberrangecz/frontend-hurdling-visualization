@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+  Input
+} from '@angular/core';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
 import { LoadCsvDataService } from '../../services/load-csv-data.service';
@@ -20,6 +26,7 @@ import { environment } from '../../../../environments/environment';
 import { SortingService } from '../../services/sorting.service';
 import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
+import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -28,6 +35,8 @@ import { PreparedData } from '../../models/preparedData';
   encapsulation: ViewEncapsulation.None
 })
 export class GameAnalysisComponent implements OnInit {
+  @Input() eventService: GameAnalysisEventService;
+
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
   private activeDataSource: DataSource = DataSource.api;
@@ -128,19 +137,18 @@ export class GameAnalysisComponent implements OnInit {
     this.view = this.config.defaultView;
     this.loadData();
     this.legendIcons = [];
-		this.legendIcons.push({
-			label: 'Solution displayed',
-			path: this.config.eventShapePaths.solution
-		});
-		this.legendIcons.push({
-			label: 'Skip',
-			path: this.config.eventShapePaths.skip
-		});
-		this.legendIcons.push({
-			label: 'Hint',
-			path: this.config.eventShapePaths.hint
-		});
-
+    this.legendIcons.push({
+      label: 'Solution displayed',
+      path: this.config.eventShapePaths.solution
+    });
+    this.legendIcons.push({
+      label: 'Skip',
+      path: this.config.eventShapePaths.skip
+    });
+    this.legendIcons.push({
+      label: 'Hint',
+      path: this.config.eventShapePaths.hint
+    });
   }
 
   loadData() {
@@ -682,6 +690,10 @@ export class GameAnalysisComponent implements OnInit {
         this.d3
           .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
           .classed('data-hover', true);
+
+        if (this.eventService) {
+          this.eventService.gameAnalysisOnBarMouseover(teamIndex);
+        }
       })
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
         // remove team highlighting
@@ -689,6 +701,9 @@ export class GameAnalysisComponent implements OnInit {
         this.d3
           .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
           .classed('data-hover', false);
+        if (this.eventService) {
+          this.eventService.gameAnalysisOnBarMouseout(teamIndex);
+        }
       });
   }
 
