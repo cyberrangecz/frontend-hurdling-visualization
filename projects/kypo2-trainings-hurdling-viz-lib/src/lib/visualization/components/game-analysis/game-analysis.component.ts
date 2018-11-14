@@ -108,7 +108,7 @@ export class GameAnalysisComponent implements OnInit {
   public errorMessage: string = null;
 
   public legendIcons;
-  
+
   @ViewChild('csvInput')
   csvInput: any;
 
