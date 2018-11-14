@@ -61,6 +61,7 @@ export class GameAnalysisComponent implements OnInit {
   private levels: string[];
   private levelsTimePlan: number[];
   private loadTimer: any;
+  private legendIcons;
 
   // zooming
   private panValue = 0;
@@ -154,6 +155,20 @@ export class GameAnalysisComponent implements OnInit {
     const data: PreparedData = this.getPreparedData();
     this.applyData(data.gameDataset, data.planDataset);
     this.pan();
+    this.legendIcons = [];
+		this.legendIcons.push({
+			label: 'Solution displayed',
+			path: this.config.eventShapePaths.solution
+		});
+		this.legendIcons.push({
+			label: 'Skip',
+			path: this.config.eventShapePaths.skip
+		});
+		this.legendIcons.push({
+			label: 'Hint',
+			path: this.config.eventShapePaths.hint
+		});
+
   }
 
   getPreparedData(): PreparedData {

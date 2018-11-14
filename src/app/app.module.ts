@@ -16,28 +16,16 @@ import { MouseMoveDirective } from './visualization/directives/mousemove.directi
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
+import { Kypo2TrainingsHurdlingVizLibModule } from '../../projects/kypo2-trainings-hurdling-viz-lib/src/public_api';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    GameAnalysisComponent,
-    MouseWheelDirective,
-    MouseMoveDirective,
-    ColumnHeaderComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    PapaParseModule
+    Kypo2TrainingsHurdlingVizLibModule
   ],
   providers: [
-    D3Service,
-    LoadDataService,
-    LoadCsvDataService,
-    { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
-    SortingService,
-    FilteringService
   ],
   bootstrap: [AppComponent]
 })
