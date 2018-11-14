@@ -16,6 +16,14 @@
       "dom"
     ],
     "module": "es2015",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "kypo2-trainings-hurdling-viz-lib": [
+        "dist/kypo2-trainings-hurdling-viz-lib"
+      ],
+      "kypo2-trainings-hurdling-viz-lib/*": [
+        "dist/kypo2-trainings-hurdling-viz-lib/*"
+      ]
+    }
   }
 }

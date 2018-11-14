@@ -22,7 +22,7 @@ import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 
 @Component({
-  selector: 'app-game-analysis',
+  selector: 'kypo2-viz-hurdling',
   templateUrl: './game-analysis.component.html',
   styleUrls: ['./game-analysis.component.css'],
   encapsulation: ViewEncapsulation.None
@@ -107,6 +107,8 @@ export class GameAnalysisComponent implements OnInit {
   public hasData = false;
   public errorMessage: string = null;
 
+  public legendIcons;
+
   @ViewChild('csvInput')
   csvInput: any;
 
@@ -125,6 +127,20 @@ export class GameAnalysisComponent implements OnInit {
     this.selectedViewValue = this.config.defaultView;
     this.view = this.config.defaultView;
     this.loadData();
+    this.legendIcons = [];
+		this.legendIcons.push({
+			label: 'Solution displayed',
+			path: this.config.eventShapePaths.solution
+		});
+		this.legendIcons.push({
+			label: 'Skip',
+			path: this.config.eventShapePaths.skip
+		});
+		this.legendIcons.push({
+			label: 'Hint',
+			path: this.config.eventShapePaths.hint
+		});
+
   }
 
   loadData() {

@@ -113,6 +113,41 @@
           }
         }
       }
+    },
+    "kypo2-trainings-hurdling-viz-lib": {
+      "root": "projects/kypo2-trainings-hurdling-viz-lib",
+      "sourceRoot": "projects/kypo2-trainings-hurdling-viz-lib/src",
+      "projectType": "library",
+      "prefix": "kypo2-viz-hurdling",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/kypo2-trainings-hurdling-viz-lib/tsconfig.lib.json",
+            "project": "projects/kypo2-trainings-hurdling-viz-lib/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/kypo2-trainings-hurdling-viz-lib/src/test.ts",
+            "tsConfig": "projects/kypo2-trainings-hurdling-viz-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/kypo2-trainings-hurdling-viz-lib/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/kypo2-trainings-hurdling-viz-lib/tsconfig.lib.json",
+              "projects/kypo2-trainings-hurdling-viz-lib/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "PROJECT_NAME",
