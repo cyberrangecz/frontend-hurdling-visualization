@@ -27,6 +27,7 @@ import { SortingService } from '../../services/sorting.service';
 import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -127,7 +128,8 @@ export class GameAnalysisComponent implements OnInit {
     private loadDataService: LoadDataService,
     private loadCsvDataService: LoadCsvDataService,
     private sortingService: SortingService,
-    private filteringService: FilteringService
+    private filteringService: FilteringService,
+    private http: HttpClient
   ) {
     this.d3 = d3Service.getD3();
   }
@@ -153,12 +155,41 @@ export class GameAnalysisComponent implements OnInit {
 
   loadData() {
     this.errorMessage = null;
-    this.loadDataService
-      .getGameAndPlanData(
-        this.config.apiUrl,
-        this.config.gameId,
-        this.config.levelsTimePlan
-      )
+
+    // LOAD MOCK
+    this.http.get('assets/user_events_log.csv', {responseType: 'blob'})
+      .subscribe(data => {
+        const file: File = new File([data], 'user_events_log.csv', {type: data.type});
+        console.log(file);
+        this.loadMock(file);
+      });
+
+    // LOAD DATA FROM API
+    // this.loadDataService
+    //   .getGameAndPlanData(
+    //     this.config.apiUrl,
+    //     this.config.gameId,
+    //     this.config.levelsTimePlan
+    //   )
+    //   .subscribe(
+    //     (data: Data) => {
+    //       this.gamedataset = data.gameDataset;
+    //       this.plandataset = data.planDataset;
+    //       this.levels = data.levels;
+    //       this.levelsTimePlan = data.levelsTimePlan;
+    //       this.time = data.time;
+    //       this.drawChart();
+    //     },
+    //     (error: string) => {
+    //       this.errorMessage = error;
+    //     }
+    //   );
+  }
+
+  loadMock(file, endInPercents: number = 100) {
+    this.errorMessage = null;
+    this.loadCsvDataService
+      .getGameAndPlanData(file, this.config.levelsTimePlan, endInPercents)
       .subscribe(
         (data: Data) => {
           this.gamedataset = data.gameDataset;
