@@ -156,15 +156,12 @@ export class GameAnalysisComponent implements OnInit {
   loadData() {
     this.errorMessage = null;
 
-    // LOAD MOCK
     this.http.get('assets/user_events_log.csv', {responseType: 'blob'})
       .subscribe(data => {
         const file: File = new File([data], 'user_events_log.csv', {type: data.type});
-        console.log(file);
         this.loadMock(file);
       });
 
-    // LOAD DATA FROM API
     // this.loadDataService
     //   .getGameAndPlanData(
     //     this.config.apiUrl,
