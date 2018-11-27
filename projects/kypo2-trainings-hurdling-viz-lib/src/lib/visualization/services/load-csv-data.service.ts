@@ -216,8 +216,13 @@ export class LoadCsvDataService {
             // level is finished, save the time
             break;
           default:
-            if (d.event.substr(0, 4) === 'Hint') eventType = 'hint';
-            else eventType = null;
+            if (d.event.substr(0, 4) === 'Hint') {
+              eventType = 'hint';
+            } else if (d.event.substr(0, 5) === 'Wrong') {
+              eventType = 'wrong';
+            } else {
+              eventType = null;
+            }
             break;
         }
 
