@@ -61,7 +61,7 @@ export class LoadDataService {
           }
         });
         const events: Event[] = data[1].events;
-
+        console.log(data);
         const result: Data = this.processData(game, events);
         return result;
       }

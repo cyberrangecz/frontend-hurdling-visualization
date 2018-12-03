@@ -151,6 +151,10 @@ export class GameAnalysisComponent implements OnInit {
       label: 'Hint',
       path: this.config.eventShapePaths.hint
     });
+    this.legendIcons.push({
+      label: 'Wrong',
+      path: this.config.eventShapePaths.wrong
+    });
   }
 
   loadData() {
