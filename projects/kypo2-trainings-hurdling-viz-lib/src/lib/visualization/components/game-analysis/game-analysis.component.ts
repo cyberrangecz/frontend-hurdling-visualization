@@ -119,6 +119,8 @@ export class GameAnalysisComponent implements OnInit {
 
   public legendIcons;
 
+  private clicked = null;
+
   @ViewChild('csvInput')
   csvInput: any;
 
@@ -729,13 +731,24 @@ export class GameAnalysisComponent implements OnInit {
       })
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
         // remove team highlighting
-        this.outerWrapper.classed('ctf-progress-hover', false);
+        if (teamIndex === this.clicked) return;
+        if (!this.clicked) this.outerWrapper.classed('ctf-progress-hover', false);
         this.d3
           .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
           .classed('data-hover', false);
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
         }
+      })
+      .on('click', (d, teamIndex) => {
+        this.d3
+        .selectAll('.data text:nth-child(' + (this.clicked + 1) + ')')
+        .classed('data-hover', false);
+        this.clicked = teamIndex === this.clicked ? null : teamIndex;
+        this.outerWrapper.classed('ctf-progress-hover', true);
+        this.d3
+          .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
+          .classed('data-hover', true);
       });
   }
 
@@ -968,6 +981,7 @@ export class GameAnalysisComponent implements OnInit {
         );
       })
       .on('mouseout', (d: any, teamIndex: number) => {
+        if (this.clicked) return;
         this.outerWrapper.classed('ctf-progress-hover', false);
         d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed(
           'data-hover',
