@@ -722,7 +722,8 @@ export class GameAnalysisComponent implements OnInit {
         // highlight team on hover
         this.outerWrapper.classed('ctf-progress-hover', true);
         this.d3
-          .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
+          .selectAll('.data text')
+          .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', true);
 
         if (this.eventService) {
@@ -731,10 +732,11 @@ export class GameAnalysisComponent implements OnInit {
       })
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
         // remove team highlighting
-        if (teamIndex === this.clicked) return;
+        if (d.data.team === this.clicked) return;
         if (!this.clicked) this.outerWrapper.classed('ctf-progress-hover', false);
         this.d3
-          .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
+          .selectAll('.data text')
+          .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', false);
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
@@ -742,15 +744,16 @@ export class GameAnalysisComponent implements OnInit {
       })
       .on('click', (d, teamIndex) => {
         this.d3
-        .selectAll('.data text:nth-child(' + (this.clicked + 1) + ')')
-        .classed('data-hover', false);
-        this.clicked = teamIndex === this.clicked ? null : teamIndex;
+          .selectAll('.data text')
+          .classed('data-hover', false);
+        this.clicked = d.data.team === this.clicked ? null : d.data.team;
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarClick(+d.data.team);
         }
         this.outerWrapper.classed('ctf-progress-hover', true);
         this.d3
-          .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
+          .selectAll('.data text')
+          .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', true);
       });
   }
@@ -1352,6 +1355,13 @@ export class GameAnalysisComponent implements OnInit {
       this.sortLevel = 0;
     }
     this.drawChart();
+    if (this.clicked) {
+      this.outerWrapper.classed('ctf-progress-hover', true);
+      this.d3
+        .selectAll('.data text')
+        .filter((data: any) => data.team === this.clicked)
+        .classed('data-hover', true);
+    }
   }
 
   watchGameProgress() {
