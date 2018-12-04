@@ -8,5 +8,7 @@ export interface GameAnalysisEventService {
 
     gameAnalysisOnBarMouseout(playerId: number): void;
 
+    gameAnalysisOnBarClick(playerId: number): void;
+
     registerGameAnalysisComponent(component: GameAnalysisComponent): void;
 }

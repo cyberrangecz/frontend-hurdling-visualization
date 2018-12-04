@@ -745,6 +745,9 @@ export class GameAnalysisComponent implements OnInit {
         .selectAll('.data text:nth-child(' + (this.clicked + 1) + ')')
         .classed('data-hover', false);
         this.clicked = teamIndex === this.clicked ? null : teamIndex;
+        if (this.eventService) {
+          this.eventService.gameAnalysisOnBarClick(+d.data.team);
+        }
         this.outerWrapper.classed('ctf-progress-hover', true);
         this.d3
           .selectAll('.data text:nth-child(' + (teamIndex + 1) + ')')
