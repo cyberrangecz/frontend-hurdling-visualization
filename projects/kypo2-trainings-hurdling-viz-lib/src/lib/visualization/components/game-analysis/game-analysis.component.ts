@@ -3,7 +3,8 @@ import {
   OnInit,
   ViewEncapsulation,
   ViewChild,
-  Input
+  Input,
+  OnChanges
 } from '@angular/core';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
@@ -35,9 +36,9 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./game-analysis.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GameAnalysisComponent implements OnInit {
+export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
-
+  @Input() csvFile: File;
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
   private activeDataSource: DataSource = DataSource.api;
@@ -136,6 +137,10 @@ export class GameAnalysisComponent implements OnInit {
     this.d3 = d3Service.getD3();
   }
 
+  ngOnChanges(): void {
+    this.loadData();
+  }
+
   ngOnInit(): void {
     this.selectedViewValue = this.config.defaultView;
     this.view = this.config.defaultView;
@@ -161,12 +166,19 @@ export class GameAnalysisComponent implements OnInit {
 
   loadData() {
     this.errorMessage = null;
-
-    this.http.get('assets/user_events_log.csv', {responseType: 'blob'})
-      .subscribe(data => {
-        const file: File = new File([data], 'user_events_log.csv', {type: data.type});
-        this.loadMock(file);
-      });
+    
+    if (this.csvFile === null || typeof this.csvFile === 'undefined') {
+      this.http
+        .get('assets/user_events_log.csv', { responseType: 'blob' })
+        .subscribe(data => {
+          const file: File = new File([data], 'user_events_log.csv', {
+            type: data.type
+          });
+          this.loadMock(file);
+        });
+    } else {
+      this.loadMock(this.csvFile);
+    }
 
     // this.loadDataService
     //   .getGameAndPlanData(
@@ -733,7 +745,8 @@ export class GameAnalysisComponent implements OnInit {
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
         // remove team highlighting
         if (d.data.team === this.clicked) return;
-        if (!this.clicked) this.outerWrapper.classed('ctf-progress-hover', false);
+        if (!this.clicked)
+          this.outerWrapper.classed('ctf-progress-hover', false);
         this.d3
           .selectAll('.data text')
           .filter((data: any) => data.team === d.data.team)
@@ -743,9 +756,7 @@ export class GameAnalysisComponent implements OnInit {
         }
       })
       .on('click', (d, teamIndex) => {
-        this.d3
-          .selectAll('.data text')
-          .classed('data-hover', false);
+        this.d3.selectAll('.data text').classed('data-hover', false);
         this.clicked = d.data.team === this.clicked ? null : d.data.team;
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarClick(+d.data.team);
