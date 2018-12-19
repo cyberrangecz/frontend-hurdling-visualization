@@ -120,7 +120,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   public legendIcons;
 
-  private clicked = null;
   private clickedArray = [];
 
   @ViewChild('csvInput')
@@ -167,7 +166,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   loadData() {
     this.errorMessage = null;
-    
+
     if (this.csvFile === null || typeof this.csvFile === 'undefined') {
       this.http
         .get('assets/user_events_log.csv', { responseType: 'blob' })
@@ -745,8 +744,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       })
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
         // remove team highlighting
-        if (d.data.team === this.clicked) return;
-        if (!this.clicked)
+        if (this.clickedArray.length === 0)
           this.outerWrapper.classed('ctf-progress-hover', false);
         this.d3
           .selectAll('.data text')
@@ -757,9 +755,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         }
       })
       .on('click', (d, teamIndex) => {
-        this.clicked = d.data.team === this.clicked ? null : d.data.team;
         if (this.clickedArray.includes(d.data.team)) {
-          this.clickedArray = this.clickedArray.filter(item => item !== d.data.team);
+          this.clickedArray = this.clickedArray.filter(
+            item => item !== d.data.team
+          );
         } else {
           this.clickedArray.push(d.data.team);
         }
@@ -1003,7 +1002,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         );
       })
       .on('mouseout', (d: any, teamIndex: number) => {
-        if (this.clicked) return;
+        if (this.clickedArray.length > 0) return;
         this.outerWrapper.classed('ctf-progress-hover', false);
         d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed(
           'data-hover',
@@ -1371,11 +1370,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       this.sortLevel = 0;
     }
     this.drawChart();
-    if (this.clicked) {
+    if (this.clickedArray.length > 0) {
       this.outerWrapper.classed('ctf-progress-hover', true);
       this.d3
         .selectAll('.data text')
-        .filter((data: any) => data.team === this.clicked)
+        .filter((data: any) => this.clickedArray.includes(data.team))
         .classed('data-hover', true);
     }
   }
