@@ -121,6 +121,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   public legendIcons;
 
   private clicked = null;
+  private clickedArray = [];
 
   @ViewChild('csvInput')
   csvInput: any;
@@ -749,15 +750,19 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           this.outerWrapper.classed('ctf-progress-hover', false);
         this.d3
           .selectAll('.data text')
-          .filter((data: any) => data.team === d.data.team)
+          .filter((data: any) => !this.clickedArray.includes(data.team))
           .classed('data-hover', false);
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
         }
       })
       .on('click', (d, teamIndex) => {
-        this.d3.selectAll('.data text').classed('data-hover', false);
         this.clicked = d.data.team === this.clicked ? null : d.data.team;
+        if (this.clickedArray.includes(d.data.team)) {
+          this.clickedArray = this.clickedArray.filter(item => item !== d.data.team);
+        } else {
+          this.clickedArray.push(d.data.team);
+        }
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarClick(+d.data.team);
         }
