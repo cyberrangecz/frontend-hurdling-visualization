@@ -120,7 +120,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   public legendIcons;
 
-  private clickedArray = [];
+  public clickedArray = [];
 
   @ViewChild('csvInput')
   csvInput: any;
