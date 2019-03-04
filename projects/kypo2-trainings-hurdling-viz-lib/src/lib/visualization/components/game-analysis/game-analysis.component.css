@@ -28,6 +28,12 @@ html, body {background: #f5f5f5; color: #2f2f2f; position: relative; box-sizing:
 
 /* team highlighting */
 .ctf-progress-hover .ctf-progress-column text:not(.data-hover) { fill: #b2b2b2; transition: none; }
+.ctf-progress-hover .game-layer .data-hover { opacity: 0.5; }
+.ctf-progress-hover .game-layer .preserved.data-hover { opacity: 0.8; }
+.ctf-progress-hover .game-layer .faded,
+.ctf-game-progress .game-layer rect { opacity: 0.3; }
+.ctf-game-progress .game-segment-finished { opacity: 0.9 !important; }
+.ctf-progress-hover .game-layer .preserved { opacity: 1; }
 
 /* axes */
 .ctf-progress-wrapper .axis .tick text { font-weight: 200; font-size: 14px; }
@@ -45,7 +51,9 @@ html, body {background: #f5f5f5; color: #2f2f2f; position: relative; box-sizing:
 .ctf-progress-wrapper .plan-layer { pointer-events: none; }
 
 /* game chart */
-.ctf-progress-wrapper .ctf-game-wrapper { overflow-x: hidden; }
+.ctf-progress-wrapper .ctf-game-overview,
+.ctf-progress-wrapper .ctf-game-progress
+{ overflow-x: hidden; }
 
 /* events */
 .ctf-progress-wrapper .events path { transform-origin: 0% 0%; width: 10px; height: 10px; stroke-width: 1px; }
