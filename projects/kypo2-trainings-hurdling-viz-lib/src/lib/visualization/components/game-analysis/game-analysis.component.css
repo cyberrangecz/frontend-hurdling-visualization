@@ -29,9 +29,10 @@ html, body {background: #f5f5f5; color: #2f2f2f; position: relative; box-sizing:
 /* team highlighting */
 .ctf-progress-hover .ctf-progress-column text:not(.data-hover) { fill: #b2b2b2; transition: none; }
 .ctf-progress-hover .game-layer .data-hover { opacity: 0.5; }
-.ctf-progress-hover .game-layer .preserved.data-hover { opacity: 0.8; }
 .ctf-progress-hover .game-layer .faded,
 .ctf-game-progress .game-layer rect { opacity: 0.3; }
+.ctf-progress-hover .game-layer .faded.data-hover { opacity: 0.4 }
+.ctf-progress-hover .game-layer .preserved.data-hover { opacity: 0.8; }
 .ctf-game-progress .game-segment-finished { opacity: 0.9 !important; }
 .ctf-progress-hover .game-layer .preserved { opacity: 1; }
 
@@ -250,9 +251,9 @@ html {
 
 .col-2 {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 16.666667%;
-  flex: 0 0 16.666667%;
-  max-width: 16.666667%;
+  -ms-flex: 0 0 10%;
+  flex: 0 0 10%;
+  max-width: 10%;
 }
 
 .col-3 {
@@ -292,9 +293,9 @@ html {
 
 .col-8 {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 66.666667%;
-  flex: 0 0 66.666667%;
-  max-width: 66.666667%;
+  -ms-flex: 0 0 80%;
+  flex: 0 0 80%;
+  max-width: 80%;
 }
 
 .col-9 {
@@ -420,7 +421,7 @@ html {
 }
 
 .offset-2 {
-  margin-left: 16.666667%;
+  margin-left: 10%;
 }
 
 .offset-3 {

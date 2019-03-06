@@ -361,9 +361,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.outerWrapper = d3.select('.' + baseConfig.outerWrapperElement);
     // create svg
     // calculate the height first, width can change when the scrollbar is added
-    this.wrapperWidth = document
-      .getElementById(element)
-      .getBoundingClientRect().width;
+    this.wrapperWidth = Math.max(document.getElementById(element).getBoundingClientRect().width, // original (standalone) size
+                        window.innerWidth / 2 - (window.innerWidth / 2 * 0.25)); // get width in the dashboard as a 75% piece of a halfpage
     const maxHeight: number = Math.min(
       this.wrapperWidth * 0.7,
       window.innerHeight - 130,
@@ -410,7 +409,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       }
     );
 
-    this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]);
+    this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]); ////here!
     this.xScale.domain([0, this.planDomain]);
     this.yScale = this.d3
       .scaleBand()
