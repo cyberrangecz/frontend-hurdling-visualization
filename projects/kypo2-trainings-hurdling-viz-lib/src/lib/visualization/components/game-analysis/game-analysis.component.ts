@@ -1534,4 +1534,45 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     const color = this.d3.hsl(this.colorScheme[level % colorsCount]);
     return color.brighter(0.8).toString();
   }
+
+  /* for analysis manipulation */
+
+  highlightGivenPlayer(playerId: number): void {
+      this.outerWrapper.classed('ctf-progress-hover', true);
+      this.d3
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === playerId.toString())
+          .classed('data-hover', true);
+  }
+
+  unhighlightGivenPlayer(playerId: number): void {
+      this.outerWrapper.classed('ctf-progress-hover', true);
+      this.d3
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === playerId.toString())
+          .classed('data-hover', false);
+  }
+
+  preserveHighlightedPlayer(playerId: number): void {
+      const player = playerId.toString();
+      console.log(this.clickedArray);
+      if (this.clickedArray.includes(player)) {
+          this.clickedArray = this.clickedArray.filter(
+              item => item !== player
+          );
+      } else {
+          this.clickedArray.push(player);
+      }
+
+      this.d3
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === player)
+          .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
+
+      if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
+          this.d3
+              .selectAll('.game .game-layer rect')
+              .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
+      }
+  }
 }

@@ -48,6 +48,7 @@
 				</div>
 			</div>
 		</div>
+		<p *ngIf="!standalone">Game-run final overview</p>
 		<div class="row align-items-end no-gutters">
 			<div class="col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-teamcolumn">
@@ -118,7 +119,7 @@
 								</svg>
 								Level time limit
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-estimate">
+							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="standalone">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18" fill="#8c8b8b">
 									<defs>
 										<pattern id="diagonalHatchGray" patternUnits="userSpaceOnUse" width="7" height="4" patternTransform="rotate(45)">
@@ -129,25 +130,25 @@
 								</svg>
 								Estimated time
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-finished">
+							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="standalone">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#cccccc"></rect>
 								</svg>
 								Finished level
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-active">
+							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="standalone">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#848282"></rect>
 								</svg>
 								Active level
 							</span>
+							<span class="ctf-progress-legend-item" *ngFor="let icon of legendIcons">
+								<svg class="ctf-progress-legend-icon" width="16px" height="16px" viewBox="0 0 16 16">
+									<path attr.d="{{icon.path}}" />
+								</svg>
+								{{icon.label}}
+							</span>
 						</div>
-						<span class="ctf-progress-legend-item" *ngFor="let icon of legendIcons">
-							<svg class="ctf-progress-legend-icon" width="16px" height="16px" viewBox="0 0 16 16">
-								<path attr.d="{{icon.path}}" />
-							</svg>
-							{{icon.label}}
-						</span>
 					</div>
 					<div class="ctf-progress-legend-right">
 						<span class="ctf-progress-legend-item ctf-progress-legend-zoom">

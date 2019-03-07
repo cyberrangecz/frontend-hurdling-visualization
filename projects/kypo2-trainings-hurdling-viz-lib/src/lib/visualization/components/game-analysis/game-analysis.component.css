@@ -34,7 +34,8 @@ html, body {background: #f5f5f5; color: #2f2f2f; position: relative; box-sizing:
 .ctf-progress-hover .game-layer .faded.data-hover { opacity: 0.4 }
 .ctf-progress-hover .game-layer .preserved.data-hover { opacity: 0.8; }
 .ctf-game-progress .game-segment-finished { opacity: 0.9 !important; }
-.ctf-progress-hover .game-layer .preserved { opacity: 1; }
+.ctf-progress-hover .game-layer .preserved,
+.ctf-progress .game-layer .preserved { opacity: 1; }
 
 /* axes */
 .ctf-progress-wrapper .axis .tick text { font-weight: 200; font-size: 14px; }
