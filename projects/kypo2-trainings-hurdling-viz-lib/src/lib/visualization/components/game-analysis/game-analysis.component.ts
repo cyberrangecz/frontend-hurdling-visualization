@@ -28,6 +28,7 @@ import { SortingService } from '../../services/sorting.service';
 import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
+// import {ConfigService} from '../../services/config.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -242,6 +243,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       this.view,
       this.levels
     );
+    //console.log(JSON.stringify(this.gamedataset));
     const sortedPlandataset = this.getUpdatedPlandataset(sortedGamedataset);
     return { gameDataset: sortedGamedataset, planDataset: sortedPlandataset };
   }

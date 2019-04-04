@@ -1,6 +1,6 @@
 {
   "name": "d3-visualization",
-  "version": "0.0.0",
+  "version": "1git .0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "lib-build": "ng build kypo2-trainings-hurdling-viz-lib && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
-    "lib-copy": "rm -rf ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib/* && cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib"
+    "lib-copy": "cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-trainings-hurdling-viz-lib-package/",
+    "cp": "rm -rf ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib/* && cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib"
   },
   "private": true,
   "dependencies": {
@@ -28,8 +29,7 @@
     "font-awesome": "^4.7.0",
     "ngx-papaparse": "^3.0.0",
     "node-sass": "^4.9.4",
-    "rxjs": "^6.3.3",
-    "rxjs-compat": "^6.0.0-rc.0",
+    "rxjs": "^6.4.0",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {

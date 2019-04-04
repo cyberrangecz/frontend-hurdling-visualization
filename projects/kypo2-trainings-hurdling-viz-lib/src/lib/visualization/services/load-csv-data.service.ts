@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
-import { Observable } from 'rxjs/Observable';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+import { Observable ,  from as fromPromise } from 'rxjs';
 import { GenericObject } from '../models/generic-object.type';
 
 import { DataEntry } from '../models/data-entry';
@@ -88,12 +87,14 @@ export class LoadCsvDataService {
                 startTime,
                 endInPercents
               );
+      console.log(JSON.stringify(result.planDataset));
               resolve(result);
             }
           }.bind(this)
         });
       }.bind(this)
     );
+
 
     return fromPromise(promise);
   }

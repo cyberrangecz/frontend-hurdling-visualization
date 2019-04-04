@@ -1,19 +1,12 @@
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
-  HttpParams,
   HttpErrorResponse
 } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { catchError } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Observable ,  forkJoin } from 'rxjs';
 import { GenericObject } from '../models/generic-object.type';
-import { NumericObject } from '../models/numeric-object.type';
-
-import { CsvRow } from '../models/csv-row';
-import { DataEntry } from '../models/data-entry';
 import { Event } from '../models/event';
 import { Game } from '../models/game';
 import { Data } from '../models/data';
@@ -51,7 +44,7 @@ export class LoadDataService {
     return forkJoin([
       this.loadData<Game>(gameUrl),
       this.loadData<Event>(gameEventsUrl)
-    ]).map(
+    ]).pipe(map(
       (data: any[]): Data => {
         const games: Game[] = data[0].games;
         let game: Game;
@@ -61,11 +54,11 @@ export class LoadDataService {
           }
         });
         const events: Event[] = data[1].events;
-        
+
         const result: Data = this.processData(game, events);
         return result;
       }
-    );
+    ));
   }
 
   private loadData<T>(url: string, params?: any): Observable<any> {
@@ -77,7 +70,7 @@ export class LoadDataService {
   }
 
   private processData(game, events): Data {
-    let gamedataset: GenericObject[] = [],
+    const gamedataset: GenericObject[] = [],
       plandataset: GenericObject[] = [],
       // stores levels keys for use in d3.stack, in format "level + index" or "start" for start of the game
       levels: string[] = ['start'],
@@ -86,8 +79,9 @@ export class LoadDataService {
       teamsMap: GenericObject = {},
       levelTimePlan: number = this.levelTimePlan,
       levelsTimePlan: number[] = this.levelsTimePlan,
-      finalLevelsTimePlan: number[] = [],
-      gameStartTimestamp = 0,
+      finalLevelsTimePlan: number[] = [];
+
+      let gameStartTimestamp = 0,
       currentTimestamp = 0,
       time = 0;
 
@@ -105,12 +99,12 @@ export class LoadDataService {
     events.forEach(
       function(event: Event): void {
         // eventTime is relative time of event in level
-        let eventTime: number = event.game_details.logical_time,
+        const eventTime: number = event.game_details.logical_time,
           eventTeam: string = event.game_details.player_id,
-          eventType: string = event.type,
-          eventName: string = event.type,
           level: number = event.game_details.level,
-          levelKey: string = 'level' + level,
+          levelKey: string = 'level' + level;
+        let eventType: string = event.type,
+          eventName: string = event.type,
           teamIndex = 0,
           levelFinished = false;
 
@@ -267,6 +261,8 @@ export class LoadDataService {
       else if (typeof team[lastLevelKey] === 'number')
         team['currentState'] = 'finished'; // finished team
     });
+
+    console.log(gamedataset);
 
     return {
       gameDataset: gamedataset,
