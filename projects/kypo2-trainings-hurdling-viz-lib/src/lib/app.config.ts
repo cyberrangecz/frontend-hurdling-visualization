@@ -20,7 +20,7 @@ export class AppConfig {
 export const CTF_PROGRESS_CONFIG: AppConfig = {
 	apiUrl: 'https://ctfprogress-api.grex-pere.cz',
 	gameId: '1',
-	levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
+	levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200], // TODO remove hardcoded values
     gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',
 	eventShapePaths: {

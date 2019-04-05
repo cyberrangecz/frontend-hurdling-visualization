@@ -87,14 +87,12 @@ export class LoadCsvDataService {
                 startTime,
                 endInPercents
               );
-      console.log(JSON.stringify(result.planDataset));
               resolve(result);
             }
           }.bind(this)
         });
       }.bind(this)
     );
-
 
     return fromPromise(promise);
   }

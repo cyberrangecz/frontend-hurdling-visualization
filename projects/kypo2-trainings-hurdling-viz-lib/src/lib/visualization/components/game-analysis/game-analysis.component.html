@@ -1,6 +1,6 @@
 	<div class="ctf-progress-wrapper">
 	<div class="container-fluid">
-		<div class="row ctf-progress-head-wrapper" *ngIf="standalone">
+		<div class="row ctf-progress-head-wrapper" *ngIf="!hideCSVUpload">
 			<div class="col-12">
 				<div class="ctf-progress-head">
 					<h2 class="ctf-progress-heading">Capture the Flag Game Visualization</h2>
@@ -48,16 +48,16 @@
 				</div>
 			</div>
 		</div>
-		<p *ngIf="!standalone">Game-run final overview</p>
-		<div class="row align-items-end no-gutters">
-			<div class="col-2" *ngIf="hasData">
+		<p *ngIf="hideCSVUpload">Game-run final overview</p>
+		<div class="ctfh-row align-items-end ctfh-no-gutters">
+			<div class="ctfh-col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-teamcolumn">
 					<app-column-header (onSort)="onSortValueChange('name', $event.sortReverse)" [sortType]="'name'" [selectedSortType]="sortType"
 					 [selectedSortReverse]="sortReverse" [label]="'Team'"></app-column-header>
 				</div>
 			</div>
 
-			<div class="col-8" *ngIf="hasData">
+			<div class="ctfh-col-8" *ngIf="hasData">
 				<div class="ctf-progress-header-levels">
 					<app-column-header *ngFor="let level of levelSortOptions" (onSort)="onSortValueChange('level', $event.sortReverse, level.index)"
 					 [sortType]="'level'+level.index" [selectedSortType]="sortType+sortLevel" [selectedSortReverse]="sortReverse"
@@ -69,7 +69,7 @@
 				</div>
 			</div>
 
-			<div class="col-2" *ngIf="hasData">
+			<div class="ctfh-col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-timecolumn">
 					<app-column-header (onSort)="onSortValueChange('time', $event.sortReverse)" [sortType]="'time'" [selectedSortType]="sortType"
 					 [selectedSortReverse]="sortReverse" [label]="'Time'"></app-column-header>
@@ -77,12 +77,12 @@
 			</div>
 		</div>
 
-		<div class="row no-gutters">
-			<div class="col-2">
+		<div class="ctfh-row ctfh-no-gutters">
+			<div class="ctfh-col-2">
 				<div class="ctf-progress-column ctf-progress-teamcolumn ctf-progress-column-data" id="ctf-progress-teamcolumn"></div>
 			</div>
 
-			<div class="col-8" id="hurdling-space">
+			<div class="ctfh-col-8" id="hurdling-space">
 				<div class="ctf-progress-chart-wrapper">
 					<div id="ctf-progress-chart" class="ctf-progress" mouseWheel (mouseWheelUp)="onMouseWheelUp($event)"
 					 (mouseWheelDown)="onMouseWheelDown($event)" mouseMove (mouseDrag)="onMouseDrag($event)" (mouseUp)="onMouseUp()"
@@ -90,14 +90,14 @@
 				</div>
 			</div>
 
-			<div class="col-2">
+			<div class="ctfh-col-2">
 				<div class="ctf-progress-column ctf-progress-timecolumn ctf-progress-column-data" id="ctf-progress-timecolumn"></div>
 			</div>
 		</div>
 	</div>
-	<div class="container-fluid" *ngIf="errorMessage">
-		<div class="row no-gutters">
-			<div class="col-sm-8 offset-sm-2">
+	<div class="ctfh-container-fluid" *ngIf="errorMessage">
+		<div class="ctfh-row ctfh-no-gutters">
+			<div class="ctfh-col-sm-8 ctfh-offset-sm-2">
 				<p class="ctf-progress-error">
 					<svg class="ctf-progress-error-icon" width="20" height="20" viewBox="0 0 24 24">
 						<path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
@@ -107,9 +107,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="container-fluid" *ngIf="hasData && legendIcons">
-		<div class="row no-gutters">
-			<div class="col-8 offset-2">
+	<div class="ctfh-container-fluid" *ngIf="hasData && legendIcons">
+		<div class="ctfh-row ctfh-no-gutters">
+			<div class="ctfh-col-8 ctfh-offset-2">
 				<div class="ctf-progress-legend">
 					<div class="ctf-progress-legend-left">
 						<div class="ctf-progress-legend-left-top">
@@ -119,7 +119,7 @@
 								</svg>
 								Level time limit
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="standalone">
+							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="!hideCSVUpload">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18" fill="#8c8b8b">
 									<defs>
 										<pattern id="diagonalHatchGray" patternUnits="userSpaceOnUse" width="7" height="4" patternTransform="rotate(45)">
@@ -130,13 +130,13 @@
 								</svg>
 								Estimated time
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="standalone">
+							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="!hideCSVUpload">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#cccccc"></rect>
 								</svg>
 								Finished level
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="standalone">
+							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="!hideCSVUpload">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#848282"></rect>
 								</svg>

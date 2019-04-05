@@ -28,7 +28,6 @@ import { SortingService } from '../../services/sorting.service';
 import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
-// import {ConfigService} from '../../services/config.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -40,10 +39,11 @@ import { HttpClient } from '@angular/common/http';
 export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
   @Input() csvFile: File;
-  @Input() standalone: boolean;
-  @Input() colorScheme: any[];
+  @Input() hideCSVUpload: boolean;
+  @Input() colorScheme: string[];
 
   public assetsRoot: string = environment.assetsRoot;
+  private actualColorScheme: string[] = (this.colorScheme || this.config.gameColors);
   private d3: D3;
   private activeDataSource: DataSource = DataSource.api;
   private wrapperWidth: number;
@@ -54,12 +54,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private bounds: any;
   private xScale: ScaleLinear<number, number>;
   private yScale: ScaleBand<string>;
-  private xAxis: Axis<
-    | number
-    | {
-        valueOf(): number;
-      }
-  >;
+  private xAxis: Axis <|number|{valueOf(): number}>;
   private chart: any;
   private plan: any;
   private gameChartWrapper: any;
@@ -243,7 +238,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       this.view,
       this.levels
     );
-    //console.log(JSON.stringify(this.gamedataset));
     const sortedPlandataset = this.getUpdatedPlandataset(sortedGamedataset);
     return { gameDataset: sortedGamedataset, planDataset: sortedPlandataset };
   }
@@ -1513,8 +1507,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.colorScheme.length;
-    return this.colorScheme[level % colorsCount];
+    const colorsCount: number = this.actualColorScheme.length;
+    return this.actualColorScheme[level % colorsCount];
   }
 
   getPlanColor(level: number): string {
@@ -1522,8 +1516,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.colorScheme.length;
-    const color = this.d3.hsl(this.colorScheme[level % colorsCount]);
+    const colorsCount: number = this.actualColorScheme.length;
+    const color = this.d3.hsl(this.actualColorScheme[level % colorsCount]);
     return color.darker(1.1).toString();
   }
 
@@ -1532,8 +1526,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.colorScheme.length;
-    const color = this.d3.hsl(this.colorScheme[level % colorsCount]);
+    const colorsCount: number = this.actualColorScheme.length;
+    const color = this.d3.hsl(this.actualColorScheme[level % colorsCount]);
     return color.brighter(0.8).toString();
   }
 
@@ -1557,7 +1551,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   preserveHighlightedPlayer(playerId: number): void {
       const player = playerId.toString();
-      console.log(this.clickedArray);
       if (this.clickedArray.includes(player)) {
           this.clickedArray = this.clickedArray.filter(
               item => item !== player
