@@ -43,7 +43,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() colorScheme: string[];
 
   public assetsRoot: string = environment.assetsRoot;
-  private actualColorScheme: string[] = (this.colorScheme || this.config.gameColors);
   private d3: D3;
   private activeDataSource: DataSource = DataSource.api;
   private wrapperWidth: number;
@@ -1503,31 +1502,34 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   getColor(level: number): string {
+    const colors: string[] = (this.colorScheme || this.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.actualColorScheme.length;
-    return this.actualColorScheme[level % colorsCount];
+    const colorsCount: number = colors.length;
+    return colors[level % colorsCount];
   }
 
   getPlanColor(level: number): string {
+    const colors: string[] = (this.colorScheme || this.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.actualColorScheme.length;
-    const color = this.d3.hsl(this.actualColorScheme[level % colorsCount]);
+    const colorsCount: number = colors.length;
+    const color = this.d3.hsl(colors[level % colorsCount]);
     return color.darker(1.1).toString();
   }
 
   getLightenedColor(level: number): string {
+    const colors: string[] = (this.colorScheme || this.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.actualColorScheme.length;
-    const color = this.d3.hsl(this.actualColorScheme[level % colorsCount]);
+    const colorsCount: number = colors.length;
+    const color = this.d3.hsl(colors[level % colorsCount]);
     return color.brighter(0.8).toString();
   }
 
