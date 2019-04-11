@@ -39,6 +39,9 @@ import { HttpClient } from '@angular/common/http';
 export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
   @Input() csvFile: File;
+  @Input() hideCSVUpload: boolean;
+  @Input() colorScheme: string[];
+
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
   private activeDataSource: DataSource = DataSource.api;
@@ -50,12 +53,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private bounds: any;
   private xScale: ScaleLinear<number, number>;
   private yScale: ScaleBand<string>;
-  private xAxis: Axis<
-    | number
-    | {
-        valueOf(): number;
-      }
-  >;
+  private xAxis: Axis <|number|{valueOf(): number}>;
   private chart: any;
   private plan: any;
   private gameChartWrapper: any;
@@ -358,9 +356,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.outerWrapper = d3.select('.' + baseConfig.outerWrapperElement);
     // create svg
     // calculate the height first, width can change when the scrollbar is added
-    this.wrapperWidth = document
-      .getElementById(element)
-      .getBoundingClientRect().width;
+    this.wrapperWidth = Math.max(document.getElementById(element).getBoundingClientRect().width, // original (standalone) size
+                        window.innerWidth / 2 - (window.innerWidth / 2 * 0.25)); // get width in the dashboard as a 75% piece of a halfpage
     const maxHeight: number = Math.min(
       this.wrapperWidth * 0.7,
       window.innerHeight - 130,
@@ -407,7 +404,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       }
     );
 
-    this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]);
+    this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]); ////here!
     this.xScale.domain([0, this.planDomain]);
     this.yScale = this.d3
       .scaleBand()
@@ -425,7 +422,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.gameChartWrapper = this.chart
       .append('g')
-      .attr('class', 'ctf-game-wrapper');
+      .attr('class', (this.view === View.overview ? 'ctf-game-overview' : 'ctf-game-progress'))
     this.gameChart = this.gameChartWrapper
       .append('g')
       .attr('class', 'ctf-game');
@@ -716,19 +713,26 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
             layers[levelIndex][teamIndex]['data'][levelKey],
           currentState: string = data['currentState'];
 
-        if (typeof currentLevelData !== 'undefined') {
-          this.d3
-            .select(nodes[i])
-            .attr('class', 'game-segment-finished')
-            .attr('opacity', '0.3');
-          return xScale(d[1]) - xScale(d[0]);
-        } else if (currentState === levelKey) {
-          if (view === View.overview)
-            return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
-          else return xScale(time) - xScale(d[0]);
-        } else {
-          return 0;
-        }
+          let allNodes = this.d3
+              .select(nodes[i]);
+
+          allNodes.classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)))
+              .classed('faded', (data: any) => (this.clickedArray.length > 0 && !this.clickedArray.includes(data.data.team)));
+          if (typeof currentLevelData === 'undefined' || this.view === View.overview) {
+              allNodes.classed('game-segment-finished', true);
+          }
+
+          if (typeof currentLevelData !== 'undefined') {
+            return xScale(d[1]) - xScale(d[0]);
+          } else if (currentState === levelKey) {
+            if (this.view === View.overview) {
+                return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
+            }
+            else return xScale(time) - xScale(d[0]);
+          } else {
+            return 0;
+          }
+
       })
       .on('mouseover', (d: GenericObject, teamIndex: number) => {
         // highlight team on hover
@@ -737,8 +741,12 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           .selectAll('.data text')
           .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', true);
+        this.d3
+            .selectAll('.game .game-layer rect')
+            .filter((data: any) => data.data.team === d.data.team)
+            .classed('data-hover', true);
 
-        if (this.eventService) {
+          if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseover(+d.data.team);
         }
       })
@@ -750,6 +758,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           .selectAll('.data text')
           .filter((data: any) => !this.clickedArray.includes(data.team))
           .classed('data-hover', false);
+        this.d3
+            .selectAll('.game .game-layer rect')
+            .filter((data: any) => data.data.team === d.data.team)
+            .classed('data-hover', false);
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
         }
@@ -770,6 +782,15 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           .selectAll('.data text')
           .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', true);
+        this.d3
+            .selectAll('.game .game-layer rect')
+            .filter((data: any) => data.data.team === d.data.team)
+            .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)))
+        if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
+            this.d3
+                .selectAll('.game .game-layer rect')
+                .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
+        }
       });
   }
 
@@ -802,7 +823,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
             teamIndex: number = i,
             data: NumericObject = layers[levelIndex][teamIndex]['data'],
             currentState: string = data['currentState'];
-          return currentState === levelKey ? 1 : 0;
+          return (currentState === levelKey && view !== View.overview) ? 1 : 0;
         }
       )
       .attr(
@@ -1036,9 +1057,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           let colorIndex: number = +d.level;
           if (this.view === View.overview) colorIndex -= 1; // in final overview is no first transparent column for start
           // check if the event is in current unfinished level
-          return teamStruct['currentState'] === 'level' + d.level
+          return (teamStruct['currentState'] === 'level' + d.level && this.view === View.progress)
             ? currentLevelColor
-            : this.getColor(colorIndex);
+            : (this.view !== View.overview ? this.getColor(colorIndex) : this.getPlanColor(colorIndex));
         }
       )
       .attr(
@@ -1481,29 +1502,74 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   getColor(level: number): string {
+    const colors: string[] = (this.colorScheme || this.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.config.gameColors.length;
-    return this.config.gameColors[level % colorsCount];
+    const colorsCount: number = colors.length;
+    return colors[level % colorsCount];
   }
 
   getPlanColor(level: number): string {
+    const colors: string[] = (this.colorScheme || this.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.config.planColors.length;
-    return this.config.planColors[level % colorsCount];
+    const colorsCount: number = colors.length;
+    const color = this.d3.hsl(colors[level % colorsCount]);
+    return color.darker(1.1).toString();
   }
 
   getLightenedColor(level: number): string {
+    const colors: string[] = (this.colorScheme || this.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
     }
-    const colorsCount: number = this.config.lightenedColors.length;
-    return this.config.lightenedColors[level % colorsCount];
+    const colorsCount: number = colors.length;
+    const color = this.d3.hsl(colors[level % colorsCount]);
+    return color.brighter(0.8).toString();
+  }
+
+  /* for analysis manipulation */
+
+  highlightGivenPlayer(playerId: number): void {
+      this.outerWrapper.classed('ctf-progress-hover', true);
+      this.d3
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === playerId.toString())
+          .classed('data-hover', true);
+  }
+
+  unhighlightGivenPlayer(playerId: number): void {
+      this.outerWrapper.classed('ctf-progress-hover', true);
+      this.d3
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === playerId.toString())
+          .classed('data-hover', false);
+  }
+
+  preserveHighlightedPlayer(playerId: number): void {
+      const player = playerId.toString();
+      if (this.clickedArray.includes(player)) {
+          this.clickedArray = this.clickedArray.filter(
+              item => item !== player
+          );
+      } else {
+          this.clickedArray.push(player);
+      }
+
+      this.d3
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === player)
+          .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
+
+      if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
+          this.d3
+              .selectAll('.game .game-layer rect')
+              .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
+      }
   }
 }

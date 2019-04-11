@@ -2,7 +2,7 @@ import { GameAnalysisComponent } from '../components/game-analysis/game-analysis
 
 export interface GameAnalysisEventService {
 
-    GameAnalysisComponent: GameAnalysisComponent;
+    gameAnalysisComponent: GameAnalysisComponent;
 
     gameAnalysisOnBarMouseover(playerId: number): void;
 

@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
-
 import { environment } from '../../../../environments/environment';
-
 
 @Component({
   selector: 'app-column-header',

@@ -1,5 +1,5 @@
+import {mergeMap, map, takeUntil} from 'rxjs/operators';
 import { Component, Directive, HostListener, EventEmitter, ElementRef, OnInit, Output } from '@angular/core';
-import 'rxjs/Rx';
 
 @Directive({ selector: '[mouseMove]' })
 export class MouseMoveDirective {
@@ -36,21 +36,21 @@ export class MouseMoveDirective {
 
 		let el = this.element;
 
-		this.drag = this.mouseDown.map(function(event: MouseEvent): any {
+		this.drag = this.mouseDown.pipe(map(function(event: MouseEvent): any {
 			return {
 				top: event.clientY - el.nativeElement.getBoundingClientRect().top,
 				left: event.clientX - el.nativeElement.getBoundingClientRect().left
 			};
-		})
-		.flatMap(
-			offset => this.mouseMove.map(function(pos: MouseEvent): any {
+		}),
+		mergeMap(
+			offset => this.mouseMove.pipe(map(function(pos: MouseEvent): any {
 				return {
 					top: (pos.clientY - el.nativeElement.getBoundingClientRect().top - offset.top),
 					left: (pos.clientX - el.nativeElement.getBoundingClientRect().left - offset.left)
 				};
-			})
-			.takeUntil(this.mouseUp)
-		);
+			}),
+			takeUntil(this.mouseUp),)
+		),);
 	}
 
 	ngOnInit() {

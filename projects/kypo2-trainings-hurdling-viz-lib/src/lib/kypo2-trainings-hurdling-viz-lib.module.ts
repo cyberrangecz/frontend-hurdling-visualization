@@ -1,10 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-
 import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
-
 import { D3Service } from 'd3-ng2-service';
 import { PapaParseModule } from 'ngx-papaparse';
 import { LoadDataService } from './visualization/services/load-data.service';
@@ -15,6 +11,7 @@ import { MouseMoveDirective } from './visualization/directives/mousemove.directi
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
+import {CommonModule} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -24,9 +21,8 @@ import { FilteringService } from './visualization/services/filtering.service';
     ColumnHeaderComponent
   ],
   imports: [
-    BrowserModule,
+    CommonModule,
     FormsModule,
-    HttpClientModule,
     PapaParseModule
   ],
   providers: [

@@ -14,8 +14,9 @@ import { LoadDataService } from '../../services/load-data.service';
 import { LoadCsvDataService } from '../../services/load-csv-data.service';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear, ScaleOrdinal } from 'd3-ng2-service';
 import { PapaParseModule, Papa } from 'ngx-papaparse';
-import { Observable } from 'rxjs/Observable';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+// import { Observable } from 'rxjs/Observable';
+// import { fromPromise } from 'rxjs/observable/fromPromise';
+ import { Observable ,  from as fromPromise } from 'rxjs';
 describe('GameAnalysisComponent', () => {
   let component: GameAnalysisComponent;
   let fixture: ComponentFixture<GameAnalysisComponent>;
@@ -24,8 +25,6 @@ describe('GameAnalysisComponent', () => {
     gameId: '1',
     levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
     gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
-    planColors: ['#0e6f90', '#158136', '#ec7e26', '#d82f36'],
-    lightenedColors: ['#bbdcea', '#bce6c9', '#ffe2c5', '#fecbc8'],
     darkColor: '#2f2f2f',
     eventShapePaths: {
         'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',

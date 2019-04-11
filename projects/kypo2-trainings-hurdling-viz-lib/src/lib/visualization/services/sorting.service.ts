@@ -4,13 +4,13 @@ import { Order } from '../models/order.enum';
 import { View } from '../models/view.enum';
 import { D3, D3Service } from 'd3-ng2-service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SortingService {
   private d3: D3;
   private view;
   private levels;
+  private time: number;
+  private lastLevelIndex: number;
   constructor(d3service: D3Service) {
     this.d3 = d3service.getD3();
   }
