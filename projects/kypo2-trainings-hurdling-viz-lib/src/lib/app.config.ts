@@ -3,7 +3,9 @@ import { View } from './visualization/models/view.enum';
 
 export class AppConfig {
 	apiUrl: string;
+	token: string; // temp
 	gameId: string;
+	definitionId: string;
 	levelsTimePlan: number[];
     gameColors: string[];
 	darkColor: string;
@@ -18,8 +20,10 @@ export class AppConfig {
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
-	apiUrl: 'https://ctfprogress-api.grex-pere.cz',
-	gameId: '1',
+    apiUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1',
+	token: 'eyJqa3UiOiJodHRwczpcL1wvb2lkYy5pY3MubXVuaS5jelwvb2lkY1wvandrIiwia2lkIjoicnNhMSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIzOTYyOTZAbXVuaS5jeiIsImF6cCI6IjU5M2JiZjQ5LWE4MmItNGY2ZS05YmFmLWM0ZWQ0ODhkNTA2NiIsImlzcyI6Imh0dHBzOlwvXC9vaWRjLmljcy5tdW5pLmN6XC9vaWRjXC8iLCJleHAiOjE1NTU1OTY0MDYsImlhdCI6MTU1NTU5MjgwNiwianRpIjoiMTE2NDI4MDMtNjIwNC00NGRhLWEzZTQtNmNkNDdiYWRlNTcwIn0.LmIYCw2UiioF5eNyzqBPAUJy36v1OBFRUm_1TrghahT_YpyLnTTMeuwPAJ9PnpCXnYszSL9ZZIqKjAP-S0CBIcym2uNOGXw5GN9DtbbSzLSJugzYJ_1ZEh1NV0FqMXJSkSXQzEISknhVkDK6jZF6uMxAeGB7bNaHgr7f9oLao7jHl0h8Caoy76HQFiHFo3eCbUlSCsrnhKszi6NrnsO9fWYXxZ62TcijKZvfSORP7H7hqqV6SFXJKxrN93ldjg3WIQ0-t6R48RINreSWg4rMW6aXb439VWmFpnCndQlT2MdP071M61CzvR1UsYa42jKpPjVe4kVVzhyEY5ugdiicaQ',
+	gameId: '5',
+    definitionId: '4',
 	levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200], // TODO remove hardcoded values
     gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',

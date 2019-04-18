@@ -165,7 +165,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadData() {
     this.errorMessage = null;
 
-    if (this.csvFile === null || typeof this.csvFile === 'undefined') {
+    /*if (this.csvFile === null || typeof this.csvFile === 'undefined') {
       this.http
         .get('assets/user_events_log.csv', { responseType: 'blob' })
         .subscribe(data => {
@@ -176,29 +176,31 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         });
     } else {
       this.loadMock(this.csvFile);
-    }
+    }*/
 
-    // this.loadDataService
-    //   .getGameAndPlanData(
-    //     this.config.apiUrl,
-    //     this.config.gameId,
-    //     this.config.levelsTimePlan
-    //   )
-    //   .subscribe(
-    //     (data: Data) => {
-    //       this.gamedataset = data.gameDataset;
-    //       this.plandataset = data.planDataset;
-    //       this.levels = data.levels;
-    //       this.levelsTimePlan = data.levelsTimePlan;
-    //       this.time = data.time;
-    //       this.drawChart();
-    //     },
-    //     (error: string) => {
-    //       this.errorMessage = error;
-    //     }
-    //   );
+     this.loadDataService
+       .getGameAndPlanData(
+         this.config.token,
+         this.config.apiUrl,
+         this.config.definitionId,
+         this.config.gameId,
+         this.config.levelsTimePlan
+       )
+       .subscribe(
+         (data: Data) => {
+           this.gamedataset = data.gameDataset;
+           this.plandataset = data.planDataset;
+           this.levels = data.levels;
+           this.levelsTimePlan = data.levelsTimePlan;
+           this.time = data.time;
+           this.drawChart();
+         },
+         (error: string) => {
+           this.errorMessage = error;
+         }
+       );
   }
-
+/*
   loadMock(file, endInPercents: number = 100) {
     this.errorMessage = null;
     this.loadCsvDataService
@@ -207,6 +209,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         (data: Data) => {
           this.gamedataset = data.gameDataset;
           this.plandataset = data.planDataset;
+          console.log(this.gamedataset);
+          console.log(this.plandataset);
           this.levels = data.levels;
           this.levelsTimePlan = data.levelsTimePlan;
           this.time = data.time;
@@ -216,7 +220,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           this.errorMessage = error;
         }
       );
-  }
+  }*/
 
   drawChart(): void {
     const data: PreparedData = this.getPreparedData();
@@ -565,7 +569,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         .stack()
         .keys(gamedata.keys)
         .offset(d3.stackOffsetNone),
-      layers = stack(gamedata.teams),
+      layers = stack(gamedata.teams),  // !!
       view = this.view,
       outerWrapper = this.outerWrapper,
       sortLevel = this.sortLevel,
@@ -589,6 +593,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.updateXAxis();
     const layer = this.createColumnForEachLevel(layers);
+    // console.log(layer);
 
     // draw segment (row in column) for each team
     this.createSegmentForEachTeam({
@@ -667,6 +672,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .attr(
         'x',
         (d: GenericObject, i: number): number => {
+          console.log(d);
           const x: number = d[0];
           // when sorting by level, align the teams by this level
           if (this.view === View.overview && this.sortType === 'level') {

@@ -9,6 +9,7 @@ import {BrowserModule} from '@angular/platform-browser';
     AppComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     HttpClientModule,
     Kypo2TrainingsHurdlingVizLibModule

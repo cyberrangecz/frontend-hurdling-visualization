@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { GenericObject } from '../models/generic-object.type';
 
-@Injectable(/*{
+@Injectable({
   providedIn: 'root'
-}*/)
+})
 export class FilteringService {
   constructor() {}
 

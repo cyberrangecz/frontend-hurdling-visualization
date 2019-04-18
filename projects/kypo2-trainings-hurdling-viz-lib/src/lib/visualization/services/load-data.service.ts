@@ -1,8 +1,8 @@
 import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
-  HttpClient,
-  HttpErrorResponse
+    HttpClient,
+    HttpErrorResponse, HttpHeaders
 } from '@angular/common/http';
 
 import { Observable ,  forkJoin } from 'rxjs';
@@ -10,20 +10,23 @@ import { GenericObject } from '../models/generic-object.type';
 import { Event } from '../models/event';
 import { Game } from '../models/game';
 import { Data } from '../models/data';
+import {forEach} from '@angular/router/src/utils/collection';
 
 @Injectable()
 export class LoadDataService {
   private httpClient: HttpClient;
   private levelsTimePlan: number[];
   private levelTimePlan = 1000;
-  private levelTypePrefix = 'cz.muni.csirt.kypo.events.game.';
+  private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
-    gameStart: this.levelTypePrefix + 'GameStarted',
-    gameFinished: this.levelTypePrefix + 'GameFinished',
-    gameExited: this.levelTypePrefix + 'GameExited',
+    gameStart: this.levelTypePrefix + 'TrainingRunStarted',
+    gameFinished: this.levelTypePrefix + 'TrainingRunEnded',
+    assessmentAnswers: this.levelTypePrefix + 'AssessmentAnswers',
+    gameExited: this.levelTypePrefix + 'TrainingRunSurrendered',
     hint: this.levelTypePrefix + 'HintTaken',
-    skip: this.levelTypePrefix + 'LevelSkipped',
+    skip: this.levelTypePrefix + 'LevelSkipped', // obsolete?
     wrongFlag: this.levelTypePrefix + 'WrongFlagSubmitted',
+    levelCompleted: this.levelTypePrefix + 'LevelCompleted',
     correctFlag: this.levelTypePrefix + 'CorrectFlagSubmitted',
     solution: this.levelTypePrefix + 'SolutionDisplayed'
   };
@@ -33,40 +36,55 @@ export class LoadDataService {
   }
 
   public getGameAndPlanData(
+    token: string,
     apiUrl: string,
+    definitionId: string,
     gameId: string,
     levelsTimePlan: number[]
   ) {
     this.levelsTimePlan = levelsTimePlan;
-    const gameUrl: string = apiUrl + '/games/' + gameId,
-      gameEventsUrl: string = gameUrl + '/events';
+    const defUrl: string = apiUrl + '/training-definitions/' + definitionId;
+    const eventsUrl: string = apiUrl + '/training-events/training-definitions/' + definitionId + '/training-instances/' + gameId;
 
     return forkJoin([
-      this.loadData<Game>(gameUrl),
-      this.loadData<Event>(gameEventsUrl)
+      this.loadData<Game>(token, defUrl),
+      this.loadData<Event>(token, eventsUrl)
     ]).pipe(map(
       (data: any[]): Data => {
-        const games: Game[] = data[0].games;
+        const game: Game = data[0];
+        const events: Event[] = data[1];
+        // console.log(game);
+        /*const games: Game[] = data[0].games;
         let game: Game;
         games.forEach(function(el: Game) {
           if (+el.id === +gameId) {
             game = el;
           }
         });
-        const events: Event[] = data[1].events;
-
+        const events: Event[] = data[1].events;*/
         const result: Data = this.processData(game, events);
         return result;
       }
     ));
   }
 
-  private loadData<T>(url: string, params?: any): Observable<any> {
+  private loadData<T>(token: string, url: string, params?: any): Observable<any> {
+    const headers = new HttpHeaders();
     if (typeof params !== 'undefined') {
-      return this.httpClient.get<T[]>(url, params); // .pipe(catchError(this.handleError));
+      return this.httpClient.get<T[]>(url, {headers: new HttpHeaders({'Authorization': 'Bearer ' + token})});
     } else {
-      return this.httpClient.get<T[]>(url); // .pipe(catchError(this.handleError));
+      return this.httpClient.get<T[]>(url, {headers: new HttpHeaders({'Authorization': 'Bearer ' + token})});
     }
+  }
+
+  private getLevelNumber(id, levels): number {
+      let newId = -1;
+    levels.forEach((level, i) => {
+       if (level.id === id) {
+           newId = i + 1;
+       }
+    });
+    return newId;
   }
 
   private processData(game, events): Data {
@@ -79,29 +97,147 @@ export class LoadDataService {
       teamsMap: GenericObject = {},
       levelTimePlan: number = this.levelTimePlan,
       levelsTimePlan: number[] = this.levelsTimePlan,
-      finalLevelsTimePlan: number[] = [];
-
-      let gameStartTimestamp = 0,
-      currentTimestamp = 0,
+      finalLevelsTimePlan: number[] = [],
       time = 0;
 
-    if (events.length) {
+      /*let gameStartTimestamp = 0,
+      currentTimestamp = 0,
+      time = 0;*/
+
+    /*if (events.length) {
       gameStartTimestamp = events[0].timestamp;
       currentTimestamp = events[0].timestamp;
-    }
+    }*/
 
-    const levelCount: number = game.levels.length;
+    const levelCount = game.levels.length;
     for (let l = 1; l <= levelCount; l++) {
       const levelKey = 'level' + l;
       levels.push(levelKey);
     }
 
-    events.forEach(
+    const players: string[] = new Array();
+    // preprocessing
+    events.forEach( event => {
+        if (players.indexOf(event.player_login) === -1) {
+          players.push(event.player_login);
+        }
+    });
+    // console.log(players);
+    gamedataset.length = players.length;
+    let gameStartTimestamp = 0;
+
+    events.forEach(event => {
+        const player = event.player_login;
+        const playerIndex = players.indexOf(player);
+        const levelId: number = event.level;
+        const levelKey: string = 'level' + this.getLevelNumber(levelId, game.levels);
+        let levelFinished = false;
+
+        if (gamedataset[playerIndex] === undefined) {
+            gamedataset[playerIndex] = {};
+            gamedataset[playerIndex].team = player;
+            gamedataset[playerIndex].events = [];
+            gamedataset[playerIndex].totalTime = 0;
+
+            plandataset[playerIndex] = {};
+            plandataset[playerIndex]['team'] = player;
+            plandataset[playerIndex]['start'] = 0;
+        }
+
+        const gameEvent: Event = new Event();
+        // console.log(event);
+        if (event.hint_id !== undefined) {
+            gameEvent.hint_id = event.hint_id;
+        }
+        gameEvent.game_details = {
+            player_id: event.player_login,
+            logical_time: event.game_time / 1000,
+            level: event.level,
+        };
+        /*gameEvent.game_details.level = event.level;
+        gameEvent.game_details.logical_time = event.timestamp; // game_time;
+        gameEvent.game_details.player_id = event.player_login;*/
+        const type = event.type.split('.');
+        gameEvent.type = type[type.length - 1];
+        gameEvent.timestamp = event.timestamp / 1000;
+
+
+        switch (event.type) {
+            case this.eventTypes.gameStart:
+                gameEvent.type = null;
+                // if the first level started, save the team start (it must be as timestamp,
+                // later when the game start timestamp will be known, it will be deducted)
+                gamedataset[playerIndex]['start'] = event.timestamp / 1000;
+                gameStartTimestamp = event.timestamp / 1000;
+                break;
+            case this.eventTypes.solution:
+                gameEvent.type = 'solution';
+                gameEvent.name = 'Solution displayed';
+                break;
+            case this.eventTypes.correctFlag:
+            case this.eventTypes.levelCompleted:
+                gameEvent.type = null; // 'levelDone';
+                levelFinished = true;
+                break;
+            case this.eventTypes.skip:
+                gameEvent.type = 'skip';
+                gameEvent.name = 'Level cowardly skipped';
+                levelFinished = true;
+                break;
+            case this.eventTypes.gameExited:
+            case this.eventTypes.gameFinished:
+                gameEvent.type = null; // 'end'
+                levelFinished = true;
+                gamedataset[playerIndex]['currentState'] = 'finished';
+                // gamedataset[playerIndex]['totalTime'] = event.game_time;
+                break;
+            case this.eventTypes.hint:
+                gameEvent.type = 'hint';
+                gameEvent.name = 'Hint ' + event.hint_id + ' taken';
+                break;
+            /*case this.eventTypes.wrongFlag:
+                gameEvent.type = 'wrong';
+                gameEvent.name = 'Wrong flag submitted';
+                break;*/
+            default:
+                gameEvent.type = null; // event.type;
+                break;
+        }
+
+
+        if (levelFinished) {
+            // level is finished, save the time
+            // sometimes there are some events twice with different time, take the bigger
+            if (typeof gamedataset[playerIndex][levelKey] === 'undefined' ||
+                gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
+                if (gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
+                    gamedataset[playerIndex]['totalTime'] -=
+                        gamedataset[playerIndex][levelKey];
+                }
+                gamedataset[playerIndex][levelKey] = event.game_time / 1000;
+                gamedataset[playerIndex]['totalTime'] += event.gametime / 1000;
+            }
+        }
+
+        if (levelFinished) {
+            // gamedataset[playerIndex].events.push(gameEvent);
+            // gamedataset[playerIndex].totalTime = (event.game_time / 1000);
+        }
+
+        if (gameEvent.type != null) {
+            gamedataset[playerIndex].events.push(gameEvent);
+            // gamedataset[playerIndex].totalTime += event.game_time / 1000;
+        }
+    });
+
+    console.log(gamedataset);
+
+    /*events.forEach(
       function(event: Event): void {
         // eventTime is relative time of event in level
-        const eventTime: number = event.game_details.logical_time,
-          eventTeam: string = event.game_details.player_id,
-          level: number = event.game_details.level,
+        const eventTime: number = event.timestamp, // game_details.logical_time,
+          eventTeam: string = event.player_login, // game_details.player_id,
+          level: number = event.level, // game_details.level,
           levelKey: string = 'level' + level;
         let eventType: string = event.type,
           eventName: string = event.type,
@@ -109,7 +245,7 @@ export class LoadDataService {
           levelFinished = false;
 
         // if the team is not in dataset yet, it is added to game/plan datasets and map
-        if (teamsMap[eventTeam] == null) {
+        if (players[eventTeam] == null) {
           teamIndex = gamedataset.length;
           teamsMap[eventTeam] = teamIndex;
           gamedataset[teamIndex] = {};
@@ -124,6 +260,7 @@ export class LoadDataService {
           teamIndex = teamsMap[eventTeam];
         }
 
+        console.log(gamedataset);
         // add level to levels array, if it does not contain it yet
         if (levels.indexOf(levelKey) === -1) levels.push(levelKey);
 
@@ -196,39 +333,42 @@ export class LoadDataService {
           gamedataset[teamIndex]['events'].push(eventData);
         }
       }.bind(this)
-    );
+    );*/
 
-    time = currentTimestamp - gameStartTimestamp;
+    // const time = currentTimestamp - gameStartTimestamp;
 
     // create final timeplan for levels
-    let levelIndex = 0;
-    levels.forEach(function(level): void {
-      let timePlan: number = levelsTimePlan[levelIndex]
-        ? levelsTimePlan[levelIndex]
+    // let levelIndex = 0;
+    levels.forEach(function(level, i): void {
+      let timePlan: number = levelsTimePlan[i]
+        ? levelsTimePlan[i]
         : levelTimePlan;
       if (level === 'start') timePlan = 0;
       else {
-        levelIndex++;
+        // levelIndex++;
         finalLevelsTimePlan.push(timePlan);
       }
     });
+
     // create dataset for plan
     plandataset.forEach(function(team: GenericObject): void {
-      let levelIndex = 0;
-      levels.forEach(function(level): void {
-        const timePlan: number = levelsTimePlan[levelIndex]
-          ? levelsTimePlan[levelIndex]
+      // let levelIndex = 0;
+      levels.forEach(function(level, i): void {
+        const timePlan: number = levelsTimePlan[i]
+          ? levelsTimePlan[i]
           : levelTimePlan;
         team[level] = level !== 'start' ? timePlan : 0;
-        if (level !== 'start') levelIndex++;
+        // if (level !== 'start') levelIndex++;
       });
     });
+
+    console.log(plandataset);
 
     // set current level on which is team now working
     // mark finished teams and if team doesn't finished yet, adjust total time
     gamedataset.forEach(function(team: GenericObject): void {
       // sort events
-      if (Array.isArray(team.events)) {
+      /*if (Array.isArray(team.events)) {
         team.events.sort(function(a, b) {
           if (a.level !== b.level) {
             return a.level - b.level;
@@ -236,12 +376,12 @@ export class LoadDataService {
             return a.time - b.time;
           }
         });
-      }
+      }*/
       // team start is now as a timestamp, subtract the game start timestamp to get it in seconds
-      team['start'] =
-        typeof team['start'] !== 'undefined'
+      team['start'] = gameStartTimestamp /*/ 1000*/;
+        /*typeof team['start'] !== 'undefined'
           ? team['start'] - gameStartTimestamp
-          : 0;
+          : 0;*/
       // if the team finished, there is no need to search current state
       if (team['currentState'] === 'finished') return;
 
