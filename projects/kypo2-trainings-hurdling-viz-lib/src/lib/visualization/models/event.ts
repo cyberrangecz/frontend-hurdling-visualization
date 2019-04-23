@@ -4,6 +4,7 @@ export class Event {
 		player_id: string;
 		level: number;
 		logical_time: number;
+		level_number: number;
 	};
 	name: string;
 	type: string;

@@ -129,8 +129,8 @@ export class LoadDataService {
     events.forEach(event => {
         const player = event.player_login;
         const playerIndex = players.indexOf(player);
-        const levelId: number = event.level;
-        const levelKey: string = 'level' + this.getLevelNumber(levelId, game.levels);
+        const levelNum: number = this.getLevelNumber(event.level, game.levels);
+        const levelKey: string = 'level' + levelNum;
         let levelFinished = false;
 
         if (gamedataset[playerIndex] === undefined) {
@@ -153,6 +153,7 @@ export class LoadDataService {
             player_id: event.player_login,
             logical_time: event.game_time / 1000,
             level: event.level,
+            level_number: levelNum
         };
         /*gameEvent.game_details.level = event.level;
         gameEvent.game_details.logical_time = event.timestamp; // game_time;
@@ -215,7 +216,7 @@ export class LoadDataService {
                         gamedataset[playerIndex][levelKey];
                 }
                 gamedataset[playerIndex][levelKey] = event.game_time / 1000;
-                gamedataset[playerIndex]['totalTime'] += event.gametime / 1000;
+                gamedataset[playerIndex]['totalTime'] += event.game_time / 1000;
             }
         }
 

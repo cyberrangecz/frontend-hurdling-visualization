@@ -910,38 +910,39 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         let previousEvent: any = null,
           group: any = {
             events: [],
-            level: first.level
+            level: first.game_details.level_number
           },
           previousOffset = false,
           isDuplicated = false;
         team.events.forEach((event, index) => {
+          console.log(event);
           if (previousEvent != null) {
-            const levelX: number = this.xScale(team['level' + event.level]),
-              eventX: number = this.xScale(event.time),
+            const levelX: number = this.xScale(team['level' + event.game_details.level_number]),
+              eventX: number = this.xScale(event.logical_time),
               currentEventX: number =
                 levelX - eventX < eventIconWidth / 2
                   ? eventX - eventIconWidth / 2
                   : eventX,
               previousEventX: number = previousOffset
-                ? this.xScale(previousEvent.time) + eventIconWidth / 2
-                : this.xScale(previousEvent.time),
+                ? this.xScale(previousEvent.logical_time) + eventIconWidth / 2
+                : this.xScale(previousEvent.logical_time),
               diff: number = currentEventX - previousEventX;
             isDuplicated =
               event.name === previousEvent.name &&
-              event.time === previousEvent.time &&
-              event.level === previousEvent.level;
+              event.logical_time === previousEvent.logical_time &&
+              event.game_details.level_number === previousEvent.game_details.level_number;
 
-            if (diff > 7 || event.level !== previousEvent.level) {
+            if (diff > 7 || event.game_details.level_number !== previousEvent.game_details.level_number) {
               const groupCopy: any = Object.assign({}, group);
               eventsGroups.push(groupCopy);
               group = {
                 events: [],
-                level: event.level
+                level: event.game_details.level_number
               };
             }
           }
 
-          if (this.xScale(event.time) < eventIconWidth / 2) {
+          if (this.xScale(event.timestamp) < eventIconWidth / 2) {
             previousOffset = true;
           } else {
             previousOffset = false;
@@ -962,11 +963,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
       eventsGroups.forEach((group, index) => {
         const events = group.events,
-          groupLevelX: number = this.xScale(team['level' + group.level]),
+          groupLevelX: number = this.xScale(team['level' + group.level]), // todo level numbering
           firstGroupEvent: any = events[0],
           lastGroupEvent: any = events[events.length - 1],
-          firstX: number = this.xScale(firstGroupEvent.time),
-          lastX: number = this.xScale(lastGroupEvent.time);
+          firstX: number = this.xScale(firstGroupEvent.game_details.logical_time),
+          lastX: number = this.xScale(lastGroupEvent.game_details.logical_time);
         let x: number = firstX + (lastX - firstX) / 2;
         if (this.view === View.progress) x += this.xScale(team['start']);
         if (x < eventIconWidth / 2) {
@@ -1169,7 +1170,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       )
       .attr(
         'x',
-        (group: GenericObject, i: number): string => group.x.toString()
+        (group: GenericObject, i: number): string => {
+          console.log(group);
+          return group.x.toString();
+        }
       )
       .attr('fill', '#fff')
       .attr('font-size', '12px')
