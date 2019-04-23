@@ -97,10 +97,11 @@ export class LoadDataService {
       teamsMap: GenericObject = {},
       levelTimePlan: number = this.levelTimePlan,
       levelsTimePlan: number[] = this.levelsTimePlan,
-      finalLevelsTimePlan: number[] = [],
-      time = 0;
+      finalLevelsTimePlan: number[] = [];
+      let time = 0;
 
-      /*let gameStartTimestamp = 0,
+/*
+      let gameStartTimestamp = 0,
       currentTimestamp = 0,
       time = 0;*/
 
@@ -155,9 +156,7 @@ export class LoadDataService {
             level: event.level,
             level_number: levelNum
         };
-        /*gameEvent.game_details.level = event.level;
-        gameEvent.game_details.logical_time = event.timestamp; // game_time;
-        gameEvent.game_details.player_id = event.player_login;*/
+
         const type = event.type.split('.');
         gameEvent.type = type[type.length - 1];
         gameEvent.timestamp = event.timestamp / 1000;
@@ -190,16 +189,16 @@ export class LoadDataService {
                 gameEvent.type = null; // 'end'
                 levelFinished = true;
                 gamedataset[playerIndex]['currentState'] = 'finished';
-                // gamedataset[playerIndex]['totalTime'] = event.game_time;
+                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.hint:
                 gameEvent.type = 'hint';
                 gameEvent.name = 'Hint ' + event.hint_id + ' taken';
                 break;
-            /*case this.eventTypes.wrongFlag:
+            case this.eventTypes.wrongFlag:
                 gameEvent.type = 'wrong';
-                gameEvent.name = 'Wrong flag submitted';
-                break;*/
+                gameEvent.name = 'Wrong flag submitted: ' + event.flag_content;
+                break;
             default:
                 gameEvent.type = null; // event.type;
                 break;
@@ -363,11 +362,10 @@ export class LoadDataService {
       });
     });
 
-    console.log(plandataset);
-
     // set current level on which is team now working
     // mark finished teams and if team doesn't finished yet, adjust total time
     gamedataset.forEach(function(team: GenericObject): void {
+        console.log(team);
       // sort events
       /*if (Array.isArray(team.events)) {
         team.events.sort(function(a, b) {
@@ -379,10 +377,11 @@ export class LoadDataService {
         });
       }*/
       // team start is now as a timestamp, subtract the game start timestamp to get it in seconds
-      team['start'] = gameStartTimestamp /*/ 1000*/;
-        /*typeof team['start'] !== 'undefined'
+      // team['start'] = gameStartTimestamp /*/ 1000*/;
+      team['start'] = typeof team['start'] !== 'undefined'
           ? team['start'] - gameStartTimestamp
-          : 0;*/
+          : 0;
+
       // if the team finished, there is no need to search current state
       if (team['currentState'] === 'finished') return;
 
@@ -396,29 +395,28 @@ export class LoadDataService {
       });
 
       const lastLevelKey: string = levels[levels.length - 1];
-      if (typeof team[lastLevelKey] === 'undefined')
-        team['totalTime'] = time - team['start'];
-      // adjust total time
-      else if (typeof team[lastLevelKey] === 'number')
-        team['currentState'] = 'finished'; // finished team
-    });
+      if (typeof team[lastLevelKey] === 'undefined') {
 
-    console.log(gamedataset);
+          team['totalTime'] = 0 - team['start'];
+      } else if (typeof team[lastLevelKey] === 'number') // adjust total time
+        team['currentState'] = 'finished'; // finished team
+
+    });
 
     return {
       gameDataset: gamedataset,
       planDataset: plandataset,
       levels: levels,
       levelsTimePlan: finalLevelsTimePlan,
-      time: time
+      time: time / 1000
     };
   }
-
+/*
   private getSeconds(timeString: string): number {
     const s: string[] = timeString.split(':');
 
     return +s[0] * 3600 + +s[1] * 60 + +s[2];
-  }
+  }*/
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

@@ -672,7 +672,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .attr(
         'x',
         (d: GenericObject, i: number): number => {
-          console.log(d);
           const x: number = d[0];
           // when sorting by level, align the teams by this level
           if (this.view === View.overview && this.sortType === 'level') {
@@ -733,8 +732,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           } else if (currentState === levelKey) {
             if (this.view === View.overview) {
                 return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
-            }
-            else return xScale(time) - xScale(d[0]);
+            } else return xScale(time) - xScale(d[0]);
           } else {
             return 0;
           }
@@ -1505,9 +1503,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     return (
       hours.toString().padStart(2, '0') +
       ':' +
-      minutes.toString().padStart(2, '0') +
-      ':' +
-      seconds.toString().padStart(2, '0')
+      minutes.toString().padStart(2, '0') /*+
+      /*':' +
+      seconds.toString().padStart(2, '0')*/
     );
   }
 
