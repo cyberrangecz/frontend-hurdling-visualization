@@ -21,10 +21,11 @@ export class AppConfig {
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
     apiUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1',
-	token: 'eyJqa3UiOiJodHRwczpcL1wvb2lkYy5pY3MubXVuaS5jelwvb2lkY1wvandrIiwia2lkIjoicnNhMSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIzOTYyOTZAbXVuaS5jeiIsImF6cCI6IjU5M2JiZjQ5LWE4MmItNGY2ZS05YmFmLWM0ZWQ0ODhkNTA2NiIsImlzcyI6Imh0dHBzOlwvXC9vaWRjLmljcy5tdW5pLmN6XC9vaWRjXC8iLCJleHAiOjE1NTYwMjk0MDMsImlhdCI6MTU1NjAyNTgwMywianRpIjoiOTE4ZDY0ZmQtMDg5NS00ODEyLThiZWEtMGYwMTA5Y2Q5MjdkIn0.BzheoJ9Xc4tAgX_uBfaPMn6N6O7FTpuOV_kTp7BTQrjBte945YR7c76_tflW84gdxPsuXUxdF0IF6enuTNr61YJl0Sx5xvrOOG_0ueaqDqMhTmAYbrBYPPMb4Xc9R7oSBwoEkjPaaBQZZs0S6VHYO3r8AhP1sakruWDA_VQ3jTU65_H3s-hqZwfPlIvig4uqToKn7nxbI6SdHRxXjnJbxU9ifH0dQZDDsWp9JB9cY7DpZmxnBIRNo3HyaTW0aoNs-2V3UAhjwDOIi2LDlKpODr8LGExxGKaJpNRe3SArC_2glTwobgfrPpCrvkbWugMXw67Gc_sSzhwqErgH18Vujw',
+	token: 'tokenData',
 	gameId: '5',
     definitionId: '4',
-	levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200], // TODO remove hardcoded values
+	// levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
+	levelsTimePlan: [500, 200, 500, 1900, 500, 2200, 500, 1000, 500], // TODO remove hardcoded values
     gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',
 	eventShapePaths: {

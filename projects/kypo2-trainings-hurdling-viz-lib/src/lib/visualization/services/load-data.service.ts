@@ -53,19 +53,19 @@ export class LoadDataService {
       (data: any[]): Data => {
         const game: Game = data[0];
         const events: Event[] = data[1];
-        // console.log(game);
-        /*const games: Game[] = data[0].games;
-        let game: Game;
-        games.forEach(function(el: Game) {
-          if (+el.id === +gameId) {
-            game = el;
-          }
-        });
-        const events: Event[] = data[1].events;*/
         const result: Data = this.processData(game, events);
         return result;
       }
     ));
+  }
+
+  public getGameAndPlanMock(
+      gameInfo,
+      gameEvents,
+      levelsTimePlan: number[]
+  ) {
+      this.levelsTimePlan = levelsTimePlan;
+      return this.processData(gameInfo, gameEvents);
   }
 
   private loadData<T>(token: string, url: string, params?: any): Observable<any> {
@@ -78,7 +78,7 @@ export class LoadDataService {
   }
 
   private getLevelNumber(id, levels): number {
-      let newId = -1;
+    let newId = -1;
     levels.forEach((level, i) => {
        if (level.id === id) {
            newId = i + 1;
@@ -92,28 +92,29 @@ export class LoadDataService {
       plandataset: GenericObject[] = [],
       // stores levels keys for use in d3.stack, in format "level + index" or "start" for start of the game
       levels: string[] = ['start'],
+      // stores types of levels in the same order as the level names
+      types: string[] = [],
       // to get the highest time as current time
       // map for keys (team id) to game/plan datasets, because datasets must be arrays to use in d3.stack
       teamsMap: GenericObject = {},
       levelTimePlan: number = this.levelTimePlan,
       levelsTimePlan: number[] = this.levelsTimePlan,
       finalLevelsTimePlan: number[] = [];
-      let time = 0;
-
-/*
-      let gameStartTimestamp = 0,
-      currentTimestamp = 0,
-      time = 0;*/
-
-    /*if (events.length) {
-      gameStartTimestamp = events[0].timestamp;
-      currentTimestamp = events[0].timestamp;
-    }*/
+    let time = 0;
 
     const levelCount = game.levels.length;
     for (let l = 1; l <= levelCount; l++) {
+      let levelType: string;
+      if (game.levels[l - 1].level_type === 'INFO_LEVEL') {
+          levelType = 'info';
+      } else if (game.levels[l - 1].level_type === 'ASSESSMENT_LEVEL') {
+          levelType = 'assessment';
+      } else {
+          levelType = 'game';
+      }
       const levelKey = 'level' + l;
       levels.push(levelKey);
+      types.push(levelType);
     }
 
     const players: string[] = new Array();
@@ -125,7 +126,7 @@ export class LoadDataService {
     });
     // console.log(players);
     gamedataset.length = players.length;
-    let gameStartTimestamp = 0;
+    let gameStartTimestamp = events[0].timestamp / 1000;
 
     events.forEach(event => {
         const player = event.player_login;
@@ -158,7 +159,7 @@ export class LoadDataService {
         };
 
         const type = event.type.split('.');
-        gameEvent.type = type[type.length - 1];
+        // gameEvent.type = type[type.length - 1];
         gameEvent.timestamp = event.timestamp / 1000;
 
 
@@ -167,8 +168,8 @@ export class LoadDataService {
                 gameEvent.type = null;
                 // if the first level started, save the team start (it must be as timestamp,
                 // later when the game start timestamp will be known, it will be deducted)
-                gamedataset[playerIndex]['start'] = event.timestamp / 1000;
-                gameStartTimestamp = event.timestamp / 1000;
+                gameStartTimestamp =  gameEvent.timestamp < gameStartTimestamp ? gameEvent.timestamp : gameStartTimestamp;
+                gamedataset[playerIndex]['start'] = gameEvent.timestamp - gameStartTimestamp;
                 break;
             case this.eventTypes.solution:
                 gameEvent.type = 'solution';
@@ -210,19 +211,19 @@ export class LoadDataService {
             // sometimes there are some events twice with different time, take the bigger
             if (typeof gamedataset[playerIndex][levelKey] === 'undefined' ||
                 gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
-                if (gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
+                /*if (gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
                     gamedataset[playerIndex]['totalTime'] -=
                         gamedataset[playerIndex][levelKey];
-                }
+                }*/
                 gamedataset[playerIndex][levelKey] = event.game_time / 1000;
-                gamedataset[playerIndex]['totalTime'] += event.game_time / 1000;
+                gamedataset[playerIndex]['totalTime'] = event.game_time / 1000;
             }
         }
 
-        if (levelFinished) {
+        /*if (levelFinished) {
             // gamedataset[playerIndex].events.push(gameEvent);
             // gamedataset[playerIndex].totalTime = (event.game_time / 1000);
-        }
+        }*/
 
         if (gameEvent.type != null) {
             gamedataset[playerIndex].events.push(gameEvent);
@@ -362,6 +363,8 @@ export class LoadDataService {
       });
     });
 
+      console.log(gamedataset);
+      console.log(gameStartTimestamp);
     // set current level on which is team now working
     // mark finished teams and if team doesn't finished yet, adjust total time
     gamedataset.forEach(function(team: GenericObject): void {
@@ -378,9 +381,10 @@ export class LoadDataService {
       }*/
       // team start is now as a timestamp, subtract the game start timestamp to get it in seconds
       // team['start'] = gameStartTimestamp /*/ 1000*/;
-      team['start'] = typeof team['start'] !== 'undefined'
+      /*team['start'] = typeof team['start'] !== 'undefined'
           ? team['start'] - gameStartTimestamp
-          : 0;
+          : 0;*/
+
 
       // if the team finished, there is no need to search current state
       if (team['currentState'] === 'finished') return;
@@ -407,8 +411,9 @@ export class LoadDataService {
       gameDataset: gamedataset,
       planDataset: plandataset,
       levels: levels,
+      types: types,
       levelsTimePlan: finalLevelsTimePlan,
-      time: time / 1000
+      time: 28000 // time / 1000
     };
   }
 /*

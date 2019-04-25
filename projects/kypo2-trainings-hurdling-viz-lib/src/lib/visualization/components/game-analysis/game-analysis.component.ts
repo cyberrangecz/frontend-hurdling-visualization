@@ -29,6 +29,8 @@ import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
 import { HttpClient } from '@angular/common/http';
+import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
+import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -70,6 +72,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private levels: string[];
   private levelsTimePlan: number[];
   private loadTimer: any;
+  private types: string[];
 
   // zooming
   private panValue = 0;
@@ -165,20 +168,21 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadData() {
     this.errorMessage = null;
 
-    /*if (this.csvFile === null || typeof this.csvFile === 'undefined') {
-      this.http
-        .get('assets/user_events_log.csv', { responseType: 'blob' })
-        .subscribe(data => {
-          const file: File = new File([data], 'user_events_log.csv', {
-            type: data.type
-          });
-          this.loadMock(file);
-        });
+    if (this.csvFile === null || typeof this.csvFile === 'undefined') {
+        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS, this.config.levelsTimePlan);
+        this.gamedataset = data.gameDataset;
+        this.plandataset = data.planDataset;
+        this.levels = data.levels;
+        this.levelsTimePlan = data.levelsTimePlan;
+        this.time = data.time;
+        this.types = data.types;
+        this.drawChart();
+
     } else {
       this.loadMock(this.csvFile);
-    }*/
+    }
 
-     this.loadDataService
+     /*this.loadDataService
        .getGameAndPlanData(
          this.config.token,
          this.config.apiUrl,
@@ -198,10 +202,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
          (error: string) => {
            this.errorMessage = error;
          }
-       );
+       );*/
   }
-/*
-  loadMock(file, endInPercents: number = 100) {
+
+  loadMock(file, endInPercents: number = 100) { // todo - work with jsons? we need two uploads then
     this.errorMessage = null;
     this.loadCsvDataService
       .getGameAndPlanData(file, this.config.levelsTimePlan, endInPercents)
@@ -209,8 +213,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         (data: Data) => {
           this.gamedataset = data.gameDataset;
           this.plandataset = data.planDataset;
-          console.log(this.gamedataset);
-          console.log(this.plandataset);
           this.levels = data.levels;
           this.levelsTimePlan = data.levelsTimePlan;
           this.time = data.time;
@@ -220,7 +222,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           this.errorMessage = error;
         }
       );
-  }*/
+  }
 
   drawChart(): void {
     const data: PreparedData = this.getPreparedData();
@@ -282,6 +284,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     const gamedata: GameData = {
       time: this.time,
+      types: this.types,
       keys: levelKeys,
       teams: gamedataset
     };
@@ -913,7 +916,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           previousOffset = false,
           isDuplicated = false;
         team.events.forEach((event, index) => {
-          console.log(event);
           if (previousEvent != null) {
             const levelX: number = this.xScale(team['level' + event.game_details.level_number]),
               eventX: number = this.xScale(event.logical_time),
@@ -1169,7 +1171,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .attr(
         'x',
         (group: GenericObject, i: number): string => {
-          console.log(group);
           return group.x.toString();
         }
       )
@@ -1203,10 +1204,19 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           const x: number = this.xScale(levelsTimePlanSum);
 
           let sortLevelName: string;
-          sortLevelName =
-            this.wrapperWidth > 530
-              ? 'Level ' + (index + 1)
-              : 'L' + (index + 1);
+          if (this.types[index] === 'info') {
+            sortLevelName = this.wrapperWidth > 530 ? 'Info' : 'I';
+          }
+          if (this.types[index] === 'assessment') {
+            sortLevelName = this.wrapperWidth > 530 ? 'Q' : 'Q';
+          }
+          if (this.types[index] === 'game') {
+            let levelNum = 0;
+            for (let i = 0; i <= index; i++) {
+              if (this.types[i] === 'game') { levelNum++; }
+            }
+            sortLevelName = this.wrapperWidth > 530 ? 'Level ' + levelNum : 'L' + levelNum;
+          }
           this.levelSortOptions.push({
             index: index + 1,
             key: levelKey,
@@ -1503,9 +1513,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     return (
       hours.toString().padStart(2, '0') +
       ':' +
-      minutes.toString().padStart(2, '0') /*+
-      /*':' +
-      seconds.toString().padStart(2, '0')*/
+      minutes.toString().padStart(2, '0') +
+      ':' +
+      seconds.toString().padStart(2, '0')
     );
   }
 
