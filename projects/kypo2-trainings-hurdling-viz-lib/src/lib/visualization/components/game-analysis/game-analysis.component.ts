@@ -916,20 +916,21 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           previousOffset = false,
           isDuplicated = false;
         team.events.forEach((event, index) => {
+          // console.log(event);
           if (previousEvent != null) {
             const levelX: number = this.xScale(team['level' + event.game_details.level_number]),
-              eventX: number = this.xScale(event.logical_time),
+              eventX: number = this.xScale(event.timestamp),
               currentEventX: number =
                 levelX - eventX < eventIconWidth / 2
                   ? eventX - eventIconWidth / 2
                   : eventX,
               previousEventX: number = previousOffset
-                ? this.xScale(previousEvent.logical_time) + eventIconWidth / 2
-                : this.xScale(previousEvent.logical_time),
+                ? this.xScale(previousEvent.timestamp) + eventIconWidth / 2
+                : this.xScale(previousEvent.timestamp),
               diff: number = currentEventX - previousEventX;
             isDuplicated =
               event.name === previousEvent.name &&
-              event.logical_time === previousEvent.logical_time &&
+              event.timestamp === previousEvent.timestamp &&
               event.game_details.level_number === previousEvent.game_details.level_number;
 
             if (diff > 7 || event.game_details.level_number !== previousEvent.game_details.level_number) {
@@ -963,28 +964,31 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
       eventsGroups.forEach((group, index) => {
         const events = group.events,
-          groupLevelX: number = this.xScale(team['level' + group.level]), // todo level numbering
+          groupLevelX: number = this.xScale(team['level' + group.level]),
           firstGroupEvent: any = events[0],
           lastGroupEvent: any = events[events.length - 1],
           firstX: number = this.xScale(firstGroupEvent.game_details.logical_time),
           lastX: number = this.xScale(lastGroupEvent.game_details.logical_time);
-        let x: number = firstX + (lastX - firstX) / 2;
+        /*if(team.team === 'Participant1') {
+            console.log(group.level);
+            console.log(firstGroupEvent.game_details);
+            console.log(firstX);
+            console.log(lastX);
+            console.log(groupLevelX);
+        }*/
+        let x: number;
+        if (firstX === lastX) x = firstX;
+        else x = firstX + (lastX - firstX) / 2;
+
         if (this.view === View.progress) x += this.xScale(team['start']);
-        if (x < eventIconWidth / 2) {
+        if (x < eventIconWidth / 2 || groupLevelX < eventIconWidth * 2) {
           x += eventIconWidth / 2;
         }
-        if (
-          typeof groupLevelX !== 'undefined' &&
-          groupLevelX - x < eventIconWidth / 2
-        ) {
+        if (typeof groupLevelX !== 'undefined' &&
+          groupLevelX - x < eventIconWidth / 2) {
           x -= eventIconWidth / 2;
         }
-        for (let l = 1; l < group.level; l++) {
-          if (typeof team['level' + l] !== 'undefined') {
-            x += this.xScale(team['level' + l]);
-          }
-        }
-        group['x'] = x;
+          group['x'] = x;
       });
 
       team.eventsGroups = eventsGroups;

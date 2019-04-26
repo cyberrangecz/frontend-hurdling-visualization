@@ -124,7 +124,7 @@ export class LoadDataService {
           players.push(event.player_login);
         }
     });
-    // console.log(players);
+
     gamedataset.length = players.length;
     let gameStartTimestamp = events[0].timestamp / 1000;
 
@@ -133,6 +133,7 @@ export class LoadDataService {
         const playerIndex = players.indexOf(player);
         const levelNum: number = this.getLevelNumber(event.level, game.levels);
         const levelKey: string = 'level' + levelNum;
+        // const prevLevelKey: string = 'level' + (levelNum !== 1 ? levelNum - 1 : '1'); // we want previous level's time
         let levelFinished = false;
 
         if (gamedataset[playerIndex] === undefined) {
@@ -147,7 +148,6 @@ export class LoadDataService {
         }
 
         const gameEvent: Event = new Event();
-        // console.log(event);
         if (event.hint_id !== undefined) {
             gameEvent.hint_id = event.hint_id;
         }
@@ -158,7 +158,7 @@ export class LoadDataService {
             level_number: levelNum
         };
 
-        const type = event.type.split('.');
+        // const type = event.type.split('.');
         // gameEvent.type = type[type.length - 1];
         gameEvent.timestamp = event.timestamp / 1000;
 
@@ -169,7 +169,7 @@ export class LoadDataService {
                 // if the first level started, save the team start (it must be as timestamp,
                 // later when the game start timestamp will be known, it will be deducted)
                 gameStartTimestamp =  gameEvent.timestamp < gameStartTimestamp ? gameEvent.timestamp : gameStartTimestamp;
-                gamedataset[playerIndex]['start'] = gameEvent.timestamp - gameStartTimestamp;
+                gamedataset[playerIndex]['start'] = 0; // gameEvent.timestamp - gameStartTimestamp;
                 break;
             case this.eventTypes.solution:
                 gameEvent.type = 'solution';
@@ -177,7 +177,7 @@ export class LoadDataService {
                 break;
             case this.eventTypes.correctFlag:
             case this.eventTypes.levelCompleted:
-                gameEvent.type = null; // 'levelDone';
+                gameEvent.type = null;
                 levelFinished = true;
                 break;
             case this.eventTypes.skip:
@@ -187,7 +187,7 @@ export class LoadDataService {
                 break;
             case this.eventTypes.gameExited:
             case this.eventTypes.gameFinished:
-                gameEvent.type = null; // 'end'
+                gameEvent.type = null;
                 levelFinished = true;
                 gamedataset[playerIndex]['currentState'] = 'finished';
                 time = event.game_time > time ? event.game_time : time;
@@ -201,37 +201,42 @@ export class LoadDataService {
                 gameEvent.name = 'Wrong flag submitted: ' + event.flag_content;
                 break;
             default:
-                gameEvent.type = null; // event.type;
+                gameEvent.type = null;
                 break;
         }
 
+        if (player === 'Participant2')
+            console.log(gamedataset[playerIndex]);
 
+
+        // level is finished, save the time
         if (levelFinished) {
-            // level is finished, save the time
-            // sometimes there are some events twice with different time, take the bigger
+            let prevLevels = 0;
+            for (let i = 1; i < levelNum; i++) {
+                prevLevels += (typeof gamedataset[playerIndex]['level' + i ] !== 'undefined') ?
+                    gamedataset[playerIndex]['level' + i] : 0;
+            }
+
+            // if there are more events with different time, take the bigger
             if (typeof gamedataset[playerIndex][levelKey] === 'undefined' ||
-                gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
-                /*if (gamedataset[playerIndex][levelKey] < event.game_time / 1000) {
-                    gamedataset[playerIndex]['totalTime'] -=
-                        gamedataset[playerIndex][levelKey];
-                }*/
-                gamedataset[playerIndex][levelKey] = event.game_time / 1000;
+                gamedataset[playerIndex][levelKey] < event.game_time / 1000 - prevLevels) {
+                gamedataset[playerIndex][levelKey] = event.game_time / 1000 - prevLevels;
                 gamedataset[playerIndex]['totalTime'] = event.game_time / 1000;
             }
         }
 
-        /*if (levelFinished) {
-            // gamedataset[playerIndex].events.push(gameEvent);
-            // gamedataset[playerIndex].totalTime = (event.game_time / 1000);
-        }*/
-
         if (gameEvent.type != null) {
             gamedataset[playerIndex].events.push(gameEvent);
-            // gamedataset[playerIndex].totalTime += event.game_time / 1000;
+        }
+        if (player === 'Participant2') {
+            console.log(levelKey);
+            console.log(event.game_time / 1000);
+            console.log(gamedataset[playerIndex][levelKey]);
         }
     });
 
     console.log(gamedataset);
+    console.log(plandataset);
 
     /*events.forEach(
       function(event: Event): void {
@@ -339,53 +344,29 @@ export class LoadDataService {
     // const time = currentTimestamp - gameStartTimestamp;
 
     // create final timeplan for levels
-    // let levelIndex = 0;
     levels.forEach(function(level, i): void {
       let timePlan: number = levelsTimePlan[i]
         ? levelsTimePlan[i]
         : levelTimePlan;
       if (level === 'start') timePlan = 0;
       else {
-        // levelIndex++;
         finalLevelsTimePlan.push(timePlan);
       }
     });
 
     // create dataset for plan
     plandataset.forEach(function(team: GenericObject): void {
-      // let levelIndex = 0;
       levels.forEach(function(level, i): void {
         const timePlan: number = levelsTimePlan[i]
           ? levelsTimePlan[i]
           : levelTimePlan;
         team[level] = level !== 'start' ? timePlan : 0;
-        // if (level !== 'start') levelIndex++;
       });
     });
 
-      console.log(gamedataset);
-      console.log(gameStartTimestamp);
     // set current level on which is team now working
     // mark finished teams and if team doesn't finished yet, adjust total time
     gamedataset.forEach(function(team: GenericObject): void {
-        console.log(team);
-      // sort events
-      /*if (Array.isArray(team.events)) {
-        team.events.sort(function(a, b) {
-          if (a.level !== b.level) {
-            return a.level - b.level;
-          } else {
-            return a.time - b.time;
-          }
-        });
-      }*/
-      // team start is now as a timestamp, subtract the game start timestamp to get it in seconds
-      // team['start'] = gameStartTimestamp /*/ 1000*/;
-      /*team['start'] = typeof team['start'] !== 'undefined'
-          ? team['start'] - gameStartTimestamp
-          : 0;*/
-
-
       // if the team finished, there is no need to search current state
       if (team['currentState'] === 'finished') return;
 
@@ -413,15 +394,9 @@ export class LoadDataService {
       levels: levels,
       types: types,
       levelsTimePlan: finalLevelsTimePlan,
-      time: 28000 // time / 1000
+      time: time / 1000
     };
   }
-/*
-  private getSeconds(timeString: string): number {
-    const s: string[] = timeString.split(':');
-
-    return +s[0] * 3600 + +s[1] * 60 + +s[2];
-  }*/
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
