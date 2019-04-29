@@ -16,7 +16,7 @@ import {forEach} from '@angular/router/src/utils/collection';
 export class LoadDataService {
   private httpClient: HttpClient;
   private levelsTimePlan: number[];
-  private levelTimePlan = 1000;
+  private levelTimePlan = 500;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
     gameStart: this.levelTypePrefix + 'TrainingRunStarted',
@@ -97,8 +97,6 @@ export class LoadDataService {
       // to get the highest time as current time
       // map for keys (team id) to game/plan datasets, because datasets must be arrays to use in d3.stack
       teamsMap: GenericObject = {},
-      levelTimePlan: number = this.levelTimePlan,
-      levelsTimePlan: number[] = this.levelsTimePlan,
       finalLevelsTimePlan: number[] = [];
     let time = 0;
 
@@ -115,6 +113,8 @@ export class LoadDataService {
       const levelKey = 'level' + l;
       levels.push(levelKey);
       types.push(levelType);
+      this.levelsTimePlan.push(game.levels[l - 1].estimated_duration > 0 ?
+          game.levels[l - 1].estimated_duration * 60 : this.levelTimePlan);
     }
 
     const players: string[] = new Array();
@@ -205,10 +205,6 @@ export class LoadDataService {
                 break;
         }
 
-        if (player === 'Participant2')
-            console.log(gamedataset[playerIndex]);
-
-
         // level is finished, save the time
         if (levelFinished) {
             let prevLevels = 0;
@@ -228,15 +224,7 @@ export class LoadDataService {
         if (gameEvent.type != null) {
             gamedataset[playerIndex].events.push(gameEvent);
         }
-        if (player === 'Participant2') {
-            console.log(levelKey);
-            console.log(event.game_time / 1000);
-            console.log(gamedataset[playerIndex][levelKey]);
-        }
     });
-
-    console.log(gamedataset);
-    console.log(plandataset);
 
     /*events.forEach(
       function(event: Event): void {
@@ -344,10 +332,9 @@ export class LoadDataService {
     // const time = currentTimestamp - gameStartTimestamp;
 
     // create final timeplan for levels
-    levels.forEach(function(level, i): void {
-      let timePlan: number = levelsTimePlan[i]
-        ? levelsTimePlan[i]
-        : levelTimePlan;
+    levels.forEach((level, i): void => {
+      let timePlan: number = this.levelsTimePlan[i]
+        ? this.levelsTimePlan[i] : this.levelTimePlan;
       if (level === 'start') timePlan = 0;
       else {
         finalLevelsTimePlan.push(timePlan);
@@ -355,11 +342,10 @@ export class LoadDataService {
     });
 
     // create dataset for plan
-    plandataset.forEach(function(team: GenericObject): void {
-      levels.forEach(function(level, i): void {
-        const timePlan: number = levelsTimePlan[i]
-          ? levelsTimePlan[i]
-          : levelTimePlan;
+    plandataset.forEach((team: GenericObject): void => {
+      levels.forEach((level, i): void => {
+        const timePlan: number = this.levelsTimePlan[i]
+          ? this.levelsTimePlan[i] : this.levelTimePlan;
         team[level] = level !== 'start' ? timePlan : 0;
       });
     });

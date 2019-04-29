@@ -596,7 +596,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.updateXAxis();
     const layer = this.createColumnForEachLevel(layers);
-    // console.log(layer);
 
     // draw segment (row in column) for each team
     this.createSegmentForEachTeam({
@@ -916,7 +915,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           previousOffset = false,
           isDuplicated = false;
         team.events.forEach((event, index) => {
-          // console.log(event);
           if (previousEvent != null) {
             const levelX: number = this.xScale(team['level' + event.game_details.level_number]),
               eventX: number = this.xScale(event.timestamp),
