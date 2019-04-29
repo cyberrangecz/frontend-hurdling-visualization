@@ -580,7 +580,7 @@ export const EVENTS = [
         'training_definition_id': 4,
         'level_type': 'GAME',
         'timestamp': 1552648500000
-    },
+    }/*,
     {
         'level': 14,
         'training_run_id': 13,
@@ -1067,7 +1067,9 @@ export const EVENTS = [
         'total_score': 21,
         'training_definition_id': 4,
         'timestamp': 1552661700000
-    },
+    }*/
+    // The following player starts playing a month later - the vis is not ready for such case
+    /*,
     {
         'level': 32,
         'training_run_id': 11,
@@ -1590,5 +1592,5 @@ export const EVENTS = [
         'total_score': 56,
         'training_definition_id': 4,
         'timestamp': 1554990000000
-    }
+    }*/
 ];

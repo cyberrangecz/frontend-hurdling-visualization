@@ -169,7 +169,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.errorMessage = null;
 
     if (this.csvFile === null || typeof this.csvFile === 'undefined') {
-        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS, this.config.levelsTimePlan);
+        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
         this.gamedataset = data.gameDataset;
         this.plandataset = data.planDataset;
         this.levels = data.levels;
@@ -967,13 +967,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
           lastGroupEvent: any = events[events.length - 1],
           firstX: number = this.xScale(firstGroupEvent.game_details.logical_time),
           lastX: number = this.xScale(lastGroupEvent.game_details.logical_time);
-        /*if(team.team === 'Participant1') {
-            console.log(group.level);
-            console.log(firstGroupEvent.game_details);
-            console.log(firstX);
-            console.log(lastX);
-            console.log(groupLevelX);
-        }*/
         let x: number;
         if (firstX === lastX) x = firstX;
         else x = firstX + (lastX - firstX) / 2;

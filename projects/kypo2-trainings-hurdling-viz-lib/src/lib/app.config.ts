@@ -25,7 +25,7 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 	gameId: '5',
     definitionId: '4',
 	// levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
-	levelsTimePlan: [500, 200, 500, 1900, 500, 2200, 500, 1000, 500], // TODO remove hardcoded values
+	levelsTimePlan: [], // [500, 200, 500, 1900, 500, 2200, 500, 1000, 500], // TODO remove hardcoded values
     gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',
 	eventShapePaths: {

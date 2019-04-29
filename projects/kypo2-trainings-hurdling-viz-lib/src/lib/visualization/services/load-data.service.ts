@@ -15,8 +15,8 @@ import {forEach} from '@angular/router/src/utils/collection';
 @Injectable()
 export class LoadDataService {
   private httpClient: HttpClient;
-  private levelsTimePlan: number[];
-  private levelTimePlan = 500;
+  private levelsTimePlan: number[] = [];
+  private levelTimePlan = 120;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
     gameStart: this.levelTypePrefix + 'TrainingRunStarted',
@@ -59,12 +59,7 @@ export class LoadDataService {
     ));
   }
 
-  public getGameAndPlanMock(
-      gameInfo,
-      gameEvents,
-      levelsTimePlan: number[]
-  ) {
-      this.levelsTimePlan = levelsTimePlan;
+  public getGameAndPlanMock(gameInfo, gameEvents) {
       return this.processData(gameInfo, gameEvents);
   }
 
@@ -133,7 +128,6 @@ export class LoadDataService {
         const playerIndex = players.indexOf(player);
         const levelNum: number = this.getLevelNumber(event.level, game.levels);
         const levelKey: string = 'level' + levelNum;
-        // const prevLevelKey: string = 'level' + (levelNum !== 1 ? levelNum - 1 : '1'); // we want previous level's time
         let levelFinished = false;
 
         if (gamedataset[playerIndex] === undefined) {
@@ -169,7 +163,7 @@ export class LoadDataService {
                 // if the first level started, save the team start (it must be as timestamp,
                 // later when the game start timestamp will be known, it will be deducted)
                 gameStartTimestamp =  gameEvent.timestamp < gameStartTimestamp ? gameEvent.timestamp : gameStartTimestamp;
-                gamedataset[playerIndex]['start'] = 0; // gameEvent.timestamp - gameStartTimestamp;
+                gamedataset[playerIndex]['start'] = gameEvent.timestamp - gameStartTimestamp;
                 break;
             case this.eventTypes.solution:
                 gameEvent.type = 'solution';
@@ -219,6 +213,8 @@ export class LoadDataService {
                 gamedataset[playerIndex][levelKey] = event.game_time / 1000 - prevLevels;
                 gamedataset[playerIndex]['totalTime'] = event.game_time / 1000;
             }
+        } else {
+            gamedataset[playerIndex]['totalTime'] =  events[events.length - 1].game_time / 1000 - gamedataset[playerIndex]['start'];
         }
 
         if (gameEvent.type != null) {
@@ -329,7 +325,7 @@ export class LoadDataService {
       }.bind(this)
     );*/
 
-    // const time = currentTimestamp - gameStartTimestamp;
+    time = events[events.length - 1].timestamp - events[0].timestamp;
 
     // create final timeplan for levels
     levels.forEach((level, i): void => {
@@ -366,13 +362,15 @@ export class LoadDataService {
       });
 
       const lastLevelKey: string = levels[levels.length - 1];
-      if (typeof team[lastLevelKey] === 'undefined') {
-
-          team['totalTime'] = 0 - team['start'];
-      } else if (typeof team[lastLevelKey] === 'number') // adjust total time
+      /*if (typeof team[lastLevelKey] === 'undefined') {
+          //team['totalTime'] = 0 - team['start'];
+      } else */if (typeof team[lastLevelKey] === 'number') // adjust total time
         team['currentState'] = 'finished'; // finished team
 
     });
+
+    console.log(gamedataset);
+    console.log(plandataset);
 
     return {
       gameDataset: gamedataset,
