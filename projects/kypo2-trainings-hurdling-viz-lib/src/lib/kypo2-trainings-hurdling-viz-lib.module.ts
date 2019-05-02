@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {CommonModule} from '@angular/common';
 import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
 import { D3Service } from 'd3-ng2-service';
 import { PapaParseModule } from 'ngx-papaparse';
@@ -11,10 +12,13 @@ import { MouseMoveDirective } from './visualization/directives/mousemove.directi
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
-import {CommonModule} from '@angular/common';
+import { Kypo2TrainingsHurdlingVizLibConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
+import {Kypo2TrainingsHurdlingVizLibComponent} from './kypo2-trainings-hurdling-viz-lib.component';
+import {ConfigService} from './visualization/config/config.service';
 
 @NgModule({
   declarations: [
+    Kypo2TrainingsHurdlingVizLibComponent,
     GameAnalysisComponent,
     MouseWheelDirective,
     MouseMoveDirective,
@@ -31,10 +35,28 @@ import {CommonModule} from '@angular/common';
     LoadCsvDataService,
     { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
     SortingService,
-    FilteringService
+    FilteringService,
+    ConfigService
   ],
   exports: [
+    Kypo2TrainingsHurdlingVizLibComponent,
     GameAnalysisComponent
   ]
 })
-export class Kypo2TrainingsHurdlingVizLibModule { }
+export class Kypo2TrainingsHurdlingVizLibModule {
+  constructor(@Optional() @SkipSelf() parentModule: Kypo2TrainingsHurdlingVizLibModule) {
+    if (parentModule) {
+      throw new Error(
+          'Kypo2TrainingsVisualizationOverviewLibModule is already loaded. Import it in the main module only');
+    }
+  }
+
+  static forRoot(config: Kypo2TrainingsHurdlingVizLibModule): ModuleWithProviders {
+    return {
+      ngModule: Kypo2TrainingsHurdlingVizLibModule,
+      providers: [
+        {provide: Kypo2TrainingsHurdlingVizLibConfig, useValue: config}
+      ]
+    };
+  }
+}
