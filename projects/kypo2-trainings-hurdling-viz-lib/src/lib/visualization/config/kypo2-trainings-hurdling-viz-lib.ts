@@ -1,4 +1,4 @@
-export class Kypo2TrainingsVisualizationOverviewLibConfig {
-  kypo2TrainingsVisualizationRestBasePath: string;
+export class Kypo2TrainingsHurdlingVizLibConfig {
+  kypo2TrainingsHurdlingRestBasePath: string;
   defaultPaginationSize: number;
 }
