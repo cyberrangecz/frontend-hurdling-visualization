@@ -16,7 +16,7 @@ import {forEach} from '@angular/router/src/utils/collection';
 export class LoadDataService {
   private httpClient: HttpClient;
   private levelsTimePlan: number[] = [];
-  private levelTimePlan = 120;
+  private levelTimePlan = 500;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
     gameStart: this.levelTypePrefix + 'TrainingRunStarted',
@@ -221,109 +221,6 @@ export class LoadDataService {
             gamedataset[playerIndex].events.push(gameEvent);
         }
     });
-
-    /*events.forEach(
-      function(event: Event): void {
-        // eventTime is relative time of event in level
-        const eventTime: number = event.timestamp, // game_details.logical_time,
-          eventTeam: string = event.player_login, // game_details.player_id,
-          level: number = event.level, // game_details.level,
-          levelKey: string = 'level' + level;
-        let eventType: string = event.type,
-          eventName: string = event.type,
-          teamIndex = 0,
-          levelFinished = false;
-
-        // if the team is not in dataset yet, it is added to game/plan datasets and map
-        if (players[eventTeam] == null) {
-          teamIndex = gamedataset.length;
-          teamsMap[eventTeam] = teamIndex;
-          gamedataset[teamIndex] = {};
-          gamedataset[teamIndex]['team'] = eventTeam;
-          gamedataset[teamIndex]['events'] = [];
-          gamedataset[teamIndex]['totalTime'] = 0;
-
-          plandataset[teamIndex] = {};
-          plandataset[teamIndex]['team'] = eventTeam;
-          plandataset[teamIndex]['start'] = 0;
-        } else {
-          teamIndex = teamsMap[eventTeam];
-        }
-
-        console.log(gamedataset);
-        // add level to levels array, if it does not contain it yet
-        if (levels.indexOf(levelKey) === -1) levels.push(levelKey);
-
-        // finding out the game start timestamp (it is the smallest)
-        if (gameStartTimestamp > event.timestamp)
-          gameStartTimestamp = event.timestamp;
-        // finding out the current timestamp (it is the greatest)
-        if (currentTimestamp < event.timestamp)
-          currentTimestamp = event.timestamp;
-
-        // according to type of event, add it to events array of the team and/or store the time of level end
-        switch (event.type) {
-          case this.eventTypes.gameStart:
-            eventType = null;
-            // if the first level started, save the team start (it must be as timestamp,
-            // later when the game start timestamp will be known, it will be deducted)
-            gamedataset[teamIndex]['start'] = event.timestamp;
-            break;
-          case this.eventTypes.solution:
-            eventType = 'solution';
-            eventName = 'Solution displayed';
-            break;
-          case this.eventTypes.correctFlag:
-            eventType = null;
-            levelFinished = true;
-            break;
-          case this.eventTypes.skip:
-            eventType = 'skip';
-            eventName = 'Level cowardly skipped';
-            levelFinished = true;
-            break;
-          case this.eventTypes.gameExited:
-          case this.eventTypes.gameFinished:
-            eventType = null;
-            levelFinished = true;
-            gamedataset[teamIndex]['currentState'] = 'finished';
-            break;
-          case this.eventTypes.hint:
-            eventType = 'hint';
-            eventName = 'Hint ' + event.hint_id + ' taken';
-            break;
-          default:
-            eventType = null;
-            break;
-        }
-
-        if (levelFinished) {
-          // level is finished, save the time
-          // sometimes there are some events twice with different time, take the bigger
-          if (
-            typeof gamedataset[teamIndex][levelKey] === 'undefined' ||
-            gamedataset[teamIndex][levelKey] < eventTime
-          ) {
-            if (gamedataset[teamIndex][levelKey] < eventTime) {
-              gamedataset[teamIndex]['totalTime'] -=
-                gamedataset[teamIndex][levelKey];
-            }
-            gamedataset[teamIndex][levelKey] = eventTime;
-            gamedataset[teamIndex]['totalTime'] += eventTime;
-          }
-        }
-
-        if (eventType != null) {
-          const eventData: any = {
-            type: eventType,
-            name: eventName,
-            time: eventTime,
-            level: event.game_details.level
-          };
-          gamedataset[teamIndex]['events'].push(eventData);
-        }
-      }.bind(this)
-    );*/
 
     time = events[events.length - 1].timestamp - events[0].timestamp;
 
