@@ -1,22 +1,22 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {VisualizationOverviewComponent} from './visualization-overview.component';
-import {VisualizationRoutingModule} from './visualization-routing.module';
+import {HurdlingOverviewComponent} from './hurdling-overview.component';
+import {HurdlingRoutingModule} from './hurdling-routing.module';
 import {CustomConfig} from '../custom-config';
-import {Kypo2TrainingsVisualizationOverviewLibModule} from '../../../projects/kypo2-trainings-visualization-overview-lib/src/public_api';
+import {Kypo2TrainingsHurdlingVizLibModule} from '../../../projects/kypo2-trainings-hurdling-viz-lib/src/public_api';
 
 @NgModule({
   declarations: [
-    VisualizationOverviewComponent
+    HurdlingOverviewComponent
   ],
   imports: [
     CommonModule,
-    VisualizationRoutingModule,
-    Kypo2TrainingsVisualizationOverviewLibModule.forRoot(CustomConfig)
+    HurdlingRoutingModule,
+    Kypo2TrainingsHurdlingVizLibModule.forRoot(CustomConfig)
   ],
   exports: [
-    VisualizationOverviewComponent
+    HurdlingOverviewComponent
   ]
 })
-export class VisualizationModule {
+export class HurdlingModule {
 }
