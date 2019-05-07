@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VisualizationOverviewComponent } from './visualization-overview.component';
+import { HurdlingOverviewComponent } from './hurdling-overview.component';
 
-describe('VisualizationOverviewComponent', () => {
-  let component: VisualizationOverviewComponent;
-  let fixture: ComponentFixture<VisualizationOverviewComponent>;
+describe('HurdlingOverviewComponent', () => {
+  let component: HurdlingOverviewComponent;
+  let fixture: ComponentFixture<HurdlingOverviewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VisualizationOverviewComponent ]
+      declarations: [ HurdlingOverviewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VisualizationOverviewComponent);
+    fixture = TestBed.createComponent(HurdlingOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
