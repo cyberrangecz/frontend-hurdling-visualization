@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-visualization-overview',
-  templateUrl: './visualization-overview.component.html',
-  styleUrls: ['./visualization-overview.component.css']
+  selector: 'app-hurdling-overview',
+  templateUrl: './hurdling-overview.component.html',
+  styleUrls: ['./hurdling-overview.component.css']
 })
-export class VisualizationOverviewComponent implements OnInit {
+export class HurdlingOverviewComponent implements OnInit {
+  title = 'app';
+  hideCSVUpload = false;
 
   constructor() { }
 
