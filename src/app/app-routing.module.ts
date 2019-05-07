@@ -3,17 +3,17 @@ import {NgModule} from '@angular/core';
 
 const routes: Routes = [
   {
-    path: 'visualization',
-    loadChildren: 'src/app/visualization/visualization.module#VisualizationModule',
+    path: 'hurdling',
+    loadChildren: 'app/hurdling/hurdling.module#HurdlingModule',
   },
   {
     path: '',
-    redirectTo: 'visualization',
+    redirectTo: 'hurdling',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: 'visualization'
+    redirectTo: 'hurdling'
   }
 ];
 
