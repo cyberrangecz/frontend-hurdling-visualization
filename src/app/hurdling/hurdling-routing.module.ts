@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {VisualizationOverviewComponent} from './visualization-overview.component';
+import {HurdlingOverviewComponent} from './hurdling-overview.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: VisualizationOverviewComponent,
+    component: HurdlingOverviewComponent,
   }
 ];
 
@@ -13,6 +13,6 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class VisualizationRoutingModule {
+export class HurdlingRoutingModule {
 
 }
