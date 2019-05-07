@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
@@ -47,7 +47,7 @@ export class Kypo2TrainingsHurdlingVizLibModule {
   constructor(@Optional() @SkipSelf() parentModule: Kypo2TrainingsHurdlingVizLibModule) {
     if (parentModule) {
       throw new Error(
-          'Kypo2TrainingsVisualizationOverviewLibModule is already loaded. Import it in the main module only');
+          'Kypo2TrainingsHurdlingVizLibModule is already loaded. Import it in the main module only');
     }
   }
 
