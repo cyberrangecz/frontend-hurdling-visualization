@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   assetsRoot: '/portlet_ctf_progress-0.1/',
-  kypo2TrainingsHurdlingRestBasePath: 'http://147.251.21.216:8085/kypo2-rest-trainings-visualization-overview/api/v1/',
+  kypo2TrainingsHurdlingRestBasePath: 'http://147.251.21.216:8086/kypo2-rest-trainings-hurdling-visualization/api/v1/',
 
   // OIDC SETTINGS
   // Url of the Identity Provider
