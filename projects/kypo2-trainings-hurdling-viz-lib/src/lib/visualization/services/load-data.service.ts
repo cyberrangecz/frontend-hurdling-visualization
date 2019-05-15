@@ -16,7 +16,7 @@ import {ConfigService} from '../config/config.service';
 @Injectable()
 export class LoadDataService {
   private levelsTimePlan: number[] = [];
-  private levelTimePlan = 500;
+  private levelTimePlan = this.configService.config.levelsTimePlan;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
     gameStart: this.levelTypePrefix + 'TrainingRunStarted',
@@ -35,18 +35,17 @@ export class LoadDataService {
               private configService: ConfigService) { }
 
   public getGameAndPlanData(
-    token: string,
-    definitionId: string,
-    gameId: string,
-    levelsTimePlan: number[]
-  ) {
-    this.levelsTimePlan = levelsTimePlan;
-    const defUrl: string = this.configService.config.kypo2TrainingsHurdlingRestBasePath + '/training-definitions/' + this.configService.definitionId;
-    const eventsUrl: string = this.configService.config.kypo2TrainingsHurdlingRestBasePath + '/training-events/training-definitions/' + this.configService.definitionId + '/training-instances/' + this.configService.gameId;
+    trainingDefinitionId: string,
+    trainingInstanceId: string,
+    levelsTimePlan: number[])
+    {
+    this.levelsTimePlan = this.configService.config.levelsTimePlan;
+    const defUrl: string = this.configService.config.apiUrl + '/training-definitions/' + this.configService.trainingDefinitionId;
+    const eventsUrl: string = this.configService.config.apiUrl + '/training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
 
     return forkJoin([
-      this.loadData<Game>(token, defUrl),
-      this.loadData<Event>(token, eventsUrl)
+      this.loadData<Game>(defUrl),
+      this.loadData<Event>(eventsUrl)
     ]).pipe(map(
       (data: any[]): Data => {
         const game: Game = data[0];
@@ -61,7 +60,7 @@ export class LoadDataService {
       return this.processData(gameInfo, gameEvents);
   }
 
-  private loadData<T>(token: string, url: string, params?: any): Observable<any> {
+  private loadData<T>(url: string, params?: any): Observable<any> {
     if (typeof params !== 'undefined') {
       return this.http.get<T[]>(url);
     } else {
