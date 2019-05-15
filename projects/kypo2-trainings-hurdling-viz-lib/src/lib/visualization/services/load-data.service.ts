@@ -11,10 +11,10 @@ import { Event } from '../models/event';
 import { Game } from '../models/game';
 import { Data } from '../models/data';
 import {forEach} from '@angular/router/src/utils/collection';
+import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class LoadDataService {
-  private httpClient: HttpClient;
   private levelsTimePlan: number[] = [];
   private levelTimePlan = 500;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
@@ -31,20 +31,18 @@ export class LoadDataService {
     solution: this.levelTypePrefix + 'SolutionDisplayed'
   };
 
-  constructor(httpClient: HttpClient) {
-    this.httpClient = httpClient;
-  }
+  constructor(private http: HttpClient,
+              private configService: ConfigService) { }
 
   public getGameAndPlanData(
     token: string,
-    apiUrl: string,
     definitionId: string,
     gameId: string,
     levelsTimePlan: number[]
   ) {
     this.levelsTimePlan = levelsTimePlan;
-    const defUrl: string = apiUrl + '/training-definitions/' + definitionId;
-    const eventsUrl: string = apiUrl + '/training-events/training-definitions/' + definitionId + '/training-instances/' + gameId;
+    const defUrl: string = this.configService.config.kypo2TrainingsHurdlingRestBasePath + '/training-definitions/' + this.configService.definitionId;
+    const eventsUrl: string = this.configService.config.kypo2TrainingsHurdlingRestBasePath + '/training-events/training-definitions/' + this.configService.definitionId + '/training-instances/' + this.configService.gameId;
 
     return forkJoin([
       this.loadData<Game>(token, defUrl),
@@ -64,11 +62,10 @@ export class LoadDataService {
   }
 
   private loadData<T>(token: string, url: string, params?: any): Observable<any> {
-    const headers = new HttpHeaders();
     if (typeof params !== 'undefined') {
-      return this.httpClient.get<T[]>(url, {headers: new HttpHeaders({'Authorization': 'Bearer ' + token})});
+      return this.http.get<T[]>(url);
     } else {
-      return this.httpClient.get<T[]>(url, {headers: new HttpHeaders({'Authorization': 'Bearer ' + token})});
+      return this.http.get<T[]>(url);
     }
   }
 
