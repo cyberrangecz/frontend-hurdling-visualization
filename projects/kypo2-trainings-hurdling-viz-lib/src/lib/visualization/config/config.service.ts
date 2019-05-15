@@ -4,23 +4,23 @@ import {Kypo2TrainingsHurdlingVizLibConfig} from './kypo2-trainings-hurdling-viz
 @Injectable()
 export class ConfigService {
   private readonly _config: Kypo2TrainingsHurdlingVizLibConfig;
-  private _definitionId: number;
-  private _gameId: number;
+  private _trainingDefinitionId: number;
+  private _trainingInstanceId: number;
 
-  get definitionId(): number {
-    return this._definitionId;
+  get trainingDefinitionId(): number {
+    return this._trainingDefinitionId;
   }
 
-  set definitionId(value: number) {
-    this._definitionId = value;
+  set trainingDefinitionId(value: number) {
+    this._trainingDefinitionId = value;
   }
 
-  get gameId(): number {
-    return this._gameId;
+  get trainingInstanceId(): number {
+    return this._trainingInstanceId;
   }
 
-  set gameId(value: number) {
-    this._gameId = value;
+  set trainingInstanceId(value: number) {
+    this._trainingInstanceId = value;
   }
 
   get config(): Kypo2TrainingsHurdlingVizLibConfig {
