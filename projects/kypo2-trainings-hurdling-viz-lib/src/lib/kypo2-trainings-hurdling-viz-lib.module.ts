@@ -1,7 +1,6 @@
 import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
 import { D3Service } from 'd3-ng2-service';
 import { PapaParseModule } from 'ngx-papaparse';
 import { LoadDataService } from './visualization/services/load-data.service';
@@ -33,7 +32,6 @@ import {ConfigService} from './visualization/config/config.service';
     D3Service,
     LoadDataService,
     LoadCsvDataService,
-    { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
     SortingService,
     FilteringService,
     ConfigService
