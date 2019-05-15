@@ -44,8 +44,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() csvFile: File;
   @Input() hideCSVUpload: boolean;
   @Input() colorScheme: string[];
-  @Input() definitionId: number;
-  @Input() gameId: number;
+  @Input() trainingDefinitionId: number;
+  @Input() trainingInstanceId: number;
 
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
@@ -143,8 +143,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.configService.definitionId = this.definitionId;
-    this.configService.gameId = this.gameId;
+    this.configService.trainingDefinitionId = this.trainingDefinitionId;
+    this.configService.trainingInstanceId = this.trainingInstanceId;
     this.loadData();
   }
 
