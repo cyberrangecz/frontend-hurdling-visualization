@@ -31,6 +31,7 @@ import { GameAnalysisEventService } from '../../models/game-analysis-event-servi
 import { HttpClient } from '@angular/common/http';
 import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
 import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
+import {ConfigService} from '../../config/config.service';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -43,6 +44,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() csvFile: File;
   @Input() hideCSVUpload: boolean;
   @Input() colorScheme: string[];
+  @Input() definitionId: number;
+  @Input() gameId: number;
 
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
@@ -133,12 +136,15 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     private loadCsvDataService: LoadCsvDataService,
     private sortingService: SortingService,
     private filteringService: FilteringService,
-    private http: HttpClient
+    private http: HttpClient,
+    private configService: ConfigService
   ) {
     this.d3 = d3Service.getD3();
   }
 
   ngOnChanges(): void {
+    this.configService.definitionId = this.definitionId;
+    this.configService.gameId = this.gameId;
     this.loadData();
   }
 
