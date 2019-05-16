@@ -2,7 +2,7 @@ import {GenericObject} from '../models/generic-object.type';
 import {View} from '../models/view.enum';
 
 export class Kypo2TrainingsHurdlingVizLibConfig {
-  apiUrl: string;
+  restBaseUrl: string;
   levelsTimePlan: number[];
   gameColors: string[];
   darkColor: string;
