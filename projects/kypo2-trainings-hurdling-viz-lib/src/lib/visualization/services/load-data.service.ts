@@ -16,7 +16,7 @@ import {ConfigService} from '../config/config.service';
 @Injectable()
 export class LoadDataService {
   private levelsTimePlan = this.configService.config.levelsTimePlan;
-  private levelTimePlan = 1000;
+  private levelTimePlan = 500;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
     gameStart: this.levelTypePrefix + 'TrainingRunStarted',
@@ -40,8 +40,8 @@ export class LoadDataService {
     levelsTimePlan: number[])
     {
     this.levelsTimePlan = this.configService.config.levelsTimePlan;
-    const defUrl: string = this.configService.config.apiUrl + '/training-definitions/' + this.configService.trainingDefinitionId;
-    const eventsUrl: string = this.configService.config.apiUrl + '/training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
+    const defUrl: string = this.configService.config.restBaseUrl + '/training-definitions/' + this.configService.trainingDefinitionId;
+    const eventsUrl: string = this.configService.config.restBaseUrl + '/training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
 
     return forkJoin([
       this.loadData<Game>(defUrl),
@@ -62,7 +62,7 @@ export class LoadDataService {
 
   private loadData<T>(url: string, params?: any): Observable<any> {
     if (typeof params !== 'undefined') {
-      return this.http.get<T[]>(url);
+      return this.http.get<T[]>(url, params);
     } else {
       return this.http.get<T[]>(url);
     }
