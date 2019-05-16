@@ -173,40 +173,37 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.errorMessage = null;
 
     if (this.csvFile === null || typeof this.csvFile === 'undefined') {
-        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
-        this.gamedataset = data.gameDataset;
-        this.plandataset = data.planDataset;
-        this.levels = data.levels;
-        this.levelsTimePlan = data.levelsTimePlan;
-        this.time = data.time;
-        this.types = data.types;
-        this.drawChart();
+      // const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+      // this.gamedataset = data.gameDataset;
+      // this.plandataset = data.planDataset;
+      // this.levels = data.levels;
+      // this.levelsTimePlan = data.levelsTimePlan;
+      // this.time = data.time;
+      // this.types = data.types;
+      // this.drawChart();
 
+      this.loadDataService
+          .getGameAndPlanData(
+              this.configService.trainingDefinitionId.toString(),
+              this.configService.trainingInstanceId.toString(),
+              this.configService.config.levelsTimePlan
+          )
+          .subscribe(
+              (data: Data) => {
+                this.gamedataset = data.gameDataset;
+                this.plandataset = data.planDataset;
+                this.levels = data.levels;
+                this.levelsTimePlan = data.levelsTimePlan;
+                this.time = data.time;
+                this.drawChart();
+              },
+              (error: string) => {
+                this.errorMessage = error;
+              }
+          );
     } else {
       this.loadMock(this.csvFile);
     }
-
-     /*this.loadDataService
-       .getGameAndPlanData(
-         this.configService.token,
-         this.configService.apiUrl,
-         this.configService.definitionId,
-         this.configService.gameId,
-         this.configService.levelsTimePlan
-       )
-       .subscribe(
-         (data: Data) => {
-           this.gamedataset = data.gameDataset;
-           this.plandataset = data.planDataset;
-           this.levels = data.levels;
-           this.levelsTimePlan = data.levelsTimePlan;
-           this.time = data.time;
-           this.drawChart();
-         },
-         (error: string) => {
-           this.errorMessage = error;
-         }
-       );*/
   }
 
   loadMock(file, endInPercents: number = 100) { // todo - work with jsons? we need two uploads then
