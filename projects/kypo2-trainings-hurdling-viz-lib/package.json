@@ -1,6 +1,6 @@
 {
   "name": "kypo2-trainings-hurdling-viz-lib",
-  "version": "0.1.4",
+  "version": "0.9.0",
   "peerDependencies": {
     "@angular/common": "^7.0.1",
     "@angular/core": "^7.0.1",
