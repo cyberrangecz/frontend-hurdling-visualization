@@ -8,7 +8,7 @@ import {View} from '../lib/visualization/models/view.enum';
 export const environment = {
   production: false,
   assetsRoot: '',
-  apiUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1',
+  restBaseUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1',
 
   // OIDC SETTINGS
   // Url of the Identity Provider

@@ -2,7 +2,7 @@ import {environment} from '../environments/environment';
 import {Kypo2TrainingsHurdlingVizLibConfig, View} from '../../projects/kypo2-trainings-hurdling-viz-lib/src/public_api';
 
 export const CustomConfig: Kypo2TrainingsHurdlingVizLibConfig = {
-  apiUrl: environment.apiUrl,
+  restBaseUrl: environment.restBaseUrl,
   levelsTimePlan: [],
   gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
   darkColor: '#2f2f2f',
