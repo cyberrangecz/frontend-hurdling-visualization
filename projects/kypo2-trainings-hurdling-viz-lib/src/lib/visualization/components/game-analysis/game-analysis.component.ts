@@ -9,7 +9,6 @@ import {
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
 import { LoadCsvDataService } from '../../services/load-csv-data.service';
-import { AppConfig } from '../../../app.config';
 import { DataEntry } from '../../models/data-entry';
 import { GameConfig } from '../../models/game-config';
 import { PlanConfig } from '../../models/plan-config';
@@ -130,7 +129,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   csvInput: any;
 
   constructor(
-    private config: AppConfig,
     d3Service: D3Service,
     private loadDataService: LoadDataService,
     private loadCsvDataService: LoadCsvDataService,
@@ -149,25 +147,25 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.selectedViewValue = this.config.defaultView;
-    this.view = this.config.defaultView;
+    this.selectedViewValue = this.configService.config.defaultView;
+    this.view = this.configService.config.defaultView;
     this.loadData();
     this.legendIcons = [];
     this.legendIcons.push({
       label: 'Solution displayed',
-      path: this.config.eventShapePaths.solution
+      path: this.configService.config.eventShapePaths.solution
     });
     this.legendIcons.push({
       label: 'Skip',
-      path: this.config.eventShapePaths.skip
+      path: this.configService.config.eventShapePaths.skip
     });
     this.legendIcons.push({
       label: 'Hint',
-      path: this.config.eventShapePaths.hint
+      path: this.configService.config.eventShapePaths.hint
     });
     this.legendIcons.push({
       label: 'Wrong',
-      path: this.config.eventShapePaths.wrong
+      path: this.configService.config.eventShapePaths.wrong
     });
   }
 
@@ -190,11 +188,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
      /*this.loadDataService
        .getGameAndPlanData(
-         this.config.token,
-         this.config.apiUrl,
-         this.config.definitionId,
-         this.config.gameId,
-         this.config.levelsTimePlan
+         this.configService.token,
+         this.configService.apiUrl,
+         this.configService.definitionId,
+         this.configService.gameId,
+         this.configService.levelsTimePlan
        )
        .subscribe(
          (data: Data) => {
@@ -214,7 +212,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadMock(file, endInPercents: number = 100) { // todo - work with jsons? we need two uploads then
     this.errorMessage = null;
     this.loadCsvDataService
-      .getGameAndPlanData(file, this.config.levelsTimePlan, endInPercents)
+      .getGameAndPlanData(file, this.configService.config.levelsTimePlan, endInPercents)
       .subscribe(
         (data: Data) => {
           this.gamedataset = data.gameDataset;
@@ -313,8 +311,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         top: 10,
         bottom: 40
       },
-      minBarHeight: this.config.minBarHeight,
-      maxBarHeight: this.config.maxBarHeight,
+      minBarHeight: this.configService.config.minBarHeight,
+      maxBarHeight: this.configService.config.maxBarHeight,
       estimatedTime: estimatedTime
     });
 
@@ -326,8 +324,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.drawGame({
       data: gamedata,
-      eventShapePaths: this.config.eventShapePaths,
-      currentLevelColor: this.config.darkColor,
+      eventShapePaths: this.configService.config.eventShapePaths,
+      currentLevelColor: this.configService.config.darkColor,
       time: gamedata.time
     });
 
@@ -435,7 +433,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.gameChartWrapper = this.chart
       .append('g')
-      .attr('class', (this.view === View.overview ? 'ctf-game-overview' : 'ctf-game-progress'))
+      .attr('class', (this.view === View.overview ? 'ctf-game-overview' : 'ctf-game-progress'));
     this.gameChart = this.gameChartWrapper
       .append('g')
       .attr('class', 'ctf-game');
@@ -797,7 +795,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         this.d3
             .selectAll('.game .game-layer rect')
             .filter((data: any) => data.data.team === d.data.team)
-            .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)))
+            .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
         if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
             this.d3
                 .selectAll('.game .game-layer rect')
@@ -1301,7 +1299,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     if ($event.target.files.length > 0) {
       this.clear();
       if (this.selectedViewValue === 1) {
-        this.simulateCSVGameProgress(0, 100, 1, this.config.simulationInterval);
+        this.simulateCSVGameProgress(0, 100, 1, this.configService.config.simulationInterval);
       } else {
         this.loadDataFromCSV();
       }
@@ -1341,10 +1339,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   onMouseWheelUp($event: any) {
-    if (this.zoomValue < this.config.maxZoomValue) {
+    if (this.zoomValue < this.configService.config.maxZoomValue) {
       const newZoomValue = Math.min(
-          this.config.maxZoomValue,
-          this.zoomValue + this.config.zoomStep
+          this.configService.config.maxZoomValue,
+          this.zoomValue + this.configService.config.zoomStep
         ),
         scale = newZoomValue / this.zoomValue,
         dx =
@@ -1366,7 +1364,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   onMouseWheelDown($event: any) {
     if (this.zoomValue > 1) {
-      const newZoomValue = Math.max(1, this.zoomValue - this.config.zoomStep),
+      const newZoomValue = Math.max(1, this.zoomValue - this.configService.config.zoomStep),
         scale = newZoomValue / this.zoomValue,
         dx =
           (-$event.left + this.panValue) * scale + $event.left - this.panValue;
@@ -1420,7 +1418,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   watchGameProgress() {
-    const interval: number = this.config.loadDataInterval;
+    const interval: number = this.configService.config.loadDataInterval;
     this.loadData();
     this.loadTimer = setInterval((): void => {
       this.loadData();
@@ -1431,7 +1429,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     const file: File = this.csvInput.nativeElement.files[0];
     this.errorMessage = null;
     this.loadCsvDataService
-      .getGameAndPlanData(file, this.config.levelsTimePlan, endInPercents)
+      .getGameAndPlanData(file, this.configService.config.levelsTimePlan, endInPercents)
       .subscribe(
         (data: Data) => {
           this.gamedataset = data.gameDataset;
@@ -1470,7 +1468,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.zoomValue = 1;
     this.view = View.progress;
     if (this.activeDataSource === DataSource.csv) {
-      this.simulateCSVGameProgress(0, 100, 1, this.config.simulationInterval);
+      this.simulateCSVGameProgress(0, 100, 1, this.configService.config.simulationInterval);
     } else {
       this.watchGameProgress();
     }
@@ -1521,7 +1519,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   getColor(level: number): string {
-    const colors: string[] = (this.colorScheme || this.config.gameColors);
+    const colors: string[] = (this.colorScheme || this.configService.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
@@ -1531,7 +1529,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   getPlanColor(level: number): string {
-    const colors: string[] = (this.colorScheme || this.config.gameColors);
+    const colors: string[] = (this.colorScheme || this.configService.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
@@ -1542,7 +1540,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   getLightenedColor(level: number): string {
-    const colors: string[] = (this.colorScheme || this.config.gameColors);
+    const colors: string[] = (this.colorScheme || this.configService.config.gameColors);
     if (this.view === View.progress) {
       if (level === 0) return 'transparent';
       else level -= 1;
