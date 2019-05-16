@@ -15,8 +15,8 @@ import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class LoadDataService {
-  private levelsTimePlan: number[] = [];
-  private levelTimePlan = this.configService.config.levelsTimePlan;
+  private levelsTimePlan = this.configService.config.levelsTimePlan;
+  private levelTimePlan = 1000;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
     gameStart: this.levelTypePrefix + 'TrainingRunStarted',
