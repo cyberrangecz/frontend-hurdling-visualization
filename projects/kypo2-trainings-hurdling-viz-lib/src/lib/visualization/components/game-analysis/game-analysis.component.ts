@@ -28,8 +28,6 @@ import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
 import { HttpClient } from '@angular/common/http';
-import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
-import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
 import {ConfigService} from '../../config/config.service';
 
 @Component({
@@ -195,10 +193,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
                 this.levels = data.levels;
                 this.levelsTimePlan = data.levelsTimePlan;
                 this.time = data.time;
+                this.types = data.types;
                 this.drawChart();
               },
-              (error: string) => {
-                this.errorMessage = error;
+              (error) => {
+                this.errorMessage = error.message;
               }
           );
     } else {

@@ -218,7 +218,7 @@ export class LoadDataService {
         }
     });
 
-    time = events[events.length - 1].timestamp - events[0].timestamp;
+    // time = events[events.length - 1].timestamp - events[0].timestamp;
 
     // create final timeplan for levels
     levels.forEach((level, i): void => {
@@ -261,9 +261,6 @@ export class LoadDataService {
         team['currentState'] = 'finished'; // finished team
 
     });
-
-    console.log(gamedataset);
-    console.log(plandataset);
 
     return {
       gameDataset: gamedataset,
