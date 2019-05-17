@@ -3,15 +3,4 @@ import {View} from '../models/view.enum';
 
 export class Kypo2TrainingsHurdlingVizLibConfig {
   restBaseUrl: string;
-  levelsTimePlan: number[];
-  gameColors: string[];
-  darkColor: string;
-  eventShapePaths: GenericObject;
-  minBarHeight: number;
-  maxBarHeight: number;
-  maxZoomValue: number;
-  zoomStep: number;
-  simulationInterval: number;
-  loadDataInterval: number;
-  defaultView: View;
 }
