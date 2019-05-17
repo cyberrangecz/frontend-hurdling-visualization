@@ -15,7 +15,7 @@ import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class LoadDataService {
-  private levelsTimePlan = this.configService.config.levelsTimePlan;
+  private levelsTimePlan: number [] = [];
   private levelTimePlan = 500;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
@@ -39,7 +39,6 @@ export class LoadDataService {
     trainingInstanceId: string,
     levelsTimePlan: number[])
     {
-    this.levelsTimePlan = this.configService.config.levelsTimePlan;
     const defUrl: string = this.configService.config.restBaseUrl + '/training-definitions/' + this.configService.trainingDefinitionId;
     const eventsUrl: string = this.configService.config.restBaseUrl + '/training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
 
