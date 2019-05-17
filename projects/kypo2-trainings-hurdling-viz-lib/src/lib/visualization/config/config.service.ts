@@ -6,6 +6,33 @@ export class ConfigService {
   private readonly _config: Kypo2TrainingsHurdlingVizLibConfig;
   private _trainingDefinitionId: number;
   private _trainingInstanceId: number;
+  private _gameColors: string[];
+  private _simulationInterval: number;
+  private _loadDataInterval: number;
+
+  get gameColors(): string[] {
+    return this._gameColors;
+  }
+
+  set gameColors(value: string[]) {
+    this._gameColors = value;
+  }
+
+  get simulationInterval(): number {
+    return this._simulationInterval;
+  }
+
+  set simulationInterval(value: number) {
+    this._simulationInterval = value;
+  }
+
+  get loadDataInterval(): number {
+    return this._loadDataInterval;
+  }
+
+  set loadDataInterval(value: number) {
+    this._loadDataInterval = value;
+  }
 
   get trainingDefinitionId(): number {
     return this._trainingDefinitionId;
