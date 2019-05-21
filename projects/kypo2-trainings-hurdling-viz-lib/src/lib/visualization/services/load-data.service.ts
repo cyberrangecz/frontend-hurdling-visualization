@@ -11,11 +11,11 @@ import { Event } from '../models/event';
 import { Game } from '../models/game';
 import { Data } from '../models/data';
 import {forEach} from '@angular/router/src/utils/collection';
+import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class LoadDataService {
-  private httpClient: HttpClient;
-  private levelsTimePlan: number[] = [];
+  private levelsTimePlan: number [] = [];
   private levelTimePlan = 500;
   private levelTypePrefix = 'cz.muni.csirt.kypo.events.trainings.';
   private eventTypes: GenericObject = {
@@ -31,24 +31,20 @@ export class LoadDataService {
     solution: this.levelTypePrefix + 'SolutionDisplayed'
   };
 
-  constructor(httpClient: HttpClient) {
-    this.httpClient = httpClient;
-  }
+  constructor(private http: HttpClient,
+              private configService: ConfigService) { }
 
   public getGameAndPlanData(
-    token: string,
-    apiUrl: string,
-    definitionId: string,
-    gameId: string,
-    levelsTimePlan: number[]
-  ) {
-    this.levelsTimePlan = levelsTimePlan;
-    const defUrl: string = apiUrl + '/training-definitions/' + definitionId;
-    const eventsUrl: string = apiUrl + '/training-events/training-definitions/' + definitionId + '/training-instances/' + gameId;
+    trainingDefinitionId: string,
+    trainingInstanceId: string,
+    levelsTimePlan: number[])
+    {
+    const defUrl: string = this.configService.config.restBaseUrl + 'training-definitions/' + this.configService.trainingDefinitionId;
+    const eventsUrl: string = this.configService.config.restBaseUrl + 'training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
 
     return forkJoin([
-      this.loadData<Game>(token, defUrl),
-      this.loadData<Event>(token, eventsUrl)
+      this.loadData<Game>(defUrl),
+      this.loadData<Event>(eventsUrl)
     ]).pipe(map(
       (data: any[]): Data => {
         const game: Game = data[0];
@@ -63,12 +59,11 @@ export class LoadDataService {
       return this.processData(gameInfo, gameEvents);
   }
 
-  private loadData<T>(token: string, url: string, params?: any): Observable<any> {
-    const headers = new HttpHeaders();
+  private loadData<T>(url: string, params?: any): Observable<any> {
     if (typeof params !== 'undefined') {
-      return this.httpClient.get<T[]>(url, {headers: new HttpHeaders({'Authorization': 'Bearer ' + token})});
+      return this.http.get<T[]>(url, params);
     } else {
-      return this.httpClient.get<T[]>(url, {headers: new HttpHeaders({'Authorization': 'Bearer ' + token})});
+      return this.http.get<T[]>(url);
     }
   }
 
@@ -222,7 +217,7 @@ export class LoadDataService {
         }
     });
 
-    time = events[events.length - 1].timestamp - events[0].timestamp;
+    // time = events[events.length - 1].timestamp - events[0].timestamp;
 
     // create final timeplan for levels
     levels.forEach((level, i): void => {
@@ -265,9 +260,6 @@ export class LoadDataService {
         team['currentState'] = 'finished'; // finished team
 
     });
-
-    console.log(gamedataset);
-    console.log(plandataset);
 
     return {
       gameDataset: gamedataset,
