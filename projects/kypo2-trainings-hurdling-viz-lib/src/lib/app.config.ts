@@ -3,7 +3,6 @@ import { View } from './visualization/models/view.enum';
 
 export class AppConfig {
 	apiUrl: string;
-	token: string; // temp
 	gameId: string;
 	definitionId: string;
 	levelsTimePlan: number[];
@@ -20,12 +19,10 @@ export class AppConfig {
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
-    apiUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1',
-	token: 'tokenData',
+    apiUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1/',
 	gameId: '5',
     definitionId: '4',
-	// levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
-	levelsTimePlan: [], // [500, 200, 500, 1900, 500, 2200, 500, 1000, 500], // TODO remove hardcoded values
+	levelsTimePlan: [],
     gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',
 	eventShapePaths: {

@@ -39,8 +39,8 @@ export class LoadDataService {
     trainingInstanceId: string,
     levelsTimePlan: number[])
     {
-    const defUrl: string = this.configService.config.restBaseUrl + '/training-definitions/' + this.configService.trainingDefinitionId;
-    const eventsUrl: string = this.configService.config.restBaseUrl + '/training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
+    const defUrl: string = this.configService.config.restBaseUrl + 'training-definitions/' + this.configService.trainingDefinitionId;
+    const eventsUrl: string = this.configService.config.restBaseUrl + 'training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
 
     return forkJoin([
       this.loadData<Game>(defUrl),
