@@ -4,7 +4,6 @@ import {CommonModule} from '@angular/common';
 import { D3Service } from 'd3-ng2-service';
 import { PapaParseModule } from 'ngx-papaparse';
 import { LoadDataService } from './visualization/services/load-data.service';
-import { LoadCsvDataService } from './visualization/services/load-csv-data.service';
 import { GameAnalysisComponent } from './visualization/components/game-analysis/game-analysis.component';
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
 import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
@@ -31,7 +30,6 @@ import {ConfigService} from './visualization/config/config.service';
   providers: [
     D3Service,
     LoadDataService,
-    LoadCsvDataService,
     SortingService,
     FilteringService,
     ConfigService
