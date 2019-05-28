@@ -3,17 +3,21 @@ import { View } from './visualization/models/view.enum';
 
 export class AppConfig {
 	levelsTimePlan: number[];
+	gameColors: string[];
 	darkColor: string;
 	eventShapePaths: GenericObject;
 	minBarHeight: number;
 	maxBarHeight: number;
 	maxZoomValue: number;
 	zoomStep: number;
+	simulationInterval: number;
+	loadDataInterval: number;
 	defaultView: View;
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
 	levelsTimePlan: [],
+	gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',
 	eventShapePaths: {
 		'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',
@@ -29,5 +33,7 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 	maxBarHeight: 35,
 	maxZoomValue: 10,
 	zoomStep: 0.25,
+	simulationInterval: 800,
+	loadDataInterval: 5000,
 	defaultView: View.overview
 };
