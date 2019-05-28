@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { Kypo2TrainingsHurdlingVizLibModule } from '../../projects/kypo2-trainings-hurdling-viz-lib/src/public_api';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
+import {AppRoutingModule} from './app-routing.module';
+import {OAuthModule, OAuthStorage} from 'angular-oauth2-oidc';
+import {AuthService} from './auth/auth.service';
+import {AuthHttpInterceptor} from './auth/auth-http-interceptor';
 
 @NgModule({
   declarations: [
@@ -11,9 +14,19 @@ import {BrowserModule} from '@angular/platform-browser';
   imports: [
     BrowserModule,
     HttpClientModule,
-    Kypo2TrainingsHurdlingVizLibModule
+    AppRoutingModule,
+    OAuthModule.forRoot(
+        {
+          resourceServer: {
+            allowedUrls: [],
+            sendAccessToken: true
+          }
+        })
   ],
   providers: [
+    AuthService,
+    { provide: OAuthStorage, useValue: localStorage },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

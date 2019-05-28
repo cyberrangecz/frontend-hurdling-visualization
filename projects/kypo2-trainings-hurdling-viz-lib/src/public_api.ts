@@ -3,5 +3,8 @@
  */
 
 export {Kypo2TrainingsHurdlingVizLibService} from './lib/kypo2-trainings-hurdling-viz-lib.service';
+export {Kypo2TrainingsHurdlingVizLibComponent} from './lib/kypo2-trainings-hurdling-viz-lib.component';
 export {Kypo2TrainingsHurdlingVizLibModule} from './lib/kypo2-trainings-hurdling-viz-lib.module';
 export {GameAnalysisComponent} from './lib/visualization/components/game-analysis/game-analysis.component';
+export {Kypo2TrainingsHurdlingVizLibConfig} from './lib/visualization/config/kypo2-trainings-hurdling-viz-lib';
+export {View} from './lib/visualization/models/view.enum';
