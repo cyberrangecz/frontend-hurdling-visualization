@@ -44,9 +44,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() colorScheme: string[];
   @Input() trainingDefinitionId: number;
   @Input() trainingInstanceId: number;
-  @Input() gameColors = ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'];
-  @Input() simulationInterval = 800;
-  @Input() loadDataInterval = 5000;
+  @Input() gameColors = this.appConfig.gameColors;
+  @Input() simulationInterval = this.appConfig.simulationInterval;
+  @Input() loadDataInterval = this.appConfig.loadDataInterval;
 
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
