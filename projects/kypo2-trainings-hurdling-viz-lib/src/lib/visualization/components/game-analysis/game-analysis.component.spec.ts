@@ -23,6 +23,7 @@ describe('GameAnalysisComponent', () => {
   let fixture: ComponentFixture<GameAnalysisComponent>;
   const testConfig: AppConfig = {
     levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
+    gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
     darkColor: '#2f2f2f',
     eventShapePaths: {
         'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',
@@ -34,6 +35,8 @@ describe('GameAnalysisComponent', () => {
     maxBarHeight: 60,
     maxZoomValue: 10,
     zoomStep: 0.25,
+    simulationInterval: 800,
+    loadDataInterval: 5000,
     defaultView: View.overview
   };
   const loadServiceStub: any = {
