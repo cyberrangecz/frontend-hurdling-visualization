@@ -119,7 +119,6 @@ export class LoadDataService {
     let gameStartTimestamp = events[0].timestamp / 1000;
 
     events.forEach(event => {
-        console.log(event.player_login);
         const player = event.player_login;
         const playerIndex = players.indexOf(player);
         const levelNum: number = this.getLevelNumber(event.level, game.levels);
