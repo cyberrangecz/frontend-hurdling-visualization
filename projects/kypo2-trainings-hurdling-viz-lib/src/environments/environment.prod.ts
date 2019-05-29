@@ -3,7 +3,7 @@ import {View} from '../lib/visualization/models/view.enum';
 export const environment = {
   production: true,
   assetsRoot: '/portlet_ctf_progress-0.1/',
-  restBaseUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1/',
+  restBaseUrl: 'http://147.251.124.129:8083/kypo2-rest-training/api/v1/',
 
   // OIDC SETTINGS
   // Url of the Identity Provider

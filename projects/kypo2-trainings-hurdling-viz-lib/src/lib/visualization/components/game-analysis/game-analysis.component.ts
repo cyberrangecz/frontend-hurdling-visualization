@@ -18,6 +18,7 @@ import { GameData } from '../../models/game-data';
 import { PlanData } from '../../models/plan-data';
 import { Event } from '../../models/event';
 import { Padding } from '../../models/padding';
+import { AppConfig } from '../../../app.config';
 import { View } from '../../models/view.enum';
 import { DataSource } from '../../models/data-source.enum';
 import { GenericObject } from '../../models/generic-object.type';
@@ -43,9 +44,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() colorScheme: string[];
   @Input() trainingDefinitionId: number;
   @Input() trainingInstanceId: number;
-  @Input() gameColors = ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'];
-  @Input() simulationInterval = 800;
-  @Input() loadDataInterval = 5000;
+  @Input() gameColors = this.appConfig.gameColors;
+  @Input() simulationInterval = this.appConfig.simulationInterval;
+  @Input() loadDataInterval = this.appConfig.loadDataInterval;
 
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
@@ -88,23 +89,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   public sortReverse = false;
   public sortLevel = 0;
   public levelSortOptions: GenericObject[] = [];
-
-  private darkColor = '#2f2f2f';
-  private minBarHeight = 18;
-  private maxBarHeight = 35;
-  private maxZoomValue = 10;
-  private zoomStep = 0.25;
-  private defaultView = View.overview;
-  private eventShapePaths = {
-      'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',
-      'skip': 'M3.4,0.9L8,5.5l4.7-4.6l2.3,2.2L10.4,8l4.7,4.7L12.9,15L8,10.2l-4.8,4.9l-2.4-2.3L5.6,8L0.9,3.5L3.4,0.9z',
-      'solution' : 'M0.7,10.2l2-3L6,9.5l6.5-8.1l2.9,2.3L6.6,14.6L0.7,10.2z',
-      'group' : 'M17.5,9c0,4.7-3.8,8.5-8.5,8.5c-4.7,0-8.5-3.8-8.5-8.5c0-4.7,3.8-8.5,8.5-8.5C13.7,0.5,17.5,4.3,17.5,9z',
-      'wrong' : 'm13.442553,8.807937l3.19308,-5.361621c0.063743,-0.107093 0.067045,-0.241568 0.008917,-0.351781c-0.058458,-0.110213 ' +
-      '-0.16877,-0.178487 -0.288989,-0.178487l-14.862288,0l0,-0.693166c0,-0.191658 -0.147632,-0.346581 -0.330273,-0.346581s-0.330273,' +
-      '0.154923 -0.330273,0.346581l0,1.039747l0,10.050869l-0.030897,1.112352c-0.08162,0.722663 0.31874,0.474471 0.719104,0.468987l14.834628,' +
-      '-0.195011c0.002642,0.000349 0.005284,0 0.006605,0c0.182641,0 0.330273,-0.154923 0.330273,-0.346581l-3.249887,-5.545308z'
-  };
 
   public viewOptions: GenericObject[] = [
     {
@@ -153,7 +137,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     private sortingService: SortingService,
     private filteringService: FilteringService,
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private appConfig: AppConfig
   ) {
     this.d3 = d3Service.getD3();
   }
@@ -168,25 +153,25 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.selectedViewValue = this.defaultView;
-    this.view = this.defaultView;
+    this.selectedViewValue = this.appConfig.defaultView;
+    this.view = this.appConfig.defaultView;
     this.loadData();
     this.legendIcons = [];
     this.legendIcons.push({
       label: 'Solution displayed',
-      path: this.eventShapePaths.solution
+      path: this.appConfig.eventShapePaths.solution
     });
     this.legendIcons.push({
       label: 'Skip',
-      path: this.eventShapePaths.skip
+      path: this.appConfig.eventShapePaths.skip
     });
     this.legendIcons.push({
       label: 'Hint',
-      path: this.eventShapePaths.hint
+      path: this.appConfig.eventShapePaths.hint
     });
     this.legendIcons.push({
       label: 'Wrong',
-      path: this.eventShapePaths.wrong
+      path: this.appConfig.eventShapePaths.wrong
     });
   }
 
@@ -231,7 +216,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadMock(file, endInPercents: number = 100) { // todo - work with jsons? we need two uploads then
     this.errorMessage = null;
     this.loadCsvDataService
-      .getGameAndPlanData(file, this.levelsTimePlan, endInPercents)
+      .getGameAndPlanData(file, this.appConfig.levelsTimePlan, endInPercents)
       .subscribe(
         (data: Data) => {
           this.gamedataset = data.gameDataset;
@@ -330,8 +315,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
         top: 10,
         bottom: 40
       },
-      minBarHeight: this.minBarHeight,
-      maxBarHeight: this.maxBarHeight,
+      minBarHeight: this.appConfig.minBarHeight,
+      maxBarHeight: this.appConfig.maxBarHeight,
       estimatedTime: estimatedTime
     });
 
@@ -343,8 +328,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.drawGame({
       data: gamedata,
-      eventShapePaths: this.eventShapePaths,
-      currentLevelColor: this.darkColor,
+      eventShapePaths: this.appConfig.eventShapePaths,
+      currentLevelColor: this.appConfig.darkColor,
       time: gamedata.time
     });
 
@@ -1318,7 +1303,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     if ($event.target.files.length > 0) {
       this.clear();
       if (this.selectedViewValue === 1) {
-        this.simulateCSVGameProgress(0, 100, 1, this.simulationInterval);
+        this.simulateCSVGameProgress(0, 100, 1, this.configService.simulationInterval);
       } else {
         this.loadDataFromCSV();
       }
@@ -1358,10 +1343,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   onMouseWheelUp($event: any) {
-    if (this.zoomValue < this.maxZoomValue) {
+    if (this.zoomValue < this.appConfig.maxZoomValue) {
       const newZoomValue = Math.min(
-          this.maxZoomValue,
-          this.zoomValue + this.zoomStep
+          this.appConfig.maxZoomValue,
+          this.zoomValue + this.appConfig.zoomStep
         ),
         scale = newZoomValue / this.zoomValue,
         dx =
@@ -1383,7 +1368,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   onMouseWheelDown($event: any) {
     if (this.zoomValue > 1) {
-      const newZoomValue = Math.max(1, this.zoomValue - this.zoomStep),
+      const newZoomValue = Math.max(1, this.zoomValue - this.appConfig.zoomStep),
         scale = newZoomValue / this.zoomValue,
         dx =
           (-$event.left + this.panValue) * scale + $event.left - this.panValue;
@@ -1437,7 +1422,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   watchGameProgress() {
-    const interval: number = this.loadDataInterval;
+    const interval: number = this.configService.loadDataInterval;
     this.loadData();
     this.loadTimer = setInterval((): void => {
       this.loadData();
@@ -1448,7 +1433,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     const file: File = this.csvInput.nativeElement.files[0];
     this.errorMessage = null;
     this.loadCsvDataService
-      .getGameAndPlanData(file, this.levelsTimePlan, endInPercents)
+      .getGameAndPlanData(file, this.appConfig.levelsTimePlan, endInPercents)
       .subscribe(
         (data: Data) => {
           this.gamedataset = data.gameDataset;
@@ -1487,7 +1472,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.zoomValue = 1;
     this.view = View.progress;
     if (this.activeDataSource === DataSource.csv) {
-      this.simulateCSVGameProgress(0, 100, 1, this.simulationInterval);
+      this.simulateCSVGameProgress(0, 100, 1, this.configService.simulationInterval);
     } else {
       this.watchGameProgress();
     }

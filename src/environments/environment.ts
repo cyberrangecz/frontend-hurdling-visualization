@@ -8,7 +8,7 @@ import {View} from '../../projects/kypo2-trainings-hurdling-viz-lib/src/lib/visu
 export const environment = {
   production: false,
   assetsRoot: '',
-  restBaseUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1/',
+  restBaseUrl: 'http://147.251.124.129:8083/kypo2-rest-training/api/v1/',
 
   // OIDC SETTINGS
   // Url of the Identity Provider
