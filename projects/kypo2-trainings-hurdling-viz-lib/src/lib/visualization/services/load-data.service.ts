@@ -119,6 +119,7 @@ export class LoadDataService {
     let gameStartTimestamp = events[0].timestamp / 1000;
 
     events.forEach(event => {
+        console.log(event.player_login);
         const player = event.player_login;
         const playerIndex = players.indexOf(player);
         const levelNum: number = this.getLevelNumber(event.level, game.levels);
@@ -183,7 +184,7 @@ export class LoadDataService {
                 break;
             case this.eventTypes.hint:
                 gameEvent.type = 'hint';
-                gameEvent.name = 'Hint ' + event.hint_id + ' taken';
+                gameEvent.name = 'Hint ' + event.hint_title + ' taken';
                 break;
             case this.eventTypes.wrongFlag:
                 gameEvent.type = 'wrong';
