@@ -235,7 +235,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       const teamData: GenericObject = {
         team: d.team
       };
-
       let levelIndex = 0;
       levels.forEach(level => {
         const timePlan: number = levelsTimePlan[levelIndex];
@@ -1221,7 +1220,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .data(gamedata.teams)
       .enter()
       .append('text')
-      .text((d: GenericObject): string => d.team)
+      .text((d: GenericObject): string => this.getPlayerUco(d.team))
       .attr(
         'y',
         (d: GenericObject): number =>
@@ -1442,6 +1441,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     const color = this.d3.hsl(colors[level % colorsCount]);
     return color.brighter(0.8).toString();
   }
+
+  getPlayerUco(login: string): string {
+      return login.split('@')[0];
+  }
+
 
   /* for analysis manipulation */
 
