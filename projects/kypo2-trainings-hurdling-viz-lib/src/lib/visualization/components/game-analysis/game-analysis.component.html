@@ -1,6 +1,6 @@
 	<div class="ctf-progress-wrapper">
 	<div class="container-fluid">
-		<div class="row ctf-progress-head-wrapper" *ngIf="!hideCSVUpload">
+		<div class="row ctf-progress-head-wrapper" *ngIf="true">
 			<div class="col-12">
 				<div class="ctf-progress-head">
 					<div class="ctf-progress-options">
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 		</div>
-		<p *ngIf="hideCSVUpload">Game-run final overview</p>
+		<p *ngIf="false">Game-run final overview</p>
 		<div class="ctfh-row align-items-end ctfh-no-gutters">
 			<div class="ctfh-col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-teamcolumn">
@@ -99,7 +99,7 @@
 								</svg>
 								Level time limit
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="!hideCSVUpload">
+							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="true">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18" fill="#8c8b8b">
 									<defs>
 										<pattern id="diagonalHatchGray" patternUnits="userSpaceOnUse" width="7" height="4" patternTransform="rotate(45)">
@@ -110,13 +110,13 @@
 								</svg>
 								Estimated time
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="!hideCSVUpload">
+							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="true">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#cccccc"></rect>
 								</svg>
 								Finished level
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="!hideCSVUpload">
+							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="true">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#848282"></rect>
 								</svg>
