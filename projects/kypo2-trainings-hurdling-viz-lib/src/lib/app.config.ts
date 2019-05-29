@@ -2,11 +2,8 @@ import { GenericObject } from './visualization/models/generic-object.type';
 import { View } from './visualization/models/view.enum';
 
 export class AppConfig {
-	apiUrl: string;
-	gameId: string;
-	definitionId: string;
 	levelsTimePlan: number[];
-    gameColors: string[];
+	gameColors: string[];
 	darkColor: string;
 	eventShapePaths: GenericObject;
 	minBarHeight: number;
@@ -19,11 +16,8 @@ export class AppConfig {
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
-    apiUrl: 'http://147.251.21.216:8083/kypo2-rest-training/api/v1/',
-	gameId: '5',
-    definitionId: '4',
 	levelsTimePlan: [],
-    gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
+	gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
 	darkColor: '#2f2f2f',
 	eventShapePaths: {
 		'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',

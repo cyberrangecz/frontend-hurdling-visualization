@@ -13,6 +13,7 @@ import { FilteringService } from './visualization/services/filtering.service';
 import { Kypo2TrainingsHurdlingVizLibConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
 import {Kypo2TrainingsHurdlingVizLibComponent} from './kypo2-trainings-hurdling-viz-lib.component';
 import {ConfigService} from './visualization/config/config.service';
+import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {ConfigService} from './visualization/config/config.service';
     LoadDataService,
     SortingService,
     FilteringService,
-    ConfigService
+    ConfigService,
+    { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG }
   ],
   exports: [
     Kypo2TrainingsHurdlingVizLibComponent,
