@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
-// import { LoadCsvDataService } from '../../services/load-csv-data.service';
 import { DataEntry } from '../../models/data-entry';
 import { GameConfig } from '../../models/game-config';
 import { PlanConfig } from '../../models/plan-config';
@@ -39,7 +38,6 @@ import {ConfigService} from '../../config/config.service';
 })
 export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
-  @Input() hideCSVUpload: boolean;
   @Input() colorScheme: string[];
   @Input() trainingDefinitionId: number;
   @Input() trainingInstanceId: number;
@@ -1402,7 +1400,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   getTimeString(seconds: number): string {
     const hours: number = Math.floor(seconds / 3600);
     const minutes: number = Math.floor((seconds - hours * 3600) / 60);
-    seconds = seconds - hours * 3600 - minutes * 60;
+    seconds = Math.floor(seconds - hours * 3600 - minutes * 60);
 
     return (
       hours.toString().padStart(2, '0') +
