@@ -7,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HurdlingOverviewComponent implements OnInit {
   title = 'app';
-  hideCSVUpload = false;
 
   constructor() { }
 
