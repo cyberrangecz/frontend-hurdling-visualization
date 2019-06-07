@@ -29,6 +29,8 @@ import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
 import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
+import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
+import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -39,6 +41,7 @@ import {ConfigService} from '../../config/config.service';
 export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
   @Input() colorScheme: string[];
+  @Input() showProgressView: boolean;
   @Input() trainingDefinitionId: number;
   @Input() trainingInstanceId: number;
   @Input() gameColors = this.appConfig.gameColors;
@@ -144,12 +147,14 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.configService.simulationInterval = this.simulationInterval;
     this.configService.loadDataInterval = this.loadDataInterval;
     this.loadData();
+    this.onViewValueChange();
   }
 
   ngOnInit(): void {
     this.selectedViewValue = this.appConfig.defaultView;
     this.view = this.appConfig.defaultView;
     this.loadData();
+    this.onViewValueChange();
     this.legendIcons = [];
     this.legendIcons.push({
       label: 'Solution displayed',
@@ -172,35 +177,35 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadData() {
     this.errorMessage = null;
 
-    // const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
-    // this.gamedataset = data.gameDataset;
-    // this.plandataset = data.planDataset;
-    // this.levels = data.levels;
-    // this.levelsTimePlan = data.levelsTimePlan;
-    // this.time = data.time;
-    // this.types = data.types;
-    // this.drawChart();
+    const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+    this.gamedataset = data.gameDataset;
+    this.plandataset = data.planDataset;
+    this.levels = data.levels;
+    this.levelsTimePlan = data.levelsTimePlan;
+    this.time = data.time;
+    this.types = data.types;
+    this.drawChart();
 
-    this.loadDataService
-        .getGameAndPlanData(
-            this.configService.trainingDefinitionId.toString(),
-            this.configService.trainingInstanceId.toString(),
-            this.levelsTimePlan
-        )
-        .subscribe(
-            (data: Data) => {
-              this.gamedataset = data.gameDataset;
-              this.plandataset = data.planDataset;
-              this.levels = data.levels;
-              this.levelsTimePlan = data.levelsTimePlan;
-              this.time = data.time;
-              this.types = data.types;
-              this.drawChart();
-            },
-            (error) => {
-              this.errorMessage = error.message;
-            }
-        );
+    // this.loadDataService
+    //     .getGameAndPlanData(
+    //         this.configService.trainingDefinitionId.toString(),
+    //         this.configService.trainingInstanceId.toString(),
+    //         this.levelsTimePlan
+    //     )
+    //     .subscribe(
+    //         (data: Data) => {
+    //           this.gamedataset = data.gameDataset;
+    //           this.plandataset = data.planDataset;
+    //           this.levels = data.levels;
+    //           this.levelsTimePlan = data.levelsTimePlan;
+    //           this.time = data.time;
+    //           this.types = data.types;
+    //           this.drawChart();
+    //         },
+    //         (error) => {
+    //           this.errorMessage = error.message;
+    //         }
+    //     );
   }
 
   drawChart(): void {
@@ -1269,14 +1274,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
   onViewValueChange(): void {
     clearInterval(this.loadTimer);
-    switch (this.selectedViewValue) {
-      case 1:
-        this.switchToProgressView();
-        break;
-      case 2:
-        this.switchToFinalOverview();
-        break;
-    }
+    this.showProgressView ? this.switchToProgressView() : this.switchToFinalOverview();
   }
 
   onResize() {
