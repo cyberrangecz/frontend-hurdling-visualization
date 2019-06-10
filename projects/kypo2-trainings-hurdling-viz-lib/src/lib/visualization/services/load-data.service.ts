@@ -175,6 +175,7 @@ export class LoadDataService {
                 levelFinished = true;
                 break;
             case this.eventTypes.gameExited:
+                break;
             case this.eventTypes.gameFinished:
                 gameEvent.type = null;
                 levelFinished = true;
