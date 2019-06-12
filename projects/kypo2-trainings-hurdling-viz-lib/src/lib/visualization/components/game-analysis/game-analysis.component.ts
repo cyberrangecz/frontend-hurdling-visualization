@@ -31,6 +31,7 @@ import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
 import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
+import {log} from 'util';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -423,6 +424,12 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .attr('class', 'axis axis-x')
       .attr('transform', 'translate(0,' + (this.height + 10) + ')')
       .call(this.xAxis);
+
+    this.gameChart
+        .append('text')
+        .attr('transform', 'translate(' + this.wrapperWidth / 2 * this.zoomValue + ', ' + this.wrapperHeight + ')')
+        .style('text-anchor', 'middle')
+        .text('Time');
   }
 
   getXAxisTickFormat(data: any): string {
@@ -1172,6 +1179,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   createSortingLabels(gamedata) {
+    let previous = 0;
+    let difference = 0;
     if (this.view === View.overview && gamedata['teams'].length) {
       gamedata['keys'].forEach(
         (levelKey: string, index: number): void => {
@@ -1181,19 +1190,22 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
             .reduce((a, b) => a + b, 0);
           const x: number = this.xScale(levelsTimePlanSum);
 
+          difference = levelsTimePlanSum - previous;
+          previous = levelsTimePlanSum;
+
           let sortLevelName: string;
           if (this.types[index] === 'info') {
-            sortLevelName = this.wrapperWidth > 530 ? 'Info' : 'I';
+            sortLevelName = difference > 530 ? 'Info' : 'I';
           }
           if (this.types[index] === 'assessment') {
-            sortLevelName = this.wrapperWidth > 530 ? 'Q' : 'Q';
+            sortLevelName = difference > 530 ? 'Q' : 'Q';
           }
           if (this.types[index] === 'game') {
             let levelNum = 0;
             for (let i = 0; i <= index; i++) {
               if (this.types[i] === 'game') { levelNum++; }
             }
-            sortLevelName = this.wrapperWidth > 530 ? 'Level ' + levelNum : 'L' + levelNum;
+            sortLevelName = difference > 530 ? 'Level ' + levelNum : 'L' + levelNum;
           }
           this.levelSortOptions.push({
             index: index + 1,
