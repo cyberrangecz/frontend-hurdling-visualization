@@ -1053,21 +1053,21 @@ export const EVENTS = [
         'training_definition_id': 4,
         'timestamp': 1552661640000
     },
-    {
-        'level': 15,
-        'training_run_id': 14,
-        'actual_score_in_level': 15,
-        'end_time': 1552661700000,
-        'type': 'cz.muni.csirt.kypo.events.trainings.TrainingRunEnded',
-        'start_time': 1552647600000,
-        'player_login': 'Participant4',
-        'game_time': 10500000,
-        'sandbox_id': 1,
-        'training_instance_id': 5,
-        'total_score': 21,
-        'training_definition_id': 4,
-        'timestamp': 1552661700000
-    }
+    // {
+    //     'level': 15,
+    //     'training_run_id': 14,
+    //     'actual_score_in_level': 15,
+    //     'end_time': 1552661700000,
+    //     'type': 'cz.muni.csirt.kypo.events.trainings.TrainingRunEnded',
+    //     'start_time': 1552647600000,
+    //     'player_login': 'Participant4',
+    //     'game_time': 10500000,
+    //     'sandbox_id': 1,
+    //     'training_instance_id': 5,
+    //     'total_score': 21,
+    //     'training_definition_id': 4,
+    //     'timestamp': 1552661700000
+    // }
     // The following player starts playing a month later - the vis is not ready for such case
     /*,
     {
