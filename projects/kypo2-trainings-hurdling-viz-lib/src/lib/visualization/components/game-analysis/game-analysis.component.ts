@@ -30,6 +30,8 @@ import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
 import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
+import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
+import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -179,35 +181,35 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.errorMessage = null;
 
     if (this.csvFile === null || typeof this.csvFile === 'undefined') {
-      // const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
-      // this.gamedataset = data.gameDataset;
-      // this.plandataset = data.planDataset;
-      // this.levels = data.levels;
-      // this.levelsTimePlan = data.levelsTimePlan;
-      // this.time = data.time;
-      // this.types = data.types;
-      // this.drawChart();
+      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+      this.gamedataset = data.gameDataset;
+      this.plandataset = data.planDataset;
+      this.levels = data.levels;
+      this.levelsTimePlan = data.levelsTimePlan;
+      this.time = data.time;
+      this.types = data.types;
+      this.drawChart();
 
-      this.loadDataService
-          .getGameAndPlanData(
-              this.configService.trainingDefinitionId.toString(),
-              this.configService.trainingInstanceId.toString(),
-              this.levelsTimePlan
-          )
-          .subscribe(
-              (data: Data) => {
-                this.gamedataset = data.gameDataset;
-                this.plandataset = data.planDataset;
-                this.levels = data.levels;
-                this.levelsTimePlan = data.levelsTimePlan;
-                this.time = data.time;
-                this.types = data.types;
-                this.drawChart();
-              },
-              (error) => {
-                this.errorMessage = error.message;
-              }
-          );
+      // this.loadDataService
+      //     .getGameAndPlanData(
+      //         this.configService.trainingDefinitionId.toString(),
+      //         this.configService.trainingInstanceId.toString(),
+      //         this.levelsTimePlan
+      //     )
+      //     .subscribe(
+      //         (data: Data) => {
+      //           this.gamedataset = data.gameDataset;
+      //           this.plandataset = data.planDataset;
+      //           this.levels = data.levels;
+      //           this.levelsTimePlan = data.levelsTimePlan;
+      //           this.time = data.time;
+      //           this.types = data.types;
+      //           this.drawChart();
+      //         },
+      //         (error) => {
+      //           this.errorMessage = error.message;
+      //         }
+      //     );
     } else {
       this.loadMock(this.csvFile);
     }
