@@ -1,9 +1,20 @@
 	<div class="ctf-progress-wrapper">
 	<div class="container-fluid">
-		<div class="row ctf-progress-head-wrapper" *ngIf="true">
+		<div class="row ctf-progress-head-wrapper">
 			<div class="col-12">
 				<div class="ctf-progress-head">
 					<div class="ctf-progress-options">
+						<div class="ctf-progress-select-wrapper" *ngIf="!errorMessage && enableViewMenu">
+							<div class="ctf-progress-select">
+								<svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24">
+									<path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
+								</svg>
+								<select [(ngModel)]="selectedViewValue" (change)="onViewValueChange()">
+									<option *ngFor="let o of viewOptions" [ngValue]="o.id">{{o.name}}</option>
+								</select>
+							</div>
+						</div>
+
 						<div class="ctf-progress-select-wrapper" *ngIf="!errorMessage">
 							<div class="ctf-progress-select">
 								<svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24">
@@ -18,7 +29,6 @@
 				</div>
 			</div>
 		</div>
-		<p *ngIf="false">Game-run final overview</p>
 		<div class="ctfh-row align-items-end ctfh-no-gutters">
 			<div class="ctfh-col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-teamcolumn">
@@ -33,7 +43,7 @@
 					 [sortType]="'level'+level.index" [selectedSortType]="sortType+sortLevel" [selectedSortReverse]="sortReverse"
 					 [label]="level.name" [level]="level"></app-column-header>
 
-					<span *ngIf="time&&showProgressView" class="ctf-progress-header-column" id="ctf-progress-time">
+					<span *ngIf="time && selectedViewValue == 1" class="ctf-progress-header-column" id="ctf-progress-time">
 						{{ getTimeString(time) }}
 					</span>
 				</div>

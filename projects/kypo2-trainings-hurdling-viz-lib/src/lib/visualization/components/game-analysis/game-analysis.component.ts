@@ -43,6 +43,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
   @Input() colorScheme: string[];
   @Input() showProgressView: boolean;
+  @Input() enableViewMenu: boolean;
   @Input() trainingDefinitionId: number;
   @Input() trainingInstanceId: number;
   @Input() gameColors = this.appConfig.gameColors;
@@ -147,13 +148,13 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.configService.gameColors = this.gameColors;
     this.configService.simulationInterval = this.simulationInterval;
     this.configService.loadDataInterval = this.loadDataInterval;
+    this.view = this.showProgressView ? View.progress : View.overview;
+    this.selectedViewValue = this.showProgressView ? 1 : 2;
     this.loadData();
     this.onViewValueChange();
   }
 
   ngOnInit(): void {
-    this.selectedViewValue = this.appConfig.defaultView;
-    this.view = this.appConfig.defaultView;
     this.loadData();
     this.onViewValueChange();
     this.legendIcons = [];
@@ -1286,7 +1287,14 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
   onViewValueChange(): void {
     clearInterval(this.loadTimer);
-    this.showProgressView ? this.switchToProgressView() : this.switchToFinalOverview();
+    switch (this.selectedViewValue) {
+      case 1:
+        this.switchToProgressView();
+        break;
+      case 2:
+        this.switchToFinalOverview();
+        break;
+    }
   }
 
   onResize() {
