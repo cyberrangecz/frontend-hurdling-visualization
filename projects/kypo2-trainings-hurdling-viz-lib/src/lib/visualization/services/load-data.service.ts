@@ -151,6 +151,7 @@ export class LoadDataService {
         // gameEvent.type = type[type.length - 1];
         gameEvent.timestamp = event.timestamp / 1000;
 
+        time = event.game_time > time ? event.game_time : time;
 
         switch (event.type) {
             case this.eventTypes.gameStart:
@@ -159,41 +160,34 @@ export class LoadDataService {
                 // later when the game start timestamp will be known, it will be deducted)
                 gameStartTimestamp =  gameEvent.timestamp < gameStartTimestamp ? gameEvent.timestamp : gameStartTimestamp;
                 gamedataset[playerIndex]['start'] = gameEvent.timestamp - gameStartTimestamp;
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.solution:
                 gameEvent.type = 'solution';
                 gameEvent.name = 'Solution displayed';
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.correctFlag:
             case this.eventTypes.levelCompleted:
                 gameEvent.type = null;
                 levelFinished = true;
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.skip:
                 gameEvent.type = 'skip';
                 gameEvent.name = 'Level cowardly skipped';
                 levelFinished = true;
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.gameExited:
             case this.eventTypes.gameFinished:
                 gameEvent.type = null;
                 levelFinished = true;
                 gamedataset[playerIndex]['currentState'] = 'finished';
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.hint:
                 gameEvent.type = 'hint';
                 gameEvent.name = 'Hint ' + event.hint_id + ' taken';
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.wrongFlag:
                 gameEvent.type = 'wrong';
                 gameEvent.name = 'Wrong flag submitted: ' + event.flag_content;
-                time = event.game_time > time ? event.game_time : time;
                 break;
             default:
                 gameEvent.type = null;
