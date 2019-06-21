@@ -282,8 +282,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   applyData(gamedataset: GenericObject[], plandataset: GenericObject[]): void {
     if (gamedataset.length === 0 || plandataset.length === 0) {
       this.hasData = false;
+      this.clear();
       return;
     }
+
+    this.hasData = true;
 
     const levelKeys: string[] = this.levels;
     // in final overview align start of all teams - repan start time
@@ -342,7 +345,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.addDataColumns(dataColumns, gamedata);
 
-    this.hasData = true;
   }
 
   getEstimatedTime(): number {
