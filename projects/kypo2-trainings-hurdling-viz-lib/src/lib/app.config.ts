@@ -12,7 +12,6 @@ export class AppConfig {
 	zoomStep: number;
 	simulationInterval: number;
 	loadDataInterval: number;
-	defaultView: View;
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
@@ -34,6 +33,5 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 	maxZoomValue: 10,
 	zoomStep: 0.25,
 	simulationInterval: 800,
-	loadDataInterval: 5000,
-	defaultView: View.overview
+	loadDataInterval: 5000
 };

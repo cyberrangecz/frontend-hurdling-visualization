@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
-import { LoadCsvDataService } from '../../services/load-csv-data.service';
 import { DataEntry } from '../../models/data-entry';
 import { GameConfig } from '../../models/game-config';
 import { PlanConfig } from '../../models/plan-config';
@@ -33,6 +32,7 @@ import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
 import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
 
+
 @Component({
   selector: 'kypo2-viz-hurdling',
   templateUrl: './game-analysis.component.html',
@@ -41,9 +41,9 @@ import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
 })
 export class GameAnalysisComponent implements OnInit, OnChanges {
   @Input() eventService: GameAnalysisEventService;
-  @Input() csvFile: File;
-  @Input() hideCSVUpload: boolean;
   @Input() colorScheme: string[];
+  @Input() showProgressView: boolean;
+  @Input() enableViewMenu: boolean;
   @Input() trainingDefinitionId: number;
   @Input() trainingInstanceId: number;
   @Input() gameColors = this.appConfig.gameColors;
@@ -120,8 +120,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   ];
   public selectedFilterValue = 1;
 
-  public csvFilename: string = null;
-
   public hasData = false;
   public errorMessage: string = null;
 
@@ -135,7 +133,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   constructor(
     d3Service: D3Service,
     private loadDataService: LoadDataService,
-    private loadCsvDataService: LoadCsvDataService,
     private sortingService: SortingService,
     private filteringService: FilteringService,
     private http: HttpClient,
@@ -151,13 +148,15 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.configService.gameColors = this.gameColors;
     this.configService.simulationInterval = this.simulationInterval;
     this.configService.loadDataInterval = this.loadDataInterval;
+    this.view = this.showProgressView ? View.progress : View.overview;
+    this.selectedViewValue = this.showProgressView ? 1 : 2;
     this.loadData();
+    this.onViewValueChange();
   }
 
   ngOnInit(): void {
-    this.selectedViewValue = this.appConfig.defaultView;
-    this.view = this.appConfig.defaultView;
     this.loadData();
+    this.onViewValueChange();
     this.legendIcons = [];
     this.legendIcons.push({
       label: 'Solution displayed',
@@ -180,58 +179,35 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadData() {
     this.errorMessage = null;
 
-    if (this.csvFile === null || typeof this.csvFile === 'undefined') {
-      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
-      this.gamedataset = data.gameDataset;
-      this.plandataset = data.planDataset;
-      this.levels = data.levels;
-      this.levelsTimePlan = data.levelsTimePlan;
-      this.time = data.time;
-      this.types = data.types;
-      this.drawChart();
+    const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+    this.gamedataset = data.gameDataset;
+    this.plandataset = data.planDataset;
+    this.levels = data.levels;
+    this.levelsTimePlan = data.levelsTimePlan;
+    this.time = data.time;
+    this.types = data.types;
+    this.drawChart();
 
-      // this.loadDataService
-      //     .getGameAndPlanData(
-      //         this.configService.trainingDefinitionId.toString(),
-      //         this.configService.trainingInstanceId.toString(),
-      //         this.levelsTimePlan
-      //     )
-      //     .subscribe(
-      //         (data: Data) => {
-      //           this.gamedataset = data.gameDataset;
-      //           this.plandataset = data.planDataset;
-      //           this.levels = data.levels;
-      //           this.levelsTimePlan = data.levelsTimePlan;
-      //           this.time = data.time;
-      //           this.types = data.types;
-      //           this.drawChart();
-      //         },
-      //         (error) => {
-      //           this.errorMessage = error.message;
-      //         }
-      //     );
-    } else {
-      this.loadMock(this.csvFile);
-    }
-  }
-
-  loadMock(file, endInPercents: number = 100) { // todo - work with jsons? we need two uploads then
-    this.errorMessage = null;
-    this.loadCsvDataService
-      .getGameAndPlanData(file, this.appConfig.levelsTimePlan, endInPercents)
-      .subscribe(
-        (data: Data) => {
-          this.gamedataset = data.gameDataset;
-          this.plandataset = data.planDataset;
-          this.levels = data.levels;
-          this.levelsTimePlan = data.levelsTimePlan;
-          this.time = data.time;
-          this.drawChart();
-        },
-        (error: string) => {
-          this.errorMessage = error;
-        }
-      );
+    // this.loadDataService
+    //     .getGameAndPlanData(
+    //         this.configService.trainingDefinitionId.toString(),
+    //         this.configService.trainingInstanceId.toString(),
+    //         this.levelsTimePlan
+    //     )
+    //     .subscribe(
+    //         (data: Data) => {
+    //           this.gamedataset = data.gameDataset;
+    //           this.plandataset = data.planDataset;
+    //           this.levels = data.levels;
+    //           this.levelsTimePlan = data.levelsTimePlan;
+    //           this.time = data.time;
+    //           this.types = data.types;
+    //           this.drawChart();
+    //         },
+    //         (error) => {
+    //           this.errorMessage = error.message;
+    //         }
+    //     );
   }
 
   drawChart(): void {
@@ -266,7 +242,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       const teamData: GenericObject = {
         team: d.team
       };
-
       let levelIndex = 0;
       levels.forEach(level => {
         const timePlan: number = levelsTimePlan[levelIndex];
@@ -452,6 +427,12 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .attr('class', 'axis axis-x')
       .attr('transform', 'translate(0,' + (this.height + 10) + ')')
       .call(this.xAxis);
+
+    this.gameChart
+        .append('text')
+        .attr('transform', 'translate(' + this.wrapperWidth / 2 * this.zoomValue + ', ' + this.wrapperHeight + ')')
+        .style('text-anchor', 'middle')
+        .text('Time');
   }
 
   getXAxisTickFormat(data: any): string {
@@ -1201,6 +1182,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   createSortingLabels(gamedata) {
+    let previous = 0;
+    let difference = 0;
     if (this.view === View.overview && gamedata['teams'].length) {
       gamedata['keys'].forEach(
         (levelKey: string, index: number): void => {
@@ -1210,19 +1193,22 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
             .reduce((a, b) => a + b, 0);
           const x: number = this.xScale(levelsTimePlanSum);
 
+          difference = levelsTimePlanSum - previous;
+          previous = levelsTimePlanSum;
+
           let sortLevelName: string;
           if (this.types[index] === 'info') {
-            sortLevelName = this.wrapperWidth > 530 ? 'Info' : 'I';
+            sortLevelName = difference > 530 ? 'Info' : 'I';
           }
           if (this.types[index] === 'assessment') {
-            sortLevelName = this.wrapperWidth > 530 ? 'Q' : 'Q';
+            sortLevelName = difference > 530 ? 'Q' : 'Q';
           }
           if (this.types[index] === 'game') {
             let levelNum = 0;
             for (let i = 0; i <= index; i++) {
               if (this.types[i] === 'game') { levelNum++; }
             }
-            sortLevelName = this.wrapperWidth > 530 ? 'Level ' + levelNum : 'L' + levelNum;
+            sortLevelName = difference > 530 ? 'Level ' + levelNum : 'L' + levelNum;
           }
           this.levelSortOptions.push({
             index: index + 1,
@@ -1254,7 +1240,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       .data(gamedata.teams)
       .enter()
       .append('text')
-      .text((d: GenericObject): string => d.team)
+      .text((d: GenericObject): string => this.getPlayerUco(d.team))
       .attr(
         'y',
         (d: GenericObject): number =>
@@ -1301,35 +1287,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       level.translate = 'translate(calc(-50% + ' + (pan + 15) + 'px), 0)';
     });
   }
-
-  onCsvFileChange($event): void {
-    clearInterval(this.loadTimer);
-    if ($event.target.files.length > 0) {
-      this.clear();
-      if (this.selectedViewValue === 1) {
-        this.simulateCSVGameProgress(0, 100, 1, this.configService.simulationInterval);
-      } else {
-        this.loadDataFromCSV();
-      }
-      this.activeDataSource = DataSource.csv;
-      this.csvFilename = this.csvInput.nativeElement.files[0].name;
-    } else {
-      this.clearCsvFile();
-    }
-  }
-
-  clearCsvFile(): void {
-    this.clear();
-    clearInterval(this.loadTimer);
-    if (this.selectedViewValue === 1) {
-      this.watchGameProgress();
-    } else {
-      this.loadData();
-    }
-    this.activeDataSource = DataSource.api;
-    this.csvFilename = null;
-  }
-
   onViewValueChange(): void {
     clearInterval(this.loadTimer);
     switch (this.selectedViewValue) {
@@ -1433,62 +1390,15 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     }, interval);
   }
 
-  loadDataFromCSV(endInPercents: number = 100) {
-    const file: File = this.csvInput.nativeElement.files[0];
-    this.errorMessage = null;
-    this.loadCsvDataService
-      .getGameAndPlanData(file, this.appConfig.levelsTimePlan, endInPercents)
-      .subscribe(
-        (data: Data) => {
-          this.gamedataset = data.gameDataset;
-          this.plandataset = data.planDataset;
-          this.levels = data.levels;
-          this.levelsTimePlan = data.levelsTimePlan;
-          this.time = data.time;
-          this.drawChart();
-        },
-        (error: string) => {
-          this.errorMessage = error;
-        }
-      );
-  }
-
-  simulateCSVGameProgress(
-    start: number = 0,
-    end: number = 100,
-    step: number = 1,
-    interval: number = 100
-  ): void {
-    let currentEnd = start;
-
-    this.loadDataFromCSV(currentEnd);
-    this.loadTimer = setInterval((): void => {
-      currentEnd += step;
-      if (currentEnd > end) {
-        clearInterval(this.loadTimer);
-        return;
-      }
-      this.loadDataFromCSV(currentEnd);
-    }, interval);
-  }
-
   switchToProgressView() {
     this.zoomValue = 1;
     this.view = View.progress;
-    if (this.activeDataSource === DataSource.csv) {
-      this.simulateCSVGameProgress(0, 100, 1, this.configService.simulationInterval);
-    } else {
-      this.watchGameProgress();
-    }
+    this.watchGameProgress();
   }
 
   switchToFinalOverview() {
     this.view = View.overview;
-    if (this.activeDataSource === DataSource.csv) {
-      this.loadDataFromCSV();
-    } else {
-      this.loadData();
-    }
+    this.loadData();
   }
 
   updatePanValue() {
@@ -1506,16 +1416,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.panValue = x;
   }
 
-  clear(): void {
-    this.d3.select('#ctf-progress-chart').html('');
-    this.d3.selectAll('.ctf-progress-column-data').html('');
-    this.hasData = false;
-  }
-
   getTimeString(seconds: number): string {
     const hours: number = Math.floor(seconds / 3600);
     const minutes: number = Math.floor((seconds - hours * 3600) / 60);
-    seconds = seconds - hours * 3600 - minutes * 60;
+    seconds = Math.floor(seconds - hours * 3600 - minutes * 60);
 
     return (
       hours.toString().padStart(2, '0') +
@@ -1557,6 +1461,16 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     const color = this.d3.hsl(colors[level % colorsCount]);
     return color.brighter(0.8).toString();
   }
+
+  getPlayerUco(login: string): string {
+      return login.split('@')[0];
+  }
+
+  clear(): void {
+      this.d3.select('#ctf-progress-chart').html('');
+      this.d3.selectAll('.ctf-progress-column-data').html('');
+  }
+
 
   /* for analysis manipulation */
 

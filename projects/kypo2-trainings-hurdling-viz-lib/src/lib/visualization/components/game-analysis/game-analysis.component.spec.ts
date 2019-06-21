@@ -10,7 +10,6 @@ import { GameAnalysisComponent } from './game-analysis.component';
 import { ColumnHeaderComponent } from '../column-header/column-header.component';
 
 import { LoadDataService } from '../../services/load-data.service';
-import { LoadCsvDataService } from '../../services/load-csv-data.service';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear, ScaleOrdinal } from 'd3-ng2-service';
 import { PapaParseModule, Papa } from 'ngx-papaparse';
 // import { Observable } from 'rxjs/Observable';
@@ -154,7 +153,6 @@ describe('GameAnalysisComponent', () => {
         D3Service,
         Papa,
         { provide: LoadDataService, useValue: loadServiceStub },
-        { provide: LoadCsvDataService, useValue: loadServiceStub },
         { provide: AppConfig, useValue: testConfig },
         ConfigService
       ]

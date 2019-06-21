@@ -183,7 +183,7 @@ export class LoadDataService {
                 break;
             case this.eventTypes.hint:
                 gameEvent.type = 'hint';
-                gameEvent.name = 'Hint ' + event.hint_id + ' taken';
+                gameEvent.name = 'Hint ' + event.hint_title + ' taken';
                 break;
             case this.eventTypes.wrongFlag:
                 gameEvent.type = 'wrong';
