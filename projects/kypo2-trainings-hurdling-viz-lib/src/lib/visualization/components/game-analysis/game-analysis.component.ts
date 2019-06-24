@@ -79,6 +79,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private levelsTimePlan: number[];
   private loadTimer: any;
   private types: string[];
+  private filterStatus: string;
 
   // zooming
   private panValue = 0;
@@ -157,6 +158,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.loadData();
     this.onViewValueChange();
+    this.setFilterStatus();
     this.legendIcons = [];
     this.legendIcons.push({
       label: 'Solution displayed',
@@ -1357,6 +1359,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   onFilterValueChange(): void {
+    this.setFilterStatus();
     this.drawChart();
   }
 
@@ -1471,6 +1474,19 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       this.d3.selectAll('.ctf-progress-column-data').html('');
   }
 
+  setFilterStatus(): void {
+    switch (this.selectedFilterValue) {
+      case 1:
+        this.filterStatus = '';
+        break;
+      case 2:
+        this.filterStatus = 'finished';
+        break;
+      case 3:
+        this.filterStatus = 'unfinished';
+        break;
+    }
+  }
 
   /* for analysis manipulation */
 
