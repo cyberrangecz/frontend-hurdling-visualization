@@ -151,6 +151,7 @@ export class LoadDataService {
         // gameEvent.type = type[type.length - 1];
         gameEvent.timestamp = event.timestamp / 1000;
 
+        time = event.game_time > time ? event.game_time : time;
 
         switch (event.type) {
             case this.eventTypes.gameStart:
@@ -179,7 +180,6 @@ export class LoadDataService {
                 gameEvent.type = null;
                 levelFinished = true;
                 gamedataset[playerIndex]['currentState'] = 'finished';
-                time = event.game_time > time ? event.game_time : time;
                 break;
             case this.eventTypes.hint:
                 gameEvent.type = 'hint';

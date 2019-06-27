@@ -31,7 +31,7 @@ import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
 import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
-import {log} from 'util';
+
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -79,6 +79,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private levelsTimePlan: number[];
   private loadTimer: any;
   private types: string[];
+  private filterStatus: string;
 
   // zooming
   private panValue = 0;
@@ -157,6 +158,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.loadData();
     this.onViewValueChange();
+    this.setFilterStatus();
     this.legendIcons = [];
     this.legendIcons.push({
       label: 'Solution displayed',
@@ -257,8 +259,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   applyData(gamedataset: GenericObject[], plandataset: GenericObject[]): void {
     if (gamedataset.length === 0 || plandataset.length === 0) {
       this.hasData = false;
+      this.clear();
       return;
     }
+
+    this.hasData = true;
 
     const levelKeys: string[] = this.levels;
     // in final overview align start of all teams - repan start time
@@ -317,7 +322,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
     this.addDataColumns(dataColumns, gamedata);
 
-    this.hasData = true;
   }
 
   getEstimatedTime(): number {
@@ -1355,6 +1359,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   onFilterValueChange(): void {
+    this.setFilterStatus();
     this.drawChart();
   }
 
@@ -1464,6 +1469,24 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       return login.split('@')[0];
   }
 
+  clear(): void {
+      this.d3.select('#ctf-progress-chart').html('');
+      this.d3.selectAll('.ctf-progress-column-data').html('');
+  }
+
+  setFilterStatus(): void {
+    switch (this.selectedFilterValue) {
+      case 1:
+        this.filterStatus = '';
+        break;
+      case 2:
+        this.filterStatus = 'finished';
+        break;
+      case 3:
+        this.filterStatus = 'unfinished';
+        break;
+    }
+  }
 
   /* for analysis manipulation */
 
