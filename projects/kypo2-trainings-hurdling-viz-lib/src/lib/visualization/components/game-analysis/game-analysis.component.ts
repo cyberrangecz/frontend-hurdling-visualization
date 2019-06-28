@@ -12,7 +12,6 @@ import { DataEntry } from '../../models/data-entry';
 import { GameConfig } from '../../models/game-config';
 import { PlanConfig } from '../../models/plan-config';
 import { BaseConfig } from '../../models/base-config';
-import { Data } from '../../models/data';
 import { GameData } from '../../models/game-data';
 import { PlanData } from '../../models/plan-data';
 import { Event } from '../../models/event';
@@ -29,9 +28,8 @@ import { PreparedData } from '../../models/preparedData';
 import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
 import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
-import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
-import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
-
+import {GAME_INFORMATION} from '../../../mocks/information.mock';
+import {EVENTS} from '../../../mocks/events.mock';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -817,14 +815,14 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
               d3.select(nodes[i].parentNode).datum()
             ),
             levelIndex: number = level.index,
-            levelKey: string =
-              view === View.overview
-                ? 'level' + (levelIndex + 1)
-                : 'level' + levelIndex,
+            levelKey: string = 'level' + levelIndex,
             teamIndex: number = i,
             data: NumericObject = layers[levelIndex][teamIndex]['data'],
             currentState: string = data['currentState'];
-          return (currentState === levelKey && view !== View.overview) ? 1 : 0;
+              if (view === View.overview) return 0;
+              if (currentState === 'finished') return 0;
+              if (currentState === levelKey || levelIndex >= parseInt(currentState.split('level')[1])) return 1;
+              return 0;
         }
       )
       .attr(
@@ -836,21 +834,28 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
             levelIndex: number = level.index,
             teamIndex: number = i,
             currentData: NumericObject = layers[levelIndex][teamIndex],
-            isCurrentLevel: boolean = isNaN(currentData[1]);
+            isUnfinishedLevel: boolean = isNaN(currentData[1]);
           let x: number = d[0];
 
-          if (isCurrentLevel) {
-            offset[teamIndex] = currentData[0] - d[0];
-          }
-
-          if (offset[teamIndex] !== undefined) {
-            let xShifted = x + offset[teamIndex];
-            // if next level should start in past, must be shifted to present (as same as all next level)
-            if (!isCurrentLevel && xShifted < this.time) {
-              offset[teamIndex] += this.time - xShifted;
-              xShifted = this.time;
+          if (isUnfinishedLevel && 'level' + levelIndex === currentData['data']['currentState']) {
+            offset[teamIndex] = currentData[0] - x;
+          } else if (isUnfinishedLevel && 'level' + levelIndex !== currentData['data']['currentState']) {
+            let num = 0;
+            // first we want to compute the added distance based on the previous extimated times
+            for (let j = 1; (levelIndex - j) > (currentData['data']['currentState']).split('level')[1]; j++) {
+                const computedEstimate = d['data']['level' + (levelIndex - j)];
+                if (computedEstimate !== undefined) { num += computedEstimate; }
             }
-            x = xShifted;
+
+            // now we will check if the player is behind the current scheduled estimate or not
+            const currentEstimate = d['data'][currentData['data']['currentState']];
+            if (currentData[0] + currentEstimate > this.time) {
+                return xScale(Math.max(1, currentData[0] + currentEstimate + num));
+            }
+            return xScale(Math.max(1, this.time + num));
+          }
+          if (offset[teamIndex] !== undefined) {
+            x = x + offset[teamIndex];
           }
           return xScale(Math.max(1, x));
         }
@@ -1528,3 +1533,4 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       }
   }
 }
+
