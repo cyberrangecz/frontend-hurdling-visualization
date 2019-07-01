@@ -31,6 +31,7 @@ import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../../../../../src/app/mocks/information.mock';
 import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
+import { interval } from 'rxjs';
 
 
 @Component({
@@ -75,6 +76,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   private gamedataset: GenericObject[] = [];
   private plandataset: GenericObject[] = [];
   private _activeDataSubscribtion;
+  private _updateVisSubscribtion;
   private levels: string[];
   private levelsTimePlan: number[];
   private loadTimer: any;
@@ -152,7 +154,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     this.view = this.showProgressView ? View.progress : View.overview;
     this.selectedViewValue = this.showProgressView ? 1 : 2;
     this.loadData();
-    this.onViewValueChange();
   }
 
   ngOnInit(): void {
@@ -197,7 +198,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
             this.levelsTimePlan
         )
         .subscribe(
-            (data) => {
+            (data: Data) => {
               this.gamedataset = data.gameDataset;
               this.plandataset = data.planDataset;
               this.levels = data.levels;
@@ -1290,7 +1291,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
   onViewValueChange(): void {
-    clearInterval(this.loadTimer);
+    if (this._updateVisSubscribtion) {
+      this._updateVisSubscribtion.unsubscribe();
+    }
     switch (this.selectedViewValue) {
       case 1:
         this.switchToProgressView();
@@ -1386,11 +1389,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   watchGameProgress() {
-    const interval: number = this.configService.loadDataInterval;
     this.loadData();
-    this.loadTimer = setInterval((): void => {
-      this.loadData();
-    }, interval);
+    this._updateVisSubscribtion = interval(this.configService.loadDataInterval).subscribe(value =>
+      this.loadData()
+    );
   }
 
   switchToProgressView() {
@@ -1531,6 +1533,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     if (this._activeDataSubscribtion) {
       this._activeDataSubscribtion.unsubscribe();
+    }
+    if (this._updateVisSubscribtion) {
+      this._updateVisSubscribtion.unsubscribe();
     }
   }
 }
