@@ -154,6 +154,7 @@
   margin-left: 0;
 }
 .ctfh-col-2, .ctfh-col-8, .ctfh-col-sm-8 {
+  margin: 0 auto;
   position: relative;
   width: 100%;
   min-height: 1px;
