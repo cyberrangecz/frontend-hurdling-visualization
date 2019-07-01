@@ -4,7 +4,7 @@ import {
   ViewEncapsulation,
   ViewChild,
   Input,
-  OnChanges
+  OnChanges, OnDestroy
 } from '@angular/core';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
@@ -39,7 +39,7 @@ import {EVENTS} from '../../../../../../../src/app/mocks/events.mock';
   styleUrls: ['./game-analysis.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GameAnalysisComponent implements OnInit, OnChanges {
+export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   @Input() eventService: GameAnalysisEventService;
   @Input() colorScheme: string[];
   @Input() showProgressView: boolean;
@@ -52,7 +52,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
-  private activeDataSource: DataSource = DataSource.api;
   private wrapperWidth: number;
   private wrapperHeight: number;
   private width: number;
@@ -75,6 +74,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private timeline: any;
   private gamedataset: GenericObject[] = [];
   private plandataset: GenericObject[] = [];
+  private _activeDataSubscribtion;
   private levels: string[];
   private levelsTimePlan: number[];
   private loadTimer: any;
@@ -1470,8 +1470,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   clear(): void {
-      this.d3.select('#ctf-progress-chart').html('');
-      this.d3.selectAll('.ctf-progress-column-data').html('');
+    this.d3.select('#ctf-progress-chart').html('');
+    this.d3.selectAll('.ctf-progress-column-data').html('');
   }
 
   setFilterStatus(): void {
@@ -1527,4 +1527,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
               .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
       }
   }
+
+  ngOnDestroy() {
+    if (this._activeDataSubscribtion) {
+      this._activeDataSubscribtion.unsubscribe();
+    }
+  }
 }
+
