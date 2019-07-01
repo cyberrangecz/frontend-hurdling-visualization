@@ -50,7 +50,7 @@
 .ctf-progress-wrapper .axis .domain { stroke: transparent; }
 
 /* time */
-#ctf-progress-time { position: absolute; right: 0; font-size: 40px; font-weight: 400; width: 140px; line-height: 1; }
+#ctf-progress-time { position: absolute; right: 15px; font-size: 40px; font-weight: 400; width: 140px; line-height: 1; }
 
 /* timeline */
 .ctf-progress-wrapper .timeline { stroke: #2f2f2f; }
@@ -154,6 +154,7 @@
   margin-left: 0;
 }
 .ctfh-col-2, .ctfh-col-8, .ctfh-col-sm-8 {
+  margin: 0 auto;
   position: relative;
   width: 100%;
   min-height: 1px;
