@@ -176,10 +176,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       path: this.appConfig.eventShapePaths.solution
     });
     this.legendIcons.push({
-      label: 'Skip',
-      path: this.appConfig.eventShapePaths.skip
-    });
-    this.legendIcons.push({
       label: 'Hint',
       path: this.appConfig.eventShapePaths.hint
     });
