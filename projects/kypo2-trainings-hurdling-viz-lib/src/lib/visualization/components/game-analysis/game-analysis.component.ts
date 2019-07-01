@@ -181,35 +181,35 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   loadData() {
     this.errorMessage = null;
 
-    const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+    /*const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
     this.gamedataset = data.gameDataset;
     this.plandataset = data.planDataset;
     this.levels = data.levels;
     this.levelsTimePlan = data.levelsTimePlan;
     this.time = data.time;
     this.types = data.types;
-    this.drawChart();
+    this.drawChart();*/
 
-    // this.loadDataService
-    //     .getGameAndPlanData(
-    //         this.configService.trainingDefinitionId.toString(),
-    //         this.configService.trainingInstanceId.toString(),
-    //         this.levelsTimePlan
-    //     )
-    //     .subscribe(
-    //         (data: Data) => {
-    //           this.gamedataset = data.gameDataset;
-    //           this.plandataset = data.planDataset;
-    //           this.levels = data.levels;
-    //           this.levelsTimePlan = data.levelsTimePlan;
-    //           this.time = data.time;
-    //           this.types = data.types;
-    //           this.drawChart();
-    //         },
-    //         (error) => {
-    //           this.errorMessage = error.message;
-    //         }
-    //     );
+    this._activeDataSubscribtion = this.loadDataService
+        .getGameAndPlanData(
+            this.configService.trainingDefinitionId.toString(),
+            this.configService.trainingInstanceId.toString(),
+            this.levelsTimePlan
+        )
+        .subscribe(
+            (data) => {
+              this.gamedataset = data.gameDataset;
+              this.plandataset = data.planDataset;
+              this.levels = data.levels;
+              this.levelsTimePlan = data.levelsTimePlan;
+              this.time = data.time;
+              this.types = data.types;
+              this.drawChart();
+            },
+            (error) => {
+              this.errorMessage = error.message;
+            }
+        );
   }
 
   drawChart(): void {
