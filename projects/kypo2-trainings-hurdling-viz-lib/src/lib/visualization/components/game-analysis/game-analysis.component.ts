@@ -81,6 +81,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   // zooming
   private panValue = 0;
+  private overviewZoomValue = 1;
+  private progressZoomValue = 1;
   private zoomValue = 1;
   private view: View = View.overview;
 
@@ -150,6 +152,17 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     this.view = this.showProgressView ? View.progress : View.overview;
     this.selectedViewValue = this.showProgressView ? 1 : 2;
     this.loadData();
+
+    if (this.view === View.overview) {
+      // in the case of overview mode, we initially want to see only the player progress, not the whole game plan
+      this.overviewZoomValue = this.view === View.overview ? Math.max(
+          // but we don't want the zooming to be extreme
+          Math.min(this.appConfig.maxZoomValue, this.xScale(this.planDomain) / this.xScale(this.time)), 1
+        ) : this.zoomValue;
+      this.zoomValue = this.overviewZoomValue;
+    } else if (this.view === View.progress) {
+      this.zoomValue = this.progressZoomValue;
+    }
     this.onViewValueChange();
   }
 
@@ -398,7 +411,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
       }
     );
 
-    this.xScale = this.d3.scaleLinear().rangeRound([0, this.width]); ////here!
+    const paddingOffset = this.view === View.overview ? this.appConfig.finalViewBarPadding : 0;
+    this.xScale = this.d3.scaleLinear().rangeRound([0, this.width - paddingOffset]);
     this.xScale.domain([0, this.planDomain]);
     this.yScale = this.d3
       .scaleBand()
@@ -1399,7 +1413,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   switchToProgressView() {
-    this.zoomValue = 1;
     this.view = View.progress;
     this.watchGameProgress();
   }
