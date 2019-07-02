@@ -4,7 +4,7 @@ import {
   ViewEncapsulation,
   ViewChild,
   Input,
-  OnChanges
+  OnChanges, OnDestroy
 } from '@angular/core';
 import { D3Service, D3, Axis, ScaleBand, ScaleLinear } from 'd3-ng2-service';
 import { LoadDataService } from '../../services/load-data.service';
@@ -30,6 +30,8 @@ import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../mocks/information.mock';
 import {EVENTS} from '../../../mocks/events.mock';
+import { interval } from 'rxjs';
+import {Data} from '../../models/data';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -37,7 +39,7 @@ import {EVENTS} from '../../../mocks/events.mock';
   styleUrls: ['./game-analysis.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GameAnalysisComponent implements OnInit, OnChanges {
+export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   @Input() eventService: GameAnalysisEventService;
   @Input() colorScheme: string[];
   @Input() showProgressView: boolean;
@@ -50,7 +52,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
 
   public assetsRoot: string = environment.assetsRoot;
   private d3: D3;
-  private activeDataSource: DataSource = DataSource.api;
   private wrapperWidth: number;
   private wrapperHeight: number;
   private width: number;
@@ -73,9 +74,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   private timeline: any;
   private gamedataset: GenericObject[] = [];
   private plandataset: GenericObject[] = [];
+  private _activeDataSubscribtion;
+  private _updateVisSubscribtion;
   private levels: string[];
   private levelsTimePlan: number[];
-  private loadTimer: any;
   private types: string[];
   private filterStatus: string;
 
@@ -188,35 +190,35 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   loadData() {
     this.errorMessage = null;
 
-    const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+    /*const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
     this.gamedataset = data.gameDataset;
     this.plandataset = data.planDataset;
     this.levels = data.levels;
     this.levelsTimePlan = data.levelsTimePlan;
     this.time = data.time;
     this.types = data.types;
-    this.drawChart();
+    this.drawChart();*/
 
-    // this.loadDataService
-    //     .getGameAndPlanData(
-    //         this.configService.trainingDefinitionId.toString(),
-    //         this.configService.trainingInstanceId.toString(),
-    //         this.levelsTimePlan
-    //     )
-    //     .subscribe(
-    //         (data: Data) => {
-    //           this.gamedataset = data.gameDataset;
-    //           this.plandataset = data.planDataset;
-    //           this.levels = data.levels;
-    //           this.levelsTimePlan = data.levelsTimePlan;
-    //           this.time = data.time;
-    //           this.types = data.types;
-    //           this.drawChart();
-    //         },
-    //         (error) => {
-    //           this.errorMessage = error.message;
-    //         }
-    //     );
+    this._activeDataSubscribtion = this.loadDataService
+        .getGameAndPlanData(
+            this.configService.trainingDefinitionId.toString(),
+            this.configService.trainingInstanceId.toString(),
+            this.levelsTimePlan
+        )
+        .subscribe(
+            (data: Data) => {
+              this.gamedataset = data.gameDataset;
+              this.plandataset = data.planDataset;
+              this.levels = data.levels;
+              this.levelsTimePlan = data.levelsTimePlan;
+              this.time = data.time;
+              this.types = data.types;
+              this.drawChart();
+            },
+            (error) => {
+              this.errorMessage = error.message;
+            }
+        );
   }
 
   drawChart(): void {
@@ -1305,7 +1307,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
     });
   }
   onViewValueChange(): void {
-    clearInterval(this.loadTimer);
+    if (this._updateVisSubscribtion) {
+      this._updateVisSubscribtion.unsubscribe();
+    }
     switch (this.selectedViewValue) {
       case 1:
         this.switchToProgressView();
@@ -1401,11 +1405,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   watchGameProgress() {
-    const interval: number = this.configService.loadDataInterval;
     this.loadData();
-    this.loadTimer = setInterval((): void => {
-      this.loadData();
-    }, interval);
+    this._updateVisSubscribtion = interval(this.configService.loadDataInterval).subscribe(value =>
+      this.loadData()
+    );
   }
 
   switchToProgressView() {
@@ -1484,8 +1487,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
   }
 
   clear(): void {
-      this.d3.select('#ctf-progress-chart').html('');
-      this.d3.selectAll('.ctf-progress-column-data').html('');
+    this.d3.select('#ctf-progress-chart').html('');
+    this.d3.selectAll('.ctf-progress-column-data').html('');
   }
 
   setFilterStatus(): void {
@@ -1540,6 +1543,15 @@ export class GameAnalysisComponent implements OnInit, OnChanges {
               .selectAll('.game .game-layer rect')
               .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
       }
+  }
+
+  ngOnDestroy() {
+    if (this._activeDataSubscribtion) {
+      this._activeDataSubscribtion.unsubscribe();
+    }
+    if (this._updateVisSubscribtion) {
+      this._updateVisSubscribtion.unsubscribe();
+    }
   }
 }
 
