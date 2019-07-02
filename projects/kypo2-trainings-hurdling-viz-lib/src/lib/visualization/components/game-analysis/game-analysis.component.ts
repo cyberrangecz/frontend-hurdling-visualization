@@ -31,6 +31,7 @@ import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../mocks/information.mock';
 import {EVENTS} from '../../../mocks/events.mock';
 import { interval } from 'rxjs';
+import {Data} from '../../models/data';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -77,7 +78,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   private _updateVisSubscribtion;
   private levels: string[];
   private levelsTimePlan: number[];
-  private loadTimer: any;
   private types: string[];
   private filterStatus: string;
 
