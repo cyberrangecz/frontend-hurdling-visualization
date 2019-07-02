@@ -24,7 +24,6 @@ export class LoadDataService {
     assessmentAnswers: this.levelTypePrefix + 'AssessmentAnswers',
     gameExited: this.levelTypePrefix + 'TrainingRunSurrendered',
     hint: this.levelTypePrefix + 'HintTaken',
-    skip: this.levelTypePrefix + 'LevelSkipped', // obsolete?
     wrongFlag: this.levelTypePrefix + 'WrongFlagSubmitted',
     levelCompleted: this.levelTypePrefix + 'LevelCompleted',
     correctFlag: this.levelTypePrefix + 'CorrectFlagSubmitted',
@@ -37,10 +36,10 @@ export class LoadDataService {
   public getGameAndPlanData(
     trainingDefinitionId: string,
     trainingInstanceId: string,
-    levelsTimePlan: number[])
-    {
+    levelsTimePlan: number[]) {
     const defUrl: string = this.configService.config.restBaseUrl + 'training-definitions/' + this.configService.trainingDefinitionId;
-    const eventsUrl: string = this.configService.config.restBaseUrl + 'training-events/training-definitions/' + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
+    const eventsUrl: string = this.configService.config.restBaseUrl + 'training-events/training-definitions/'
+      + this.configService.trainingDefinitionId + '/training-instances/' + this.configService.trainingInstanceId;
 
     return forkJoin([
       this.loadData<Game>(defUrl),
@@ -168,11 +167,6 @@ export class LoadDataService {
             case this.eventTypes.correctFlag:
             case this.eventTypes.levelCompleted:
                 gameEvent.type = null;
-                levelFinished = true;
-                break;
-            case this.eventTypes.skip:
-                gameEvent.type = 'skip';
-                gameEvent.name = 'Level cowardly skipped';
                 levelFinished = true;
                 break;
             case this.eventTypes.gameExited:

@@ -2,6 +2,7 @@ import { GenericObject } from './visualization/models/generic-object.type';
 import { View } from './visualization/models/view.enum';
 
 export class AppConfig {
+	finalViewBarPadding: number;
 	levelsTimePlan: number[];
 	gameColors: string[];
 	darkColor: string;
@@ -28,6 +29,7 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 		'0.154923 -0.330273,0.346581l0,1.039747l0,10.050869l-0.030897,1.112352c-0.08162,0.722663 0.31874,0.474471 0.719104,0.468987l14.834628,' +
 		'-0.195011c0.002642,0.000349 0.005284,0 0.006605,0c0.182641,0 0.330273,-0.154923 0.330273,-0.346581l-3.249887,-5.545308z'
 	},
+  finalViewBarPadding: 50,
 	minBarHeight: 18,
 	maxBarHeight: 35,
 	maxZoomValue: 10,
