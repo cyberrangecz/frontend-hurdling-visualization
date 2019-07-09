@@ -50,36 +50,36 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   @Input() simulationInterval = this.appConfig.simulationInterval;
   @Input() loadDataInterval = this.appConfig.loadDataInterval;
 
-  public assetsRoot: string = environment.assetsRoot;
-  private d3: D3;
   private wrapperWidth: number;
   private wrapperHeight: number;
   private width: number;
   private height: number;
   private padding: Padding;
   private bounds: any;
+  private outerWrapper: any;
+
+  private d3: D3;
+  private chart: any;
+  private plan: any;
+  private planDomain: number;
+  private gameDomain: number;
+  private gameChartWrapper: any;
+  private gameChart: any;
   private xScale: ScaleLinear<number, number>;
   private yScale: ScaleBand<string>;
   private xAxis: Axis <|number|{valueOf(): number}>;
-  private chart: any;
-  private plan: any;
-  private gameChartWrapper: any;
-  private gameChart: any;
-  private outerWrapper: any;
-  private planDomain: number;
-  private gameDomain: number;
   private planSegments: any;
   private boundSegments: any;
   private tooltip: any;
   private timeline: any;
   private gamedataset: GenericObject[] = [];
   private plandataset: GenericObject[] = [];
-  private _activeDataSubscribtion;
-  private _updateVisSubscribtion;
   private levels: string[];
   private levelsTimePlan: number[];
   private types: string[];
-  private filterStatus: string;
+
+  private _activeDataSubscribtion;
+  private _updateVisSubscribtion;
 
   // zooming
   private panValue = 0;
@@ -89,45 +89,33 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   private view: View = View.overview;
 
   public time = 0;
-
+  public filterStatus: string;
   public sortType = 'name';
   public sortReverse = false;
   public sortLevel = 0;
   public levelSortOptions: GenericObject[] = [];
-
-  public viewOptions: GenericObject[] = [
-    {
-      id: 1,
-      name: 'Progress'
-    },
-    {
-      id: 2,
-      name: 'Final overview'
-    }
-  ];
+  public viewOptions: GenericObject[] = [{
+    id: 1,
+    name: 'Progress'
+  }, {
+    id: 2,
+    name: 'Final overview'
+  }];
   public selectedViewValue = 2;
-
-  public filterOptions: GenericObject[] = [
-    {
-      id: 1,
-      name: 'All'
-    },
-    {
-      id: 2,
-      name: 'Game finished'
-    },
-    {
-      id: 3,
-      name: 'Game not finished'
-    }
-  ];
+  public filterOptions: GenericObject[] = [{
+    id: 1,
+    name: 'All'
+  }, {
+    id: 2,
+    name: 'Game finished'
+  }, {
+    id: 3,
+    name: 'Game not finished'
+  }];
   public selectedFilterValue = 1;
-
   public hasData = false;
   public errorMessage: string = null;
-
   public legendIcons;
-
   public clickedArray = [];
 
   @ViewChild('csvInput')
@@ -154,18 +142,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     this.view = this.showProgressView ? View.progress : View.overview;
     this.selectedViewValue = this.showProgressView ? 1 : 2;
     this.loadData();
-
-    if (this.view === View.overview) {
-      // in the case of overview mode, we initially want to see only the player progress, not the whole game plan
-      this.overviewZoomValue = this.view === View.overview ? Math.max(
-          // but we don't want the zooming to be extreme
-          Math.min(this.appConfig.maxZoomValue, this.xScale(this.planDomain) / this.xScale(this.time)), 1
-        ) : this.zoomValue;
-      this.zoomValue = this.overviewZoomValue;
-    } else if (this.view === View.progress) {
-      this.zoomValue = this.progressZoomValue;
-    }
-    this.onViewValueChange();
   }
 
   ngOnInit(): void {
@@ -200,31 +176,45 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     this.drawChart();*/
 
     this._activeDataSubscribtion = this.loadDataService
-        .getGameAndPlanData(
-            this.configService.trainingDefinitionId.toString(),
-            this.configService.trainingInstanceId.toString(),
-            this.levelsTimePlan
-        )
-        .subscribe(
-            (data: Data) => {
-              this.gamedataset = data.gameDataset;
-              this.plandataset = data.planDataset;
-              this.levels = data.levels;
-              this.levelsTimePlan = data.levelsTimePlan;
-              this.time = data.time;
-              this.types = data.types;
-              this.drawChart();
-            },
-            (error) => {
-              this.errorMessage = error.message;
-            }
-        );
+      .getGameAndPlanData(
+        this.configService.trainingDefinitionId.toString(),
+        this.configService.trainingInstanceId.toString(),
+        this.levelsTimePlan
+      )
+      .subscribe(
+        (data: Data) => {
+          this.gamedataset = data.gameDataset;
+          this.plandataset = data.planDataset;
+          this.levels = data.levels;
+          this.levelsTimePlan = data.levelsTimePlan;
+          this.time = data.time;
+          this.types = data.types;
+          this.drawChart();
+          this.initializeZoom();
+        },
+        (error) => {
+          this.errorMessage = error.message;
+        }
+      );
   }
 
   drawChart(): void {
     const data: PreparedData = this.getPreparedData();
     this.applyData(data.gameDataset, data.planDataset);
     this.pan();
+  }
+
+  initializeZoom(): void {
+    if (this.view === View.overview) {
+      // in the case of overview mode, we initially want to see only the player progress, not the whole game plan
+      this.overviewZoomValue = this.view === View.overview ? Math.max(
+        // but we don't want the zooming to be extreme
+        Math.min(this.appConfig.maxZoomValue, this.xScale(this.planDomain) / this.xScale(this.time)), 1
+      ) : this.zoomValue;
+      this.zoomValue = this.overviewZoomValue;
+    } else if (this.view === View.progress) {
+      this.zoomValue = this.progressZoomValue;
+    }
   }
 
   getPreparedData(): PreparedData {
@@ -337,6 +327,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     const levelsTimePlanSum = this.levelsTimePlan.reduce((a, b) => {
       return a + b;
     }, 0);
+
+    console.log(this.levelsTimePlan);
     return this.view === View.progress
       ? levelsTimePlanSum * 1.25
       : levelsTimePlanSum;
@@ -362,7 +354,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     // create svg
     // calculate the height first, width can change when the scrollbar is added
     this.wrapperWidth = Math.max(document.getElementById(element).getBoundingClientRect().width, // original (standalone) size
-                        window.innerWidth / 2 - (window.innerWidth / 2 * 0.25)); // get width in the dashboard as a 75% piece of a halfpage
+      window.innerWidth / 2 - (window.innerWidth / 2 * 0.25)); // get width in the dashboard as a 75% piece of a halfpage
     const maxHeight: number = Math.min(
       this.wrapperWidth * 0.7,
       window.innerHeight - 130,
@@ -441,10 +433,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
       .call(this.xAxis);
 
     this.gameChart
-        .append('text')
-        .attr('transform', 'translate(' + this.wrapperWidth / 2 * this.zoomValue + ', ' + this.wrapperHeight + ')')
-        .style('text-anchor', 'middle')
-        .text('Time');
+      .append('text')
+      .attr('transform', 'translate(' + this.wrapperWidth / 2 * this.zoomValue + ', ' + this.wrapperHeight + ')')
+      .style('text-anchor', 'middle')
+      .text('Time');
   }
 
   getXAxisTickFormat(data: any): string {
@@ -725,24 +717,24 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
             layers[levelIndex][teamIndex]['data'][levelKey],
           currentState: string = data['currentState'];
 
-          let allNodes = this.d3
-              .select(nodes[i]);
+        let allNodes = this.d3
+          .select(nodes[i]);
 
-          allNodes.classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)))
-              .classed('faded', (data: any) => (this.clickedArray.length > 0 && !this.clickedArray.includes(data.data.team)));
-          if (typeof currentLevelData === 'undefined' || this.view === View.overview) {
-              allNodes.classed('game-segment-finished', true);
-          }
+        allNodes.classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)))
+          .classed('faded', (data: any) => (this.clickedArray.length > 0 && !this.clickedArray.includes(data.data.team)));
+        if (typeof currentLevelData === 'undefined' || this.view === View.overview) {
+          allNodes.classed('game-segment-finished', true);
+        }
 
-          if (typeof currentLevelData !== 'undefined') {
-            return xScale(d[1]) - xScale(d[0]);
-          } else if (currentState === levelKey) {
-            if (this.view === View.overview) {
-                return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
-            } else return xScale(time) - xScale(d[0]);
-          } else {
-            return 0;
-          }
+        if (typeof currentLevelData !== 'undefined') {
+          return xScale(d[1]) - xScale(d[0]);
+        } else if (currentState === levelKey) {
+          if (this.view === View.overview) {
+            return xScale(time) - xScale(d[0]) - xScale(d.data['start']);
+          } else return xScale(time) - xScale(d[0]);
+        } else {
+          return 0;
+        }
 
       })
       .on('mouseover', (d: GenericObject, teamIndex: number) => {
@@ -753,11 +745,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', true);
         this.d3
-            .selectAll('.game .game-layer rect')
-            .filter((data: any) => data.data.team === d.data.team)
-            .classed('data-hover', true);
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === d.data.team)
+          .classed('data-hover', true);
 
-          if (this.eventService) {
+        if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseover(+d.data.team);
         }
       })
@@ -770,9 +762,9 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           .filter((data: any) => !this.clickedArray.includes(data.team))
           .classed('data-hover', false);
         this.d3
-            .selectAll('.game .game-layer rect')
-            .filter((data: any) => data.data.team === d.data.team)
-            .classed('data-hover', false);
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === d.data.team)
+          .classed('data-hover', false);
         if (this.eventService) {
           this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
         }
@@ -794,13 +786,13 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           .filter((data: any) => data.team === d.data.team)
           .classed('data-hover', true);
         this.d3
-            .selectAll('.game .game-layer rect')
-            .filter((data: any) => data.data.team === d.data.team)
-            .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
+          .selectAll('.game .game-layer rect')
+          .filter((data: any) => data.data.team === d.data.team)
+          .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
         if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
-            this.d3
-                .selectAll('.game .game-layer rect')
-                .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
+          this.d3
+            .selectAll('.game .game-layer rect')
+            .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
         }
       });
   }
@@ -831,10 +823,10 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
             teamIndex: number = i,
             data: NumericObject = layers[levelIndex][teamIndex]['data'],
             currentState: string = data['currentState'];
-              if (view === View.overview) return 0;
-              if (currentState === 'finished') return 0;
-              if (currentState === levelKey || levelIndex >= parseInt(currentState.split('level')[1])) return 1;
-              return 0;
+          if (view === View.overview) return 0;
+          if (currentState === 'finished') return 0;
+          if (currentState === levelKey || levelIndex >= parseInt(currentState.split('level')[1])) return 1;
+          return 0;
         }
       )
       .attr(
@@ -855,14 +847,14 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
             let num = 0;
             // first we want to compute the added distance based on the previous extimated times
             for (let j = 1; (levelIndex - j) > (currentData['data']['currentState']).split('level')[1]; j++) {
-                const computedEstimate = d['data']['level' + (levelIndex - j)];
-                if (computedEstimate !== undefined) { num += computedEstimate; }
+              const computedEstimate = d['data']['level' + (levelIndex - j)];
+              if (computedEstimate !== undefined) { num += computedEstimate; }
             }
 
             // now we will check if the player is behind the current scheduled estimate or not
             const currentEstimate = d['data'][currentData['data']['currentState']];
             if (currentData[0] + currentEstimate > this.time) {
-                return xScale(Math.max(1, currentData[0] + currentEstimate + num));
+              return xScale(Math.max(1, currentData[0] + currentEstimate + num));
             }
             return xScale(Math.max(1, this.time + num));
           }
@@ -991,7 +983,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           groupLevelX - x < eventIconWidth / 2) {
           x -= eventIconWidth / 2;
         }
-          group['x'] = x;
+        group['x'] = x;
       });
 
       team.eventsGroups = eventsGroups;
@@ -999,12 +991,12 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   createEvents({
-    gamedata,
-    eventShapePaths,
-    currentLevelColor,
-    groupCircleWidth,
-    eventIconWidth
-  }) {
+                 gamedata,
+                 eventShapePaths,
+                 currentLevelColor,
+                 groupCircleWidth,
+                 eventIconWidth
+               }) {
     const d3 = this.d3;
     const eventsLayer: any = this.gameChart.append('g').attr('class', 'events');
 
@@ -1121,7 +1113,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
         if (
           typeof gamedata.teams[teamIndex].offsets !== 'undefined' &&
           typeof gamedata.teams[teamIndex].offsets[this.sortLevel] !==
-            'undefined'
+          'undefined'
         ) {
           teamOffset = gamedata.teams[teamIndex].offsets[this.sortLevel];
         }
@@ -1327,8 +1319,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   onMouseWheelUp($event: any) {
     if (this.zoomValue < this.appConfig.maxZoomValue) {
       const newZoomValue = Math.min(
-          this.appConfig.maxZoomValue,
-          this.zoomValue + this.appConfig.zoomStep
+        this.appConfig.maxZoomValue,
+        this.zoomValue + this.appConfig.zoomStep
         ),
         scale = newZoomValue / this.zoomValue,
         dx =
@@ -1483,7 +1475,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getPlayerUco(login: string): string {
-      return login.split('@')[0];
+    return login.split('@')[0];
   }
 
   clear(): void {
@@ -1508,41 +1500,41 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   /* for analysis manipulation */
 
   highlightGivenPlayer(playerId: number): void {
-      this.outerWrapper.classed('ctf-progress-hover', true);
-      this.d3
-          .selectAll('.game .game-layer rect')
-          .filter((data: any) => data.data.team === playerId.toString())
-          .classed('data-hover', true);
+    this.outerWrapper.classed('ctf-progress-hover', true);
+    this.d3
+      .selectAll('.game .game-layer rect')
+      .filter((data: any) => data.data.team === playerId.toString())
+      .classed('data-hover', true);
   }
 
   unhighlightGivenPlayer(playerId: number): void {
-      this.outerWrapper.classed('ctf-progress-hover', true);
-      this.d3
-          .selectAll('.game .game-layer rect')
-          .filter((data: any) => data.data.team === playerId.toString())
-          .classed('data-hover', false);
+    this.outerWrapper.classed('ctf-progress-hover', true);
+    this.d3
+      .selectAll('.game .game-layer rect')
+      .filter((data: any) => data.data.team === playerId.toString())
+      .classed('data-hover', false);
   }
 
   preserveHighlightedPlayer(playerId: number): void {
-      const player = playerId.toString();
-      if (this.clickedArray.includes(player)) {
-          this.clickedArray = this.clickedArray.filter(
-              item => item !== player
-          );
-      } else {
-          this.clickedArray.push(player);
-      }
+    const player = playerId.toString();
+    if (this.clickedArray.includes(player)) {
+      this.clickedArray = this.clickedArray.filter(
+        item => item !== player
+      );
+    } else {
+      this.clickedArray.push(player);
+    }
 
+    this.d3
+      .selectAll('.game .game-layer rect')
+      .filter((data: any) => data.data.team === player)
+      .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
+
+    if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
       this.d3
-          .selectAll('.game .game-layer rect')
-          .filter((data: any) => data.data.team === player)
-          .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
-
-      if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
-          this.d3
-              .selectAll('.game .game-layer rect')
-              .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
-      }
+        .selectAll('.game .game-layer rect')
+        .classed('faded', ((data: any) => (this.clickedArray.length > 0) ? true : false));
+    }
   }
 
   ngOnDestroy() {
