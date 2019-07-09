@@ -79,7 +79,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   private levels: string[];
   private levelsTimePlan: number[];
   private types: string[];
-  private filterStatus: string;
+  public filterStatus: string;
 
   // zooming
   private panValue = 0;
