@@ -114,6 +114,7 @@ deployDebian:
 deployAngular:
     stage: deployAngular
     script:
+        - git checkout master && git pull
         - cp /usr/local/npmrc ~/.npmrc
         - 'npm install && npm run lib-build && cd dist/kypo2-trainings-hurdling-viz-lib && npm publish --registry=http://kypo-storage.ics.muni.cz:8081/repository/npm-hosted'
     only:
