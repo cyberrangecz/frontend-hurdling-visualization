@@ -1,0 +1,15 @@
+kypo2-trainings-hurdling-visualization (0.0.0) stable; urgency=medium
+
+  * [f7ee9bec] Fix bug in periodical http request
+  * [5ac74f68] Stetch visualization width according to gameplay
+  * [eaa4ee06] Edit visualisation view to exact trainings data
+  * [25b2d71b] Refactor hurdling in connection with trainings
+  * [a378350c] Manage secure connection to new rest api
+  * [7c9016c3] Connect visualization to new rest api
+  * [8511d131] Refactor visualization and connection to the dashboard
+  * [929e495f] Add a service for cross visualization communication
+  * [0085d741] Convert to angular library
+  * [422655ed] Refactoring
+  * [999c4074] Update to angular v7
+
+ -- Martin Machac <machacm@ics.muni.cz>  Tue, 09 Jul 2019 10:03:31 +0200
