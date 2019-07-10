@@ -1,0 +1,21 @@
+#!/usr/bin/make -f  
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+
+USER=kypo
+PROJECT_NAME=$(shell dpkg-parsechangelog --show-field source)
+PACKAGE_NAME=$(subst -,_,${PROJECT_NAME})
+PROJECT_DIR=/opt/kypo2/${PROJECT_NAME}
+CWD=$(shell pwd)
+
+%:  
+	dh $@
+
+override_dh_auto_build override_dh_auto_install:
+
+
+override_dh_install:
+	@echo "dist ${PROJECT_DIR}" > debian/install
+	dh_install
+
