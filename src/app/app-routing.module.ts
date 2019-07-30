@@ -4,7 +4,7 @@ import {NgModule} from '@angular/core';
 const routes: Routes = [
   {
     path: 'hurdling',
-    loadChildren: 'app/hurdling/hurdling.module#HurdlingModule',
+    loadChildren: () => import('./hurdling/hurdling.module').then(m => m.HurdlingModule),
   },
   {
     path: '',

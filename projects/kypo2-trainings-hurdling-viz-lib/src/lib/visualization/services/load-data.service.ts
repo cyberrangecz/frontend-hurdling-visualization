@@ -10,7 +10,6 @@ import { GenericObject } from '../models/generic-object.type';
 import { Event } from '../models/event';
 import { Game } from '../models/game';
 import { Data } from '../models/data';
-import {forEach} from '@angular/router/src/utils/collection';
 import {ConfigService} from '../config/config.service';
 
 @Injectable()
