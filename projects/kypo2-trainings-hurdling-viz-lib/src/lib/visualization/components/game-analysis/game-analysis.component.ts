@@ -130,7 +130,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
   public clickedArray = [];
 
-  @ViewChild('csvInput')
+  @ViewChild('csvInput', { static: false })
   csvInput: any;
 
   constructor(
