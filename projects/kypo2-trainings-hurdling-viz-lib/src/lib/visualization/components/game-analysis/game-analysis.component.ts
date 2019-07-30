@@ -40,6 +40,7 @@ import {Data} from '../../models/data';
   encapsulation: ViewEncapsulation.None
 })
 export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() jsonGameData = {information: null, events: null};
   @Input() eventService: GameAnalysisEventService;
   @Input() colorScheme: string[];
   @Input() showProgressView: boolean;
@@ -166,14 +167,17 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   loadData() {
     this.errorMessage = null;
 
-    /*const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
-    this.gamedataset = data.gameDataset;
-    this.plandataset = data.planDataset;
-    this.levels = data.levels;
-    this.levelsTimePlan = data.levelsTimePlan;
-    this.time = data.time;
-    this.types = data.types;
-    this.drawChart();*/
+    if (this.view === View.overview && this.jsonGameData.information !== null && this.jsonGameData.information !== null) {
+      const data = this.loadDataService.getGameAndPlanMock(this.jsonGameData.information, this.jsonGameData.events);
+      this.gamedataset = data.gameDataset;
+      this.plandataset = data.planDataset;
+      this.levels = data.levels;
+      this.levelsTimePlan = data.levelsTimePlan;
+      this.time = data.time;
+      this.types = data.types;
+      this.drawChart();
+      return;
+    }
 
     this._activeDataSubscribtion = this.loadDataService
       .getGameAndPlanData(
@@ -750,7 +754,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           .classed('data-hover', true);
 
         if (this.eventService) {
-          this.eventService.gameAnalysisOnBarMouseover(+d.data.team);
+          this.eventService.gameAnalysisOnBarMouseover(d.data.team.toString());
         }
       })
       .on('mouseout', (d: GenericObject, teamIndex: number) => {
@@ -766,7 +770,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           .filter((data: any) => data.data.team === d.data.team)
           .classed('data-hover', false);
         if (this.eventService) {
-          this.eventService.gameAnalysisOnBarMouseout(+d.data.team);
+          this.eventService.gameAnalysisOnBarMouseout(d.data.team.toString());
         }
       })
       .on('click', (d, teamIndex) => {
@@ -778,7 +782,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
           this.clickedArray.push(d.data.team);
         }
         if (this.eventService) {
-          this.eventService.gameAnalysisOnBarClick(+d.data.team);
+          this.eventService.gameAnalysisOnBarClick(d.data.team.toString());
         }
         this.outerWrapper.classed('ctf-progress-hover', true);
         this.d3
@@ -1499,35 +1503,34 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
   /* for analysis manipulation */
 
-  highlightGivenPlayer(playerId: number): void {
+  highlightGivenPlayer(playerId: string): void {
     this.outerWrapper.classed('ctf-progress-hover', true);
     this.d3
       .selectAll('.game .game-layer rect')
-      .filter((data: any) => data.data.team === playerId.toString())
+      .filter((data: any) => data.data.team === playerId)
       .classed('data-hover', true);
   }
 
-  unhighlightGivenPlayer(playerId: number): void {
+  unhighlightGivenPlayer(playerId: string): void {
     this.outerWrapper.classed('ctf-progress-hover', true);
     this.d3
       .selectAll('.game .game-layer rect')
-      .filter((data: any) => data.data.team === playerId.toString())
+      .filter((data: any) => data.data.team === playerId)
       .classed('data-hover', false);
   }
 
-  preserveHighlightedPlayer(playerId: number): void {
-    const player = playerId.toString();
-    if (this.clickedArray.includes(player)) {
+  preserveHighlightedPlayer(playerId: string): void {
+    if (this.clickedArray.includes(playerId)) {
       this.clickedArray = this.clickedArray.filter(
-        item => item !== player
+        item => item !== playerId
       );
     } else {
-      this.clickedArray.push(player);
+      this.clickedArray.push(playerId);
     }
 
     this.d3
       .selectAll('.game .game-layer rect')
-      .filter((data: any) => data.data.team === player)
+      .filter((data: any) => data.data.team === playerId)
       .classed('preserved', (data: any) => (this.clickedArray.includes(data.data.team)));
 
     if (this.view === View.overview) { // in progress view we want to keep the unfinished levels highlighted
