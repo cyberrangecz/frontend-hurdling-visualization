@@ -50,6 +50,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   @Input() gameColors = this.appConfig.gameColors;
   @Input() simulationInterval = this.appConfig.simulationInterval;
   @Input() loadDataInterval = this.appConfig.loadDataInterval;
+  @Input() useLocalMock = false;
 
   private wrapperWidth: number;
   private wrapperHeight: number;
@@ -169,6 +170,18 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.view === View.overview && this.jsonGameData.information !== null && this.jsonGameData.information !== null) {
       const data = this.loadDataService.getGameAndPlanMock(this.jsonGameData.information, this.jsonGameData.events);
+      this.gamedataset = data.gameDataset;
+      this.plandataset = data.planDataset;
+      this.levels = data.levels;
+      this.levelsTimePlan = data.levelsTimePlan;
+      this.time = data.time;
+      this.types = data.types;
+      this.drawChart();
+      return;
+    }
+
+    if (this.useLocalMock) {
+      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
       this.gamedataset = data.gameDataset;
       this.plandataset = data.planDataset;
       this.levels = data.levels;
@@ -322,9 +335,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
       team: 'ctf-progress-teamcolumn',
       time: 'ctf-progress-timecolumn'
     };
-
     this.addDataColumns(dataColumns, gamedata);
-
   }
 
   getEstimatedTime(): number {
@@ -332,7 +343,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
       return a + b;
     }, 0);
 
-    console.log(this.levelsTimePlan);
     return this.view === View.progress
       ? levelsTimePlanSum * 1.25
       : levelsTimePlanSum;
