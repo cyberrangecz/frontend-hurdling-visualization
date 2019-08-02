@@ -7,7 +7,7 @@
 .ctf-progress-header-arrow-down { top: 11px; border-width: 6px 6px 0 6px; border-color: #c4c4c4 transparent transparent transparent; }
 .ctf-progress-header-arrow-down.ctf-progress-header-arrow-active { border-color: #5c75a7 transparent transparent transparent; }
 
-.ctf-progress-header-levels { overflow: hidden; position: relative; height: 1.2em; }
+.ctf-progress-header-levels { overflow: hidden; position: relative; height: 1.5em; }
 .ctf-progress-header-levels .ctf-progress-header-column { position: absolute; bottom: 0; }
 
 .ctf-progress-header #sort-name { left: 0; width: 130px; text-align: right; }

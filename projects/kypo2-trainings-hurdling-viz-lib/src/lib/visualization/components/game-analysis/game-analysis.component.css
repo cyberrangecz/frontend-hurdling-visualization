@@ -49,7 +49,7 @@
 .ctf-progress-wrapper .axis .domain { stroke: transparent; }
 
 /* time */
-#ctf-progress-time { position: absolute; right: 15px; font-size: 40px; font-weight: 400; width: 140px; line-height: 1; }
+#ctf-progress-time { position: absolute; right: -19px; font-size: 31px; font-weight: 400; width: 140px; line-height: 0.8; }
 
 /* timeline */
 .ctf-progress-wrapper .timeline { stroke: #2f2f2f; }
