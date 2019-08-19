@@ -52,7 +52,7 @@
 			<div class="ctfh-col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-timecolumn">
 					<app-column-header (onSort)="onSortValueChange('time', $event.sortReverse)" [sortType]="'time'" [selectedSortType]="sortType"
-					 [selectedSortReverse]="sortReverse" [label]="'Time'"></app-column-header>
+					 [selectedSortReverse]="sortReverse" [label]="'Time*'"></app-column-header>
 				</div>
 			</div>
 		</div>
@@ -129,6 +129,9 @@
 									<path attr.d="{{icon.path}}" />
 								</svg>
 								{{icon.label}}
+							</span>
+							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="selectedViewValue == 1">
+								* The time of team's last action
 							</span>
 						</div>
 					</div>

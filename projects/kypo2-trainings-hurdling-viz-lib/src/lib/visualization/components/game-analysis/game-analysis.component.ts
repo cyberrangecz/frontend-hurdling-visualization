@@ -18,10 +18,8 @@ import { Event } from '../../models/event';
 import { Padding } from '../../models/padding';
 import { AppConfig } from '../../../app.config';
 import { View } from '../../models/view.enum';
-import { DataSource } from '../../models/data-source.enum';
 import { GenericObject } from '../../models/generic-object.type';
 import { NumericObject } from '../../models/numeric-object.type';
-import { environment } from '../../../../environments/environment';
 import { SortingService } from '../../services/sorting.service';
 import { FilteringService } from '../../services/filtering.service';
 import { PreparedData } from '../../models/preparedData';
@@ -30,8 +28,8 @@ import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../mocks/information.mock';
 import {EVENTS} from '../../../mocks/events.mock';
-import { interval } from 'rxjs';
 import {Data} from '../../models/data';
+import {interval} from 'rxjs';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -170,25 +168,15 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.view === View.overview && this.jsonGameData.information !== null && this.jsonGameData.information !== null) {
       const data = this.loadDataService.getGameAndPlanMock(this.jsonGameData.information, this.jsonGameData.events);
-      this.gamedataset = data.gameDataset;
-      this.plandataset = data.planDataset;
-      this.levels = data.levels;
-      this.levelsTimePlan = data.levelsTimePlan;
-      this.time = data.time;
-      this.types = data.types;
-      this.drawChart();
+      this.setAcquiredData(data);
       return;
     }
 
     if (this.useLocalMock) {
-      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
-      this.gamedataset = data.gameDataset;
-      this.plandataset = data.planDataset;
-      this.levels = data.levels;
-      this.levelsTimePlan = data.levelsTimePlan;
-      this.time = data.time;
-      this.types = data.types;
-      this.drawChart();
+      if (this.view === View.overview) {
+        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+        this.setAcquiredData(data);
+      }
       return;
     }
 
@@ -200,19 +188,43 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
       )
       .subscribe(
         (data: Data) => {
-          this.gamedataset = data.gameDataset;
-          this.plandataset = data.planDataset;
-          this.levels = data.levels;
-          this.levelsTimePlan = data.levelsTimePlan;
-          this.time = data.time;
-          this.types = data.types;
-          this.drawChart();
+          this.setAcquiredData(data);
           this.initializeZoom();
         },
         (error) => {
           this.errorMessage = error.message;
         }
       );
+  }
+
+  setAcquiredData(data: Data): void {
+    this.gamedataset = data.gameDataset;
+    this.plandataset = data.planDataset;
+    this.levels = data.levels;
+    this.levelsTimePlan = data.levelsTimePlan;
+    this.time = /*(currentTime - initialTime) / 1000; //*/ data.time;
+    this.types = data.types;
+    this.drawChart();
+  }
+
+  simulateGameProgress(simulationSpeed: number = 1000) {
+    let index = 0;
+    const initialTime = EVENTS[0].timestamp;
+    let currentTime = EVENTS[index].timestamp;
+    const events = [EVENTS[index]];
+
+    this._updateVisSubscribtion = interval(simulationSpeed).subscribe(value => {
+      if (index >= EVENTS.length - 1) {
+        return;
+      }
+      while (EVENTS[index] !== undefined && EVENTS[index].timestamp <= currentTime) {
+        events.push(EVENTS[index]);
+        index += 1;
+      }
+      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, events);
+      this.setAcquiredData(data);
+      currentTime += 20 * simulationSpeed;
+    });
   }
 
   drawChart(): void {
@@ -1412,9 +1424,12 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
   watchGameProgress() {
     this.loadData();
-    this._updateVisSubscribtion = interval(this.configService.loadDataInterval).subscribe(value =>
-      this.loadData()
-    );
+    if (this.useLocalMock) {
+      this.simulateGameProgress();
+    } else {
+      this._updateVisSubscribtion = interval(this.configService.loadDataInterval).subscribe(value =>
+          this.loadData());
+    }
   }
 
   switchToProgressView() {
