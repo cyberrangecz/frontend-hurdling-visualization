@@ -52,7 +52,7 @@
 			<div class="ctfh-col-2" *ngIf="hasData">
 				<div class="ctf-progress-column ctf-progress-timecolumn">
 					<app-column-header (onSort)="onSortValueChange('time', $event.sortReverse)" [sortType]="'time'" [selectedSortType]="sortType"
-					 [selectedSortReverse]="sortReverse" [label]="'Time'"></app-column-header>
+					 [selectedSortReverse]="sortReverse" [label]="'Time*'"></app-column-header>
 				</div>
 			</div>
 		</div>
@@ -95,13 +95,13 @@
 				<div class="ctf-progress-legend">
 					<div class="ctf-progress-legend-left">
 						<div class="ctf-progress-legend-left-top">
-							<span class="ctf-progress-legend-item ctf-progress-legend-limit">
+							<span class="ctf-progress-legend-item ctf-progress-legend-limit" *ngIf="selectedViewValue == 2">
 								<svg class="ctf-progress-legend-icon" height="18" width="2" viewBox="0 0 2 18">
 									<rect y="0" x="0" height="18" width="2"></rect>
 								</svg>
 								Level time limit
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="true">
+							<span class="ctf-progress-legend-item ctf-progress-legend-estimate" *ngIf="selectedViewValue == 1">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18" fill="#8c8b8b">
 									<defs>
 										<pattern id="diagonalHatchGray" patternUnits="userSpaceOnUse" width="7" height="4" patternTransform="rotate(45)">
@@ -112,13 +112,13 @@
 								</svg>
 								Estimated time
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="true">
+							<span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="selectedViewValue == 1">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#cccccc"></rect>
 								</svg>
 								Finished level
 							</span>
-							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="true">
+							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="selectedViewValue == 1">
 								<svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
 									<rect y="0" x="0" height="18" width="35" fill="#848282"></rect>
 								</svg>
@@ -129,6 +129,9 @@
 									<path attr.d="{{icon.path}}" />
 								</svg>
 								{{icon.label}}
+							</span>
+							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="selectedViewValue == 1">
+								* The time of team's last action
 							</span>
 						</div>
 					</div>

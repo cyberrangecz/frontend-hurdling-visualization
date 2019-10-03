@@ -9,7 +9,6 @@
   width: 100%;
   overflow-x: hidden;
   font-weight: 400;
-  font-size: 18px;
   color: #2f2f2f;
 }
 
@@ -50,7 +49,7 @@
 .ctf-progress-wrapper .axis .domain { stroke: transparent; }
 
 /* time */
-#ctf-progress-time { position: absolute; right: 15px; font-size: 40px; font-weight: 400; width: 140px; line-height: 1; }
+#ctf-progress-time { position: absolute; right: -19px; font-size: 31px; font-weight: 400; width: 140px; line-height: 0.8; }
 
 /* timeline */
 .ctf-progress-wrapper .timeline { stroke: #2f2f2f; }
@@ -81,7 +80,7 @@
 .ctf-progress-select-wrapper { display: inline-block; width: auto; min-width: 9em; margin-bottom: 1em; }
 .ctf-progress-select-wrapper:not(:last-child) { margin-right: 1em; }
 .ctf-progress-select { position: relative !important; display: block !important; height: 36px !important; }
-.ctf-progress-options select { width: 100%; height: 100%; font-weight: 400 !important; height: 36px !important; line-height: 2 !important; font-size: 18px !important; font-family: 'Roboto', sans-serif !important; border: 1px solid rgba(195, 195, 195, 0.5) !important; border-radius: 0 !important; background: #fff !important; margin: 0 !important; padding: 0 1.15em 0 1.75em !important; color: #2f2f2f !important; cursor: pointer; }
+.ctf-progress-options select { width: 100%; height: 100%; font-weight: 400 !important; height: 36px !important; line-height: 2 !important; font-family: 'Roboto', sans-serif !important; border: 1px solid rgba(195, 195, 195, 0.5) !important; border-radius: 0 !important; background: #fff !important; margin: 0 !important; padding: 0 1.15em 0 1.75em !important; color: #2f2f2f !important; cursor: pointer; }
 .ctf-progress-select-icon { fill: #929292; display: inline-block; position: absolute; left: 0.5em; top: 50%; transform: translateY(-50%); pointer-events: none; }
 
 /* Arrow */
@@ -89,7 +88,7 @@
 
 /* File input */
 .ctf-progress-file-input { display: none; }
-.ctf-progress-file-label { position: relative; font-weight: 400 !important; background: #5c75a7 !important; height: 36px !important; font-size: 18px !important; line-height: 24px !important; margin: 0; padding: 6px 18px 6px 36px !important; color: #ffffff !important; display: inline-block; cursor: pointer; }
+.ctf-progress-file-label { position: relative; font-weight: 400 !important; background: #5c75a7 !important; height: 36px !important; line-height: 24px !important; margin: 0; padding: 6px 18px 6px 36px !important; color: #ffffff !important; display: inline-block; cursor: pointer; }
 .ctf-progress-csv-file-wrapper { position: relative; }
 .ctf-progress-csv-file-wrapper.ctf-progress-file-uploaded { padding-right: 30px; }
 .ctf-progress-file-remove { cursor: pointer; fill: #47546d; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }

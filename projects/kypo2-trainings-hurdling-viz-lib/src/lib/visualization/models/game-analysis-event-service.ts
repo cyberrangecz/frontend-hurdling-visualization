@@ -4,11 +4,11 @@ export interface GameAnalysisEventService {
 
     gameAnalysisComponent: GameAnalysisComponent;
 
-    gameAnalysisOnBarMouseover(playerId: number): void;
+    gameAnalysisOnBarMouseover(playerId: string): void;
 
-    gameAnalysisOnBarMouseout(playerId: number): void;
+    gameAnalysisOnBarMouseout(playerId: string): void;
 
-    gameAnalysisOnBarClick(playerId: number): void;
+    gameAnalysisOnBarClick(playerId: string): void;
 
     registerGameAnalysisComponent(component: GameAnalysisComponent): void;
 }

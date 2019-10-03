@@ -1,4 +1,4 @@
-import {map} from 'rxjs/operators';
+import {map, timestamp} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
     HttpClient,
@@ -114,9 +114,10 @@ export class LoadDataService {
     });
 
     gamedataset.length = players.length;
-    let gameStartTimestamp = events[0].timestamp / 1000;
+    const gameStartTimestamp = events[0].timestamp / 1000;
 
     events.forEach(event => {
+        const gameTime = event.game_time / 1000;
         const player = event.player_login;
         const playerIndex = players.indexOf(player);
         const levelNum: number = this.getLevelNumber(event.level, game.levels);
@@ -140,23 +141,20 @@ export class LoadDataService {
         }
         gameEvent.game_details = {
             player_id: event.player_login,
-            logical_time: event.game_time / 1000,
+            logical_time: gameTime,
             level: event.level,
             level_number: levelNum
         };
-
-        // const type = event.type.split('.');
-        // gameEvent.type = type[type.length - 1];
         gameEvent.timestamp = event.timestamp / 1000;
 
-        time = event.game_time > time ? event.game_time : time;
+        // time = event.game_time > time ? event.game_time : time;
+        time = events[events.length - 1].timestamp - events[0].timestamp;
 
         switch (event.type) {
             case this.eventTypes.gameStart:
                 gameEvent.type = null;
                 // if the first level started, save the team start (it must be as timestamp,
                 // later when the game start timestamp will be known, it will be deducted)
-                gameStartTimestamp =  gameEvent.timestamp < gameStartTimestamp ? gameEvent.timestamp : gameStartTimestamp;
                 gamedataset[playerIndex]['start'] = gameEvent.timestamp - gameStartTimestamp;
                 break;
             case this.eventTypes.solution:
@@ -197,20 +195,18 @@ export class LoadDataService {
 
             // if there are more events with different time, take the bigger
             if (typeof gamedataset[playerIndex][levelKey] === 'undefined' ||
-                gamedataset[playerIndex][levelKey] < event.game_time / 1000 - prevLevels) {
-                gamedataset[playerIndex][levelKey] = event.game_time / 1000 - prevLevels;
-                gamedataset[playerIndex]['totalTime'] = event.game_time / 1000;
+                gamedataset[playerIndex][levelKey] < gameTime - prevLevels) {
+                gamedataset[playerIndex][levelKey] = gameTime - prevLevels;
+                gamedataset[playerIndex]['totalTime'] = gameTime;
             }
         } else {
-            gamedataset[playerIndex]['totalTime'] =  events[events.length - 1].game_time / 1000 - gamedataset[playerIndex]['start'];
+            gamedataset[playerIndex]['totalTime'] =  gameTime;
         }
 
         if (gameEvent.type != null) {
             gamedataset[playerIndex].events.push(gameEvent);
         }
     });
-
-    // time = events[events.length - 1].timestamp - events[0].timestamp;
 
     // create final timeplan for levels
     levels.forEach((level, i): void => {
@@ -247,9 +243,7 @@ export class LoadDataService {
       });
 
       const lastLevelKey: string = levels[levels.length - 1];
-      /*if (typeof team[lastLevelKey] === 'undefined') {
-          //team['totalTime'] = 0 - team['start'];
-      } else */if (typeof team[lastLevelKey] === 'number') // adjust total time
+      if (typeof team[lastLevelKey] === 'number') // adjust total time
         team['currentState'] = 'finished'; // finished team
 
     });

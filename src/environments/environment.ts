@@ -3,12 +3,10 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-import {View} from '../../projects/kypo2-trainings-hurdling-viz-lib/src/lib/visualization/models/view.enum';
-
 export const environment = {
   production: false,
   assetsRoot: '',
-  restBaseUrl: 'https://147.251.124.129:8083/kypo2-rest-training/api/v1/',
+  restBaseUrl: 'https://kypo-devel.ics.muni.cz:8083/kypo2-rest-training/api/v1/',
 
   // OIDC SETTINGS
   // Url of the Identity Provider
