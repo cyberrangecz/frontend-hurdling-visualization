@@ -12,7 +12,7 @@
     "lib-build": "ng build kypo2-trainings-hurdling-viz-lib && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
     "lib-copy": "cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-trainings-hurdling-viz-lib-package/",
     "cp": "rm -rf ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib/* && cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib",
-    "publish": "npm run lib-build && npm run lib-build && npm publish --registry=http://kypo-storage.ics.muni.cz:8081/repository/npm-hosted"
+    "publish": "npm run lib-build && cd dist/kypo2-trainings-hurdling-viz-lib/. && npm publish --registry=http://kypo-storage.ics.muni.cz:8081/repository/npm-hosted"
   },
   "private": true,
   "dependencies": {
