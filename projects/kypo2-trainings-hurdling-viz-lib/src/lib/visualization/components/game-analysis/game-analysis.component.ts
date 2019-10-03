@@ -86,8 +86,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   private progressZoomValue = 1;
   private zoomValue = 1;
   private view: View = View.overview;
-  
-  public filterStatus: string;
+
   public time = 0;
   public filterStatus: string;
   public sortType = 'name';
