@@ -1,7 +1,8 @@
 export class Event {
 	hint_id: number;
 	game_details: {
-		player_id: string;
+		player_id: number;
+		player_name: string;
 		level: number;
 		logical_time: number;
 		level_number: number;
