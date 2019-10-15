@@ -27,6 +27,7 @@ import { GameAnalysisEventService } from '../../models/game-analysis-event-servi
 import { HttpClient } from '@angular/common/http';
 import {ConfigService} from '../../config/config.service';
 import {GAME_INFORMATION} from '../../../mocks/information.mock';
+import { PLAYERS } from './../../../mocks/players.mock';
 import {EVENTS} from '../../../mocks/events.mock';
 import {Data} from '../../models/data';
 import {interval} from 'rxjs';
@@ -38,7 +39,7 @@ import {interval} from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() jsonGameData = {information: null, events: null};
+  @Input() jsonGameData = {information: null, events: null, players: null};
   @Input() eventService: GameAnalysisEventService;
   @Input() colorScheme: string[];
   @Input() showProgressView: boolean;
@@ -166,14 +167,14 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     this.errorMessage = null;
 
     if (this.view === View.overview && this.jsonGameData.information !== null && this.jsonGameData.information !== null) {
-      const data = this.loadDataService.getGameAndPlanMock(this.jsonGameData.information, this.jsonGameData.events);
+      const data = this.loadDataService.getGameAndPlanMock(this.jsonGameData.information, this.jsonGameData.events, this.jsonGameData.players);
       this.setAcquiredData(data);
       return;
     }
 
     if (this.useLocalMock) {
       if (this.view === View.overview) {
-        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS);
+        const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, EVENTS, PLAYERS);
         this.setAcquiredData(data);
       }
       return;
@@ -220,7 +221,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
         events.push(EVENTS[index]);
         index += 1;
       }
-      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, events);
+      const data = this.loadDataService.getGameAndPlanMock(GAME_INFORMATION, events, PLAYERS);
       this.setAcquiredData(data);
       currentTime += 20 * simulationSpeed;
     });
@@ -1276,7 +1277,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
       .data(gamedata.teams)
       .enter()
       .append('text')
-      .text((d: GenericObject): string => this.getPlayerUco(d.team))
+      .text((d: GenericObject): string => d.team)
       .attr(
         'y',
         (d: GenericObject): number =>
@@ -1500,10 +1501,6 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     const colorsCount: number = colors.length;
     const color = this.d3.hsl(colors[level % colorsCount]);
     return color.brighter(0.8).toString();
-  }
-
-  getPlayerUco(login: string): string {
-    return login.split('@')[0];
   }
 
   clear(): void {
