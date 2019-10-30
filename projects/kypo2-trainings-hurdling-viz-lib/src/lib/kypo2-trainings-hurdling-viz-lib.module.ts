@@ -11,13 +11,11 @@ import { ColumnHeaderComponent } from './visualization/components/column-header/
 import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
 import { Kypo2TrainingsHurdlingVizLibConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
-import {Kypo2TrainingsHurdlingVizLibComponent} from './kypo2-trainings-hurdling-viz-lib.component';
 import {ConfigService} from './visualization/config/config.service';
 import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
 
 @NgModule({
   declarations: [
-    Kypo2TrainingsHurdlingVizLibComponent,
     GameAnalysisComponent,
     MouseWheelDirective,
     MouseMoveDirective,
@@ -37,7 +35,6 @@ import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
     { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG }
   ],
   exports: [
-    Kypo2TrainingsHurdlingVizLibComponent,
     GameAnalysisComponent
   ]
 })
