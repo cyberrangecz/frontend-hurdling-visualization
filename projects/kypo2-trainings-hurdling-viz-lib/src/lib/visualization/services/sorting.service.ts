@@ -57,7 +57,6 @@ export class SortingService {
         }.bind(this)
       );
     }
-
     return sorted;
   }
 
@@ -66,45 +65,42 @@ export class SortingService {
     level: number,
     order: Order
   ): GenericObject[] {
-    let sorted: GenericObject[] = [];
+    let finishedLevel,
+      currentlyInLevel,
+      notYetInLevel: GenericObject[] = [];
     if (typeof gamedataset !== 'undefined') {
-      sorted = gamedataset.slice(0);
-      sorted.sort(
-        function(teamA: GenericObject, teamB: GenericObject): number {
-          let timeA: number = teamA['level' + level],
-            timeB: number = teamB['level' + level];
-          const lastLevelIndex: number =
-            this.lastLevelIndex === 2 ? level - 1 : level;
-          if (teamA['currentState'] === 'level' + level) {
-            timeA = this.time;
-            this.levels.forEach(
-              function(l: number, i: number): void {
-                if (i + 1 < lastLevelIndex) timeA -= teamA[l];
-              }.bind(this)
-            );
-            if (
-              this.view === View.overview &&
-              typeof teamA['start'] !== 'undefined'
-            )
-              timeA -= teamA['start'];
-          } else if (typeof teamA['level' + level] === 'undefined') {
-            timeA = this.time;
-          }
+      finishedLevel = gamedataset
+        .slice(0)
+        .filter(team => typeof team['level' + level] !== 'undefined');
 
-          if (teamB['currentState'] === 'level' + level) {
-            timeB = this.time;
-            this.levels.forEach(
-              function(l: number, i: number): void {
-                if (i + 1 < lastLevelIndex) timeB -= teamB[l];
-              }.bind(this)
-            );
-            if (
-              this.view === View.overview &&
-              typeof teamB['start'] !== 'undefined'
-            )
-              timeB -= teamB['start'];
-          } else if (typeof teamB['level' + level] === 'undefined') {
-            timeB = this.time;
+      currentlyInLevel = gamedataset
+        .slice(0)
+        .filter(
+          team =>
+            typeof team['level' + level] === 'undefined' &&
+            team['currentState'] === 'level' + level
+        );
+
+      notYetInLevel = gamedataset
+        .slice(0)
+        .filter(
+          team =>
+            typeof team['level' + level] === 'undefined' &&
+            team['currentState'] !== 'level' + level
+        );
+
+      finishedLevel.sort(
+        function(teamA: GenericObject, teamB: GenericObject): number {
+          let timeA, timeB: number;
+          if (typeof teamA['level' + level] !== 'undefined') {
+            timeA = teamA['level' + level];
+          } else {
+            timeA = teamA.totalTime;
+          }
+          if (typeof teamB['level' + level] !== 'undefined') {
+            timeB = teamB['level' + level];
+          } else {
+            timeB = teamB.totalTime;
           }
           if (order === Order.asc) return this.d3.descending(timeA, timeB);
           else return this.d3.ascending(timeA, timeB);
@@ -112,7 +108,7 @@ export class SortingService {
       );
     }
 
-    return sorted;
+    return notYetInLevel.concat(currentlyInLevel.concat(finishedLevel));
   }
 
   sortByName(gamedataset: GenericObject[], order: Order): GenericObject[] {
