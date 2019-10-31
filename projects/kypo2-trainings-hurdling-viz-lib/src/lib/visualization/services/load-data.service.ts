@@ -150,11 +150,13 @@ export class LoadDataService {
       if (gamedataset[playerIndex] === undefined) {
         gamedataset[playerIndex] = {};
         gamedataset[playerIndex].team = player.name;
+        gamedataset[playerIndex].teamAvatar = player.picture;
         gamedataset[playerIndex].events = [];
         gamedataset[playerIndex].totalTime = 0;
 
         plandataset[playerIndex] = {};
         plandataset[playerIndex]["team"] = player.name;
+        plandataset[playerIndex]["teamAvatar"] = player.picture;
         plandataset[playerIndex]["start"] = 0;
       }
 

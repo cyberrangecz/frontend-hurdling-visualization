@@ -51,6 +51,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   @Input() simulationInterval = this.appConfig.simulationInterval;
   @Input() loadDataInterval = this.appConfig.loadDataInterval;
   @Input() useLocalMock = false;
+  @Input() displayUserAvatars = true;
 
   private wrapperWidth: number;
   private wrapperHeight: number;
@@ -121,6 +122,8 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     }
   ];
   public selectedFilterValue = 1;
+  public selectedPlayerView: 'name' | 'avatar';;
+
   public hasData = false;
   public errorMessage: string = null;
   public legendIcons;
@@ -142,6 +145,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
+    this.selectedPlayerView = this.displayUserAvatars ? 'avatar' : 'name';
     this.configService.trainingDefinitionId = this.trainingDefinitionId;
     this.configService.trainingInstanceId = this.trainingInstanceId;
     this.configService.gameColors = this.gameColors;
@@ -1333,7 +1337,40 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  addDataColumns(dataColumns: GenericObject, gamedata: GameData) {
+  private addPlayerName(teamDataLayer, gameData: GameData) {
+    const teams: any = teamDataLayer
+        .selectAll('text.data-team')
+        .data(gameData.teams)
+        .enter()
+        .append('text')
+        .text((d: GenericObject): string => d.team)
+        .attr(
+            'y',
+            (d: GenericObject): number =>
+                this.yScale(d.team) + this.yScale.bandwidth() * 0.6 + this.padding.top
+        )
+        .attr('x', 130)
+        .style('text-anchor', 'end');
+  }
+
+  private addPlayerAvatar(teamDataLayer, gameData: GameData) {
+    const teams: any = teamDataLayer
+        .selectAll('text.data-team')
+        .data(gameData.teams)
+        .enter()
+        .append('image')
+        .attr('xlink:href', (d: GenericObject): string => 'data:image/png;base64,' + d.teamAvatar)
+        .attr('width', 15)
+        .attr('height', 15)
+        .attr(
+            'y',
+            (d: GenericObject): number =>
+                this.yScale(d.team) + this.yScale.bandwidth() * 0.6 + this.padding.top - 10
+        )
+        .attr('x', 120);
+  }
+
+  addDataColumns(dataColumns: GenericObject, gameData: GameData) {
     const d3: D3 = this.d3;
 
     // append columns with data (team, time, score)
@@ -1346,19 +1383,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
       .attr('height', this.wrapperHeight);
     const teamDataLayer: any = teamData.append('g').attr('class', 'data');
 
-    const teams: any = teamDataLayer
-      .selectAll('text.data-team')
-      .data(gamedata.teams)
-      .enter()
-      .append('text')
-      .text((d: GenericObject): string => d.team)
-      .attr(
-        'y',
-        (d: GenericObject): number =>
-          this.yScale(d.team) + this.yScale.bandwidth() * 0.6 + this.padding.top
-      )
-      .attr('x', 130)
-      .style('text-anchor', 'end');
+    if (this.displayUserAvatars) {
+      this.addPlayerAvatar(teamDataLayer, gameData);
+    } else {
+      this.addPlayerName(teamDataLayer, gameData);
+    }
 
     const timeData: any = d3
       .select('#' + dataColumns['time'])
@@ -1368,7 +1397,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
     const times: any = timeDataLayer
       .selectAll('text.data-time')
-      .data(gamedata.teams)
+      .data(gameData.teams)
       .enter()
       .append('text')
       .text((d: GenericObject): string =>
@@ -1473,6 +1502,11 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
   onFilterValueChange(): void {
     this.setFilterStatus();
+    this.drawChart();
+  }
+
+  onPlayerViewChange() {
+    this.displayUserAvatars = this.selectedPlayerView === 'avatar';
     this.drawChart();
   }
 
