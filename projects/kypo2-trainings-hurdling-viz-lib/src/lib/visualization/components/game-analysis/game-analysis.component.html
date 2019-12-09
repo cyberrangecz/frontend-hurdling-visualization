@@ -6,20 +6,15 @@
 					<div class="ctf-progress-options">
 						<div class="ctf-progress-select-wrapper" *ngIf="!errorMessage && enableViewMenu">
 							<div class="ctf-progress-select">
-								<svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24">
-									<path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
-								</svg>
+								<svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24"><path [attr.d]="pathConfig.view"  /></svg>
 								<select [(ngModel)]="selectedViewValue" (change)="onViewValueChange()">
 									<option *ngFor="let o of viewOptions" [ngValue]="o.id">{{o.name}}</option>
 								</select>
 							</div>
 						</div>
-
 						<div class="ctf-progress-select-wrapper" *ngIf="!errorMessage">
 							<div class="ctf-progress-select">
-								<svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24">
-									<path d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z" />
-								</svg>
+								<svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24"><path [attr.d]="pathConfig.filter"  /></svg>
 								<select [(ngModel)]="selectedFilterValue" (change)="onFilterValueChange()">
 									<option *ngFor="let o of filterOptions" [ngValue]="o.id">{{o.name}}</option>
 								</select>
@@ -28,9 +23,7 @@
 
 						<div class="ctf-progress-select-wrapper" *ngIf="!errorMessage">
 							<div class="ctf-progress-select">
-								<svg class="ctf-progress-select-icon" height="20" width="20" viewBox="0 0 24 24">
-									<path d="m10.229133,10.933364c2.38147,0 4.312174,-2.405942 4.312174,-5.373695c0,-2.967753 -1.930703,-5.373558 -4.312174,-5.373558s-4.312041,2.405942 -4.312041,5.373695c0,2.967753 1.930571,5.373558 4.312041,5.373558m0,0c-4.923313,0 -8.95278,3.415858 -9.298576,7.744112l18.597151,0c-0.345796,-4.328116 -4.37513,-7.744112 -9.298576,-7.744112"/>
-								</svg>
+								<svg class="ctf-progress-select-icon" height="20" width="20" viewBox="0 0 24 24"><path [attr.d]="pathConfig.person" /></svg>
 								<select [(ngModel)]="selectedPlayerView" (change)="onPlayerViewChange()">
 									<option [ngValue]="'name'">Name</option>
 									<option [ngValue]="'avatar'">Avatar</option>
@@ -100,7 +93,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="ctfh-container-fluid" *ngIf="hasData && legendIcons">
+	<div class="ctfh-container-fluid" *ngIf="hasData">
 		<div class="ctfh-row ctfh-no-gutters">
 			<div class="ctfh-col-8 ctfh-offset-2">
 				<div class="ctf-progress-legend">
@@ -135,11 +128,8 @@
 								</svg>
 								Active level
 							</span>
-							<span class="ctf-progress-legend-item" *ngFor="let icon of legendIcons">
-								<svg class="ctf-progress-legend-icon" width="16px" height="16px" viewBox="0 0 16 16">
-									<path attr.d="{{icon.path}}" />
-								</svg>
-								{{icon.label}}
+							<span class="ctf-progress-legend-item">
+								<svg class="ctf-progress-legend-icon" width="16px" height="16px" viewBox="0 0 16 16"><path attr.d="{{pathConfig.path}}" /></svg>
 							</span>
 							<span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="selectedViewValue == 1">
 								* The time of team's last action
@@ -148,9 +138,7 @@
 					</div>
 					<div class="ctf-progress-legend-right">
 						<span class="ctf-progress-legend-item ctf-progress-legend-zoom">
-							<svg class="ctf-progress-legend-icon" width="20" height="20" viewBox="0 0 24 24">
-								<path d="M9,2A7,7 0 0,1 16,9C16,10.57 15.5,12 14.61,13.19L15.41,14H16L22,20L20,22L14,16V15.41L13.19,14.61C12,15.5 10.57,16 9,16A7,7 0 0,1 2,9A7,7 0 0,1 9,2M8,5V8H5V10H8V13H10V10H13V8H10V5H8Z" />
-							</svg>
+							<svg class="ctf-progress-legend-icon" width="20" height="20" viewBox="0 0 24 24"><path [attr.d]="pathConfig.zoom"/></svg>
 							Ctrl + Scroll
 						</span>
 					</div>
