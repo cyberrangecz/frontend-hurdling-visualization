@@ -1,18 +1,22 @@
-import { GenericObject } from './visualization/models/generic-object.type';
-import { View } from './visualization/models/view.enum';
+import {GenericObject} from './visualization/models/generic-object.type';
+import {View} from './visualization/models/view.enum';
+import {DisplayView} from './visualization/models/view';
 
 export class AppConfig {
-	finalViewBarPadding: number;
 	levelsTimePlan: number[];
 	gameColors: string[];
 	darkColor: string;
 	eventShapePaths: GenericObject;
+	finalViewBarPadding: number;
 	minBarHeight: number;
 	maxBarHeight: number;
 	maxZoomValue: number;
 	zoomStep: number;
 	simulationInterval: number;
 	loadDataInterval: number;
+	defaultView: View;
+	viewOptions: DisplayView[];
+	filterOptions: DisplayView[];
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
@@ -27,13 +31,49 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 		'wrong' : 'm13.442553,8.807937l3.19308,-5.361621c0.063743,-0.107093 0.067045,-0.241568 0.008917,-0.351781c-0.058458,-0.110213 ' +
 		'-0.16877,-0.178487 -0.288989,-0.178487l-14.862288,0l0,-0.693166c0,-0.191658 -0.147632,-0.346581 -0.330273,-0.346581s-0.330273,' +
 		'0.154923 -0.330273,0.346581l0,1.039747l0,10.050869l-0.030897,1.112352c-0.08162,0.722663 0.31874,0.474471 0.719104,0.468987l14.834628,' +
-		'-0.195011c0.002642,0.000349 0.005284,0 0.006605,0c0.182641,0 0.330273,-0.154923 0.330273,-0.346581l-3.249887,-5.545308z'
+		'-0.195011c0.002642,0.000349 0.005284,0 0.006605,0c0.182641,0 0.330273,-0.154923 0.330273,-0.346581l-3.249887,-5.545308z',
+		'view': 'M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,' +
+			'5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z',
+		'filter': 'M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,' +
+			'17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,' +
+			'3.56 20.13,4.19 19.79,4.62L14.03,12H14Z',
+		'person': 'm10.229133,10.933364c2.38147,0 4.312174,-2.405942 4.312174,-5.373695c0,-2.967753 -1.930703,-5.373558 -4.312174,' +
+			'-5.373558s-4.312041,2.405942 -4.312041,5.373695c0,2.967753 1.930571,5.373558 4.312041,5.373558m0,0c-4.923313,0 -8.95278,' +
+			'3.415858 -9.298576,7.744112l18.597151,0c-0.345796,-4.328116 -4.37513,-7.744112 -9.298576,-7.744112',
+		'zoom': 'M9,2A7,7 0 0,1 16,9C16,10.57 15.5,12 14.61,13.19L15.41,14H16L22,20L20,22L14,16V15.41L13.19,14.61C12,15.5 10.57,16 9,' +
+			'16A7,7 0 0,1 2,9A7,7 0 0,1 9,2M8,5V8H5V10H8V13H10V10H13V8H10V5H8Z'
 	},
-  finalViewBarPadding: 50,
+    finalViewBarPadding: 50,
 	minBarHeight: 18,
 	maxBarHeight: 35,
 	maxZoomValue: 10,
 	zoomStep: 0.25,
 	simulationInterval: 800,
-	loadDataInterval: 5000
+	loadDataInterval: 5000,
+	defaultView: View.overview,
+	viewOptions: [
+		{
+			id: 1,
+			name: 'Progress'
+		},
+		{
+			id: 2,
+			name: 'Final overview'
+		}
+	],
+	filterOptions: [
+		{
+			id: 1,
+			name: 'All'
+		},
+		{
+			id: 2,
+			name: 'Game finished'
+		},
+		{
+			id: 3,
+			name: 'Game not finished'
+		}
+	]
 };
+
