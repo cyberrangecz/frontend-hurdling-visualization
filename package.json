@@ -1,7 +1,6 @@
 {
   "name": "d3-visualization",
   "version": "1.0.0",
-  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
