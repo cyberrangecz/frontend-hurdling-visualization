@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GenericObject } from '../models/generic-object.type';
 import { Order } from '../models/order.enum';
 import { View } from '../models/view.enum';
-import { D3, D3Service } from 'd3-ng2-service';
+import { D3, D3Service } from './d3.service';
 
 @Injectable()
 export class SortingService {

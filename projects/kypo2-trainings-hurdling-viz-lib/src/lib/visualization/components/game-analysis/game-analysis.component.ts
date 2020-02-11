@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Axis, D3, D3Service, ScaleBand, ScaleLinear} from 'd3-ng2-service';
+import {Axis, D3, D3Service, ScaleBand, ScaleLinear} from '../../services/d3.service';
 import {LoadDataService} from '../../services/load-data.service';
 import {DataEntry} from '../../models/data-entry';
 import {GameConfig} from '../../models/game-config';
@@ -100,7 +100,7 @@ export class GameAnalysisComponent implements OnInit, OnChanges, OnDestroy {
   public clickedArray = [];
   public pathConfig;
 
-  @ViewChild('csvInput', { static: false }) csvInput: any;
+  @ViewChild('csvInput') csvInput: any;
 
   constructor(
     d3Service: D3Service,
