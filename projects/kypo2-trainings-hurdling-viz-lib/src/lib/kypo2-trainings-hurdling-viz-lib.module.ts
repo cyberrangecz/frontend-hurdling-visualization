@@ -1,8 +1,7 @@
 import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import { D3Service } from 'd3-ng2-service';
-import { PapaParseModule } from 'ngx-papaparse';
+import { D3Service } from './visualization/services/d3.service';
 import { LoadDataService } from './visualization/services/load-data.service';
 import { GameAnalysisComponent } from './visualization/components/game-analysis/game-analysis.component';
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
@@ -24,7 +23,6 @@ import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
   imports: [
     CommonModule,
     FormsModule,
-    PapaParseModule
   ],
   providers: [
     D3Service,
@@ -46,7 +44,7 @@ export class Kypo2TrainingsHurdlingVizLibModule {
     }
   }
 
-  static forRoot(config: Kypo2TrainingsHurdlingVizLibModule): ModuleWithProviders {
+  static forRoot(config: Kypo2TrainingsHurdlingVizLibModule): ModuleWithProviders<Kypo2TrainingsHurdlingVizLibModule> {
     return {
       ngModule: Kypo2TrainingsHurdlingVizLibModule,
       providers: [
