@@ -1,12 +1,13 @@
 {
   "name": "kypo2-trainings-hurdling-viz-lib",
-  "version": "9.0.0",
+  "version": "9.0.0-beta",
   "peerDependencies": {
     "@angular/common": "^9.0.0",
     "@angular/core": "^9.0.0",
     "@angular/material": "^9.0.0",
     "@angular/cdk": "^9.0.0",
     "rxjs": ">=6.0.0",
+    "csirt-mu-d3-service": "9.0.0",
     "d3": "^5.14.2",
     "@types/d3": "^5.7.2"
   }

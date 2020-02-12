@@ -1,7 +1,6 @@
 import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import { D3Service } from './visualization/services/d3.service';
 import { LoadDataService } from './visualization/services/load-data.service';
 import { GameAnalysisComponent } from './visualization/components/game-analysis/game-analysis.component';
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
@@ -12,7 +11,7 @@ import { FilteringService } from './visualization/services/filtering.service';
 import { Kypo2TrainingsHurdlingVizLibConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
 import {ConfigService} from './visualization/config/config.service';
 import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
-
+import {D3Service} from 'csirt-mu-d3-service';
 @NgModule({
   declarations: [
     GameAnalysisComponent,

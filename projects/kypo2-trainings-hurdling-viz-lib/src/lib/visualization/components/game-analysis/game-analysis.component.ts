@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Axis, D3, D3Service, ScaleBand, ScaleLinear} from '../../services/d3.service';
+import {Axis, D3, D3Service, ScaleBand, ScaleLinear} from 'csirt-mu-d3-service';
 import {LoadDataService} from '../../services/load-data.service';
 import {DataEntry} from '../../models/data-entry';
 import {GameConfig} from '../../models/game-config';
