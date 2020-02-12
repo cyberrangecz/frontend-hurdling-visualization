@@ -123,8 +123,6 @@ export class LoadDataService {
       } else {
         levelType = 'game';
       }
-
-      console.log(game.levels[l - 1]);
       levels.push({
         key: 'level' + l,
         number: l,
