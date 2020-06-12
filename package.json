@@ -9,10 +9,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
-    "lib-build": "ng build kypo2-trainings-hurdling-viz-lib --prod && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
+    "buld-and-pack": "ng build kypo2-trainings-hurdling-viz-lib --prod && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
     "lib-copy": "cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-trainings-hurdling-viz-lib-package/",
-    "cp": "rm -rf ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib/* && cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib",
-    "publish": "npm run lib-build && cd dist/kypo2-trainings-hurdling-viz-lib/. && npm publish --registry=http://kypo-storage.ics.muni.cz:8081/repository/npm-hosted"
+    "cp": "rm -rf ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib/* && cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib"
   },
   "private": true,
   "dependencies": {
@@ -26,11 +25,11 @@
     "@angular/platform-browser": "^9.0.0",
     "@angular/platform-browser-dynamic": "^9.0.0",
     "@angular/router": "^9.0.0",
-    "angular-oauth2-oidc": "^8.0.4",
+    "angular-oauth2-oidc": "^9.2.2",
     "d3": "^5.15.0",
     "csirt-mu-d3-service": "9.0.0",
     "core-js": "^2.4.1",
-    "kypo2-auth": "9.0.0",
+    "kypo2-auth": "9.1.0",
     "rxjs": "^6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
