@@ -40,7 +40,7 @@ before_script:
 buildAngular:
     stage: buildAngular
     script:
-        - ng build
+        - ng build --prod
     only:
         - triggers
         - branches
