@@ -8,7 +8,7 @@ import { MouseMoveDirective } from './visualization/directives/mousemove.directi
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
-import { Kypo2TrainingsHurdlingVizLibConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
+import { HurdlingVisualizationConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
 import {ConfigService} from './visualization/config/config.service';
 import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
 import {D3Service} from 'csirt-mu-d3-service';
@@ -47,7 +47,7 @@ export class Kypo2TrainingsHurdlingVizLibModule {
     return {
       ngModule: Kypo2TrainingsHurdlingVizLibModule,
       providers: [
-        {provide: Kypo2TrainingsHurdlingVizLibConfig, useValue: config}
+        {provide: HurdlingVisualizationConfig, useValue: config}
       ]
     };
   }

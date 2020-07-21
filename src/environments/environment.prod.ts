@@ -3,8 +3,8 @@ import {View} from '../../projects/kypo2-trainings-hurdling-viz-lib/src/lib/visu
 export const environment = {
   production: true,
   assetsRoot: '/portlet_ctf_progress-0.1/',
-  restBaseUrl: 'https://147.251.124.129:8083/kypo2-rest-training/api/v1/',
-
+  trainingServiceUrl: 'https://172.19.0.22/kypo2-rest-training/api/v1/',
+  elasticSearchServiceUrl: 'https://172.19.0.22/kypo-elasticsearch-service/api/v1/',
   // OIDC SETTINGS
   // Url of the Identity Provider
   issuer: 'https://oidc.muni.cz/oidc/',

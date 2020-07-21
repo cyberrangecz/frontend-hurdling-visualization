@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Kypo2TrainingsHurdlingVizLibConfig} from './kypo2-trainings-hurdling-viz-lib';
+import {HurdlingVisualizationConfig} from './kypo2-trainings-hurdling-viz-lib';
 
 @Injectable()
 export class ConfigService {
-  private readonly _config: Kypo2TrainingsHurdlingVizLibConfig;
+  private readonly _config: HurdlingVisualizationConfig;
   private _trainingDefinitionId: number;
   private _trainingInstanceId: number;
   private _gameColors: string[];
@@ -50,11 +50,11 @@ export class ConfigService {
     this._trainingInstanceId = value;
   }
 
-  get config(): Kypo2TrainingsHurdlingVizLibConfig {
+  get config(): HurdlingVisualizationConfig {
     return this._config;
   }
 
-  constructor(config: Kypo2TrainingsHurdlingVizLibConfig) {
+  constructor(config: HurdlingVisualizationConfig) {
     this._config = config;
   }
 }

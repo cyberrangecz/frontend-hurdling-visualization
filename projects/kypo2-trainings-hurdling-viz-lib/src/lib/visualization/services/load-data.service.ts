@@ -39,11 +39,11 @@ export class LoadDataService {
     levelsTimePlan: number[]
   ) {
     const defUrl: string =
-      this.configService.config.restBaseUrl +
+      this.configService.config.trainingServiceUrl +
       'training-definitions/' +
       this.configService.trainingDefinitionId;
     const eventsUrl: string =
-      this.configService.config.restBaseUrl +
+      this.configService.config.elasticSearchServiceUrl +
       'training-events/training-definitions/' +
       this.configService.trainingDefinitionId +
       '/training-instances/' +
@@ -84,7 +84,7 @@ export class LoadDataService {
   getParticipants(): Observable<User[]> {
     return this.http
       .get<UserDTO[]>(
-        `${this.configService.config.restBaseUrl}visualizations/training-instances/${this.configService.trainingInstanceId}/participants`
+        `${this.configService.config.trainingServiceUrl}visualizations/training-instances/${this.configService.trainingInstanceId}/participants`
       )
       .pipe(map(userDTOs => userDTOs.map(userDTO => User.fromDTO(userDTO))));
   }
