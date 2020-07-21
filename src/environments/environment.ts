@@ -6,7 +6,8 @@
 export const environment = {
   production: false,
   assetsRoot: '',
-  restBaseUrl: 'https://kypo-devel.ics.muni.cz:8083/kypo2-rest-training/api/v1/',
+  trainingServiceUrl: 'https://172.19.0.22/kypo2-rest-training/api/v1/',
+  elasticSearchServiceUrl: 'https://172.19.0.22/kypo-elasticsearch-service/api/v1/',
 
   // OIDC SETTINGS
   // Url of the Identity Provider
