@@ -8,10 +8,13 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
-    "build-and-pack": "ng build kypo2-trainings-hurdling-viz-lib --prod && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
-    "lib-copy": "cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-trainings-hurdling-viz-lib-package/",
-    "cp": "rm -rf ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib/* && cp -a ./dist/kypo2-trainings-hurdling-viz-lib/. ../kypo2-visualization-dashboard/node_modules/kypo2-trainings-hurdling-viz-lib"
+    "build-example-app": "ng build example-app --prod",
+    "build-library": "ng build kypo2-trainings-hurdling-viz-lib --prod && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
+    "create-package": "cd dist/kypo2-trainings-hurdling-viz-lib && npm pack",
+    "build-and-pack": "npm install && npm run build-library && npm run create-package",
+    "ci-update-version": "cd ./projects/kypo2-trainings-hurdling-viz-lib/ && npm version $VERSION",
+    "ci-build-and-pack": "npm ci --cache .npm --prefer-offline && npm run build-library && npm run create-package",
+    "ci-publish-package": "cd dist/kypo2-trainings-hurdling-viz-lib && npm publish"
   },
   "private": true,
   "dependencies": {
