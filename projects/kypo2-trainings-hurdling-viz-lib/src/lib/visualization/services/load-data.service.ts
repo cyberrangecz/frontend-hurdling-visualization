@@ -44,7 +44,7 @@ export class LoadDataService {
       this.configService.trainingDefinitionId;
     const eventsUrl: string =
       this.configService.config.elasticSearchServiceUrl +
-      'training-events/training-definitions/' +
+      'training-platform-events/training-definitions/' +
       this.configService.trainingDefinitionId +
       '/training-instances/' +
       this.configService.trainingInstanceId;
