@@ -11,7 +11,7 @@ import { GenericObject } from '../models/generic-object.type';
 import { Event } from '../models/event';
 import { Game } from '../models/game';
 import { ConfigService } from '../config/config.service';
-import { User, UserDTO } from 'kypo2-auth';
+import { User, UserDTO } from '@sentinel/auth';
 import {GameData} from '../models/game-data';
 
 @Injectable()

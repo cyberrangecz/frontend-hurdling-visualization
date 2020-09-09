@@ -1,12 +1,13 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { Kypo2AuthGuardWithLogin, Kypo2AuthProviderPickerComponent, Kypo2NotAuthGuardService } from 'kypo2-auth';
+import {SentinelAuthProviderListComponent} from '@sentinel/auth/components';
+import {SentinelAuthGuardWithLogin, SentinelNegativeAuthGuard} from '@sentinel/auth/guards';
 
 const routes: Routes = [
   {
     path: 'hurdling',
     loadChildren: () => import('./hurdling/hurdling.module').then(m => m.HurdlingModule),
-    canActivate: [Kypo2AuthGuardWithLogin],
+    canActivate: [SentinelAuthGuardWithLogin],
   },
   {
     path: '',
@@ -15,8 +16,8 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: Kypo2AuthProviderPickerComponent,
-    canActivate: [Kypo2NotAuthGuardService]
+    component: SentinelAuthProviderListComponent,
+    canActivate: [SentinelNegativeAuthGuard]
   },
   {
     path: '**',
