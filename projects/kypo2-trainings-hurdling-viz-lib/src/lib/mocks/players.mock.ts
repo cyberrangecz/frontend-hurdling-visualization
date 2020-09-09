@@ -1,4 +1,4 @@
-import { User } from 'kypo2-auth';
+import { User } from '@sentinel/auth';
 
 
 export const PLAYERS: User[] = [
