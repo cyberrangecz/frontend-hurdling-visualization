@@ -14,7 +14,7 @@ export const EVENTS = [
       "type": "rsyslog",
       "facility": "daemon"
     },
-    "type": "cz.muni.csirt.kypo.events.trainings.TrainingRunStarted",nsk?", ?v?bensk?",
+    "type": "cz.muni.csirt.kypo.events.trainings.TrainingRunStarted",
     "user_ref_id": 123456@
     "port": 46026,
     "game_time": 0,
@@ -40,7 +40,7 @@ export const EVENTS = [
       "facility": "daemon"
     },
     "type": "cz.muni.csirt.kypo.events.trainings.LevelStarted",
-    "level_type": "INFO",nsk?", ?v?bensk?",
+    "level_type": "INFO,
     "user_ref_id": 123456@
     "level_title": "Introduction",
     "port": 46026,
@@ -68,7 +68,7 @@ export const EVENTS = [
       "facility": "daemon"
     },
     "type": "cz.muni.csirt.kypo.events.trainings.LevelCompleted",
-    "level_type": "INFO",nsk?", ?v?bensk?",
+    "level_type": "INFO,
     "user_ref_id": 123456@
     "port": 46026,
     "game_time": 9138,
@@ -94,7 +94,7 @@ export const EVENTS = [
       "facility": "daemon"
     },
     "type": "cz.muni.csirt.kypo.events.trainings.LevelStarted",
-    "level_type": "GAME",nsk?", ?v?bensk?",
+    "level_type": "GAME",
     "user_ref_id": 123456@
     "level_title": "Find the Vulnerable SSH Server",
     "port": 46026,
