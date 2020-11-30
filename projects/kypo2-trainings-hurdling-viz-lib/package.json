@@ -1,5 +1,5 @@
 {
-  "name": "kypo2-trainings-hurdling-viz-lib",
+  "name": "@kypo/hurdling-visualization",
   "version": "10.3.0",
   "peerDependencies": {
     "@angular/common": "^10.0.0",
