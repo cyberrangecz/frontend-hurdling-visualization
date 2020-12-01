@@ -11,7 +11,7 @@ import { FilteringService } from './visualization/services/filtering.service';
 import { HurdlingVisualizationConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
 import {ConfigService} from './visualization/config/config.service';
 import {AppConfig, CTF_PROGRESS_CONFIG} from './app.config';
-import {D3Service} from 'csirt-mu-d3-service';
+import {D3Service} from '@kypo/d3-service';
 @NgModule({
   declarations: [
     GameAnalysisComponent,

@@ -1,16 +1,7 @@
 # KYPO Trainings Hurdling Visualization
 
-## How to deploy on surge.sh
+## Prerequisites
 
-### Prerequisites
+To use the library you need to have installed:
 
-- recent version of [Node.js](nodejs.org) and npm. (I'd recommend using [https://github.com/creationix/nvm](nvm) to prevent conflicts with different versions of various projects)
-- recent version of [Angular CLI](https://cli.angular.io/): `npm install -g @angular/cli`
-- surge: `npm install -g surge`
-
-### Steps
-
-1. Clone this repository `git clone git@gitlab.ics.muni.cz:kypo2/frontend-new/kypo2-trainings-hurdling-visualization.git`
-2. Build the app in app's folder `ng build --prod`
-3. Change directory to dist files `cd dist`.
-4. Run `surge` and follow CLI instructions.
+* NPM with access to [KYPO registry](https://projects.ics.muni.cz/projects/kbase/knowledgebase/articles/153)
