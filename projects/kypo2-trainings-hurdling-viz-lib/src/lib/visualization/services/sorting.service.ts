@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GenericObject } from '../models/generic-object.type';
 import { Order } from '../models/order.enum';
-import { D3, D3Service } from '@kypo/d3-service';
+import { D3, D3Service } from '@muni-kypo-crp/d3-service';
 
 @Injectable()
 export class SortingService {
