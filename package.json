@@ -6,8 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "ng lint && npm run prettier-check",
     "e2e": "ng e2e",
+    "prettier-check": "prettier --check \"projects/**/*.ts\"",
     "build-example-app": "ng build example-app --prod",
     "build-library": "ng build kypo2-trainings-hurdling-viz-lib --prod && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
     "create-package": "cd dist/kypo2-trainings-hurdling-viz-lib && npm pack",
@@ -15,6 +16,11 @@
     "ci-update-version": "cd ./projects/kypo2-trainings-hurdling-viz-lib/ && npm version $VERSION",
     "ci-build-and-pack": "npm ci --cache .npm --prefer-offline && npm run build-library && npm run create-package",
     "ci-publish-package": "cd dist/kypo2-trainings-hurdling-viz-lib && npm publish"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier-check"
+    }
   },
   "private": true,
   "dependencies": {
@@ -28,6 +34,14 @@
     "@angular/platform-browser": "^10.0.1",
     "@angular/platform-browser-dynamic": "^10.0.1",
     "@angular/router": "^10.0.1",
+    "@angular-eslint/builder": "^0.8.0-beta.0",
+    "@angular-eslint/eslint-plugin": "^0.8.0-beta.0",
+    "@angular-eslint/eslint-plugin-template": "^0.8.0-beta.0",
+    "@angular-eslint/schematics": "^0.8.0-beta.0",
+    "@angular-eslint/template-parser": "^0.8.0-beta.0",
+    "@typescript-eslint/parser": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "eslint": "^7.13.0",
     "@sentinel/auth": "~10.0.0",
     "@muni-kypo-crp/d3-service": "~10.2.0",
     "angular-oauth2-oidc": "^9.2.2",
@@ -48,7 +62,6 @@
     "@types/jasminewd2": "^2.0.5",
     "@types/node": "^12.11.1",
     "@types/d3": "^5.7.2",
-    "codelyzer": "^5.1.2",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.0.0",
@@ -60,7 +73,6 @@
     "ng-packagr": "^10.0.0",
     "protractor": "~7.0.0",
     "ts-node": "~3.2.0",
-    "tslint": "~6.1.0",
     "typescript": "~3.9.5"
   }
 }
