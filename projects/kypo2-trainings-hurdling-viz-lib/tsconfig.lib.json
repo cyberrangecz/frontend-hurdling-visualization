@@ -1,8 +1,9 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
     "target": "es2018",
+    "declarationMap": true,
     "moduleResolution": "node",
     "declaration": true,
     "sourceMap": true,

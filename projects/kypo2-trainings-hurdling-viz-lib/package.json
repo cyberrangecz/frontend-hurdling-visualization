@@ -2,10 +2,10 @@
   "name": "@muni-kypo-crp/hurdling-visualization",
   "version": "10.6.0",
   "peerDependencies": {
-    "@angular/common": "^10.0.0",
-    "@angular/core": "^10.0.0",
-    "@angular/material": "^10.0.0",
-    "@muni-kypo-crp/d3-service": "~10.2.0",
+    "@angular/common": "~11.0.8",
+    "@angular/core": "~11.0.8",
+    "@angular/material": "^11.0.3",
+    "@muni-kypo-crp/d3-service": "~11.0.0",
     "d3": "^5.15.0",
     "@types/d3": "^5.7.2"
   },

@@ -37,7 +37,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -127,7 +126,7 @@
       "prefix": "kypo2-viz-hurdling",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/kypo2-trainings-hurdling-viz-lib/tsconfig.lib.json",
             "project": "projects/kypo2-trainings-hurdling-viz-lib/ng-package.json"
