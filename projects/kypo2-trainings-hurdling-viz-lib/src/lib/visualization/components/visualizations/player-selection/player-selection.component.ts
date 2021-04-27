@@ -20,8 +20,8 @@ export class PlayerSelectionComponent implements OnInit, OnChanges, OnDestroy {
   @Input() visualizationData: VisualizationData;
   @Input() selectedPlayerView: PlayerView;
 
-  @Input() filteredPlayers: Player[];
-  @Output() filteredPlayersChange = new EventEmitter<Player[]>(true);
+  @Input() filteredPlayers: Player[] = [];
+  @Output() filteredPlayersChange = new EventEmitter<Player[]>();
 
   public numberOfColumns = 12;
   public gridWidth = 60;
@@ -35,12 +35,17 @@ export class PlayerSelectionComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.setPlayerColumnDistribution();
-    this.visualizationData.players.forEach(player => {
-      this.pp.push({player: player, isActive: false, isSelected: null})
-    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if(!this.filteredPlayers)
+    this.filteredPlayers = [];
+    this.visualizationData.players.forEach(player => {
+      if(!this.pp.find(p => p.player.userRefId == player.userRefId)) {
+        this.pp.push({player: player, isActive: false, isSelected: null})
+        this.filteredPlayers.push(player);
+      }
+    })
     this.pp.forEach(player => {
       player.isActive = this.checkIfActive(player.player);
       if(player.isSelected == null && !this.checkIfActive(player.player)) {
@@ -50,7 +55,7 @@ export class PlayerSelectionComponent implements OnInit, OnChanges, OnDestroy {
         player.isSelected = true;
       }
       else
-        player.isSelected = this.filteredPlayers.find(p => p.userRefId === player.player.userRefId) ? true : false;
+        {player.isSelected = this.filteredPlayers.find(p => p.userRefId === player.player.userRefId) ? true : false;}
     })
      if('visualizationData' in changes) {
       this.filteredPlayersChange.emit(this.pp.filter(p => p.isSelected).map(p=>p.player)) 
@@ -138,6 +143,8 @@ export class PlayerSelectionComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.checkIfActive(player))
     return false;
     if (!this.getCurrentPlayerLevel(player))
+      return false;
+    if (this.getCurrentLevel(player).estimatedDuration == 0)
       return false;
     return this.visualizationData.currentTime > (this.getCurrentPlayerLevel(player).startTime + this.getCurrentLevel(player).estimatedDuration*60 * 1.5)
   }

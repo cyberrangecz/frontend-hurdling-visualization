@@ -50,7 +50,7 @@ export class LevelListComponent  {
   isFinished(levelId: number): boolean {
     return this.visualizationData.playerProgress.map(playerProgress => 
       playerProgress.levels.filter(level => 
-        level.id == levelId && level.state == 'FINISHED')).filter.length == this.visualizationData.playerProgress.length;
+        level.id == levelId && level.state == 'FINISHED')).reduce((accumulator, value) => accumulator.concat(value), []).length == this.visualizationData.playerProgress.length;
   }
 
   getLevelTooltip(level: Level) {
