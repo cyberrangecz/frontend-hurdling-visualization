@@ -1,0 +1,104 @@
+.vis-participant-grid {
+	margin: 20px auto 40px;
+	text-align: center;
+}
+
+.participant-tile .mat-figure {
+	position: relative;
+	padding: 10px;
+	align-content: center;
+}
+
+.participant-tile svg {
+	height: 100%;
+	width: 62%;
+	transform: translate(4px, 7px);
+}
+
+.participant-avatar {
+	height: 80%;
+	width: 80%;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.not-active {
+	opacity: 20%;
+	cursor: default;
+}
+
+.selected {
+	border-radius: 50%;
+	box-shadow: 0 0 3px #000000;
+}
+
+.unselected {
+	height: inherit;
+}
+
+.participant-name {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	font-size: 14px;
+}
+
+.displayed-indicator {
+	margin-bottom: 1%;
+}
+
+.player-container {
+	width: 75%;
+	height: 75%;
+}
+
+.overlap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.not-active-text {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: x-large;
+	cursor: default;
+}
+
+.warning {
+	padding-top: 0px;
+	padding-left: 0px;
+	display: flex;
+	font-size: xx-large;
+	color: red;
+}
+
+.kypo2-viz-hurdling-player-tooltip {
+	visibility: hidden;
+	transition: visibility 0s, opacity 0.5s linear;
+	position: absolute;
+	font-family: Roboto, Arial, sans-serif;
+	font-weight: 400;
+	font-size: 10px;
+	color: white;
+	z-index: 1;
+	text-align: center;
+	padding: 5px 10px;
+	background: #5b5c5e;
+	border: 0px;
+	border-radius: 3px;
+	opacity: 0;
+	white-space: pre-line;
+}
+
+.trainee-selector {
+	cursor: pointer;
+	color: rgb(48, 61, 136);
+}

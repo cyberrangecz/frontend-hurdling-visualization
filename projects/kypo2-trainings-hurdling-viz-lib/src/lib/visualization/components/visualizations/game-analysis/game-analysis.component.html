@@ -1,0 +1,178 @@
+<div class="ctf-progress-wrapper">
+	<div class="container-fluid">
+		<div class="row ctf-progress-head-wrapper">
+			<div class="col-12">
+				<div class="ctf-progress-head">
+					<div class="ctf-progress-options">
+                        <div class="ctf-progress-select-wrapper" *ngIf="!errorMessage && view == 'overview'">
+                            <div class="ctf-progress-select">
+                                <svg class="ctf-progress-select-icon"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24">
+                                    <path [attr.d]="getEventShapePaths().filter" />
+                                </svg>
+                                <select
+                                    [(ngModel)]="selectedFilterValue"
+                                    (change)="onFilterValueChange()">
+                                    <option *ngFor="let o of filterOptions" [ngValue]="o.id">{{o.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+						<div class="ctf-progress-select-wrapper" *ngIf="!errorMessage && !setDashboardView">
+							<div class="ctf-progress-select">
+								<svg class="ctf-progress-select-icon" height="20" width="20" viewBox="0 0 24 24">
+                                    <path [attr.d]="getEventShapePaths().person" />
+                                </svg>
+								<select [(ngModel)]="selectedPlayerView" (change)="onPlayerViewChange()">
+									<option [ngValue]="'name'">Name</option>
+									<option [ngValue]="'avatar'">Avatar</option>
+								</select>
+							</div>
+						</div>
+                        <kypo2-viz-hurdling-legend
+                            [selectedViewValue]="view">/
+                        </kypo2-viz-hurdling-legend>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <ng-container *ngIf="view == 'progress'">
+        <kypo2-viz-hurdling-overview-progress-bar
+            [visualizationData]="visualizationData">
+        </kypo2-viz-hurdling-overview-progress-bar>
+    </ng-container>
+
+    <div *ngIf="view == 'progress'" class="player-grid-container">
+        <kypo2-viz-hurdling-player-selection
+            [visualizationData]="visualizationData"
+            [selectedPlayerView]="selectedPlayerView"
+            [filteredPlayers]="filteredPlayers"
+            (filteredPlayersChange)="setFilteredPlayers($event)"
+            >
+        </kypo2-viz-hurdling-player-selection>
+    </div>
+
+    <div *ngIf="view == 'progress'" class="level-grid-container">
+        <kypo2-viz-hurdling-level-list
+            [visualizationData]="visualizationData"
+            (filteredPlayers)="setFilteredPlayers($event)">
+        </kypo2-viz-hurdling-level-list>
+    </div>
+ 
+    <div class="visualization-container" [ngClass]="{
+					progress: view == 'progress',
+					final: view == 'overview'
+					}">
+        <div class="ctfh-row align-items-end ctfh-no-gutters">
+            <div *ngIf="hasData"
+                class="ctfh-col-2 final-2-name">
+                <div class="ctf-progress-column ctf-progress-teamcolumn">
+                    <kypo2-viz-hurdling-column-header
+                        (onSort)="onSortValueChange('name', $event.sortReverse)"
+                        [sortType]="'name'"
+                        [selectedSortType]="sortType"
+                        [selectedSortReverse]="sortReverse"
+                        [label]="'Trainee'">
+                    </kypo2-viz-hurdling-column-header>
+                </div>
+            </div>
+
+            <div *ngIf="hasData && view == 'overview'" class="ctfh-col-2 short"></div>
+
+            <div class="ctfh-col-8 {{view == 'overview' ? 'final-8' : ''}}" *ngIf="hasData">
+                <div class="ctf-progress-header-levels">
+                    <kypo2-viz-hurdling-column-header
+                            *ngFor="let level of levelSortOptions"
+                            (onSort)="onSortValueChange('level', $event.sortReverse, level.index)"
+                            [sortType]="'level' + level.index"
+                            [selectedSortType]="sortType + sortLevel"
+                            [selectedSortReverse]="sortReverse"
+                            [label]="level.name"
+                            [level]="level">
+                    </kypo2-viz-hurdling-column-header>
+                    <span *ngIf="time && view == 'progress'"
+                          class="ctf-progress-header-column"
+                          id="ctf-progress-time"
+                          [ngStyle]="{'left.px': xScale(time) - (xScale(time) < 120 ? 0 : 120), 'top.px': 1}"
+                          matTooltip="Elapsed time">
+                        {{ getTimeString(time) }}
+                    </span>
+                </div>
+            </div>
+
+            <ng-container *ngFor="let column of columns" >
+                <div *ngIf="view == 'overview' || column == 'time'"
+                     class="ctfh-col-2 "
+                     [ngClass]="{ 'final-2': view == 'overview' && column == 'time' }">
+                    <div class="{{'ctf-progress-column ctf-progress-' + column + 'column'}}">
+                        <kypo2-viz-hurdling-column-header
+                            (onSort)="onSortValueChange(column, $event.sortReverse)"
+                            [sortType]="column"
+                            [selectedSortType]="sortType"
+                            [selectedSortReverse]="sortReverse"
+                            [label]="column.charAt(0).toUpperCase() + column.slice(1)">
+                        </kypo2-viz-hurdling-column-header>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="empty-data" *ngIf="!hasData">No {{ filterStatus }} games available.</div>
+
+        <div class="ctfh-row ctfh-no-gutters ctf-main-container">
+            <div class="ctfh-col-2 final-2-name">
+                <div class="ctf-progress-column ctf-progress-teamcolumn ctf-progress-column-data" id="ctf-progress-teamcolumn"></div>
+        </div>
+
+            <div *ngIf="view == 'overview'" class="ctfh-col-2 short">
+                <div class="ctf-progress-column ctf-progress-comparecolumn ctf-progress-column-data"
+                     id="ctf-progress-comparecolumn">
+                </div>
+            </div>
+
+        <div class="ctfh-col-8"
+             [ngClass]="{ 'final-8': view == 'overview' }"
+             id="hurdling-space">
+            <div class="ctf-progress-chart-wrapper">
+                <div id="ctf-progress-chart"
+                     class="ctf-progress"
+                     [ngStyle]="{'cursor': view == 'progress' ? 'default' : 'pointer'}"
+                     mouseWheel
+                     (mouseWheelUp)="onMouseWheelUp($event)"
+                     (mouseWheelDown)="onMouseWheelDown($event)"
+                     mouseMove
+                     (mouseDrag)="onMouseDrag($event)"
+                     (mouseUp)="onMouseUp()"
+                     (window:resize)="onResize()"></div>
+            </div>
+        </div>
+
+            <ng-container *ngFor="let column of columns">
+                <div *ngIf="view == 'overview' || column == 'time'"
+                     class="ctfh-col-2"
+                     [ngClass]="{ 'final-2': view == 'overview' && column == 'time' }">
+                    <div class="{{'ctf-progress-column ctf-progress-' + column + 'column ctf-progress-column-data'}}"
+                         id="{{'ctf-progress-' + column + 'column'}}">
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="ctfh-container-fluid" *ngIf="errorMessage">
+        <div class="ctfh-row ctfh-no-gutters">
+            <div class="ctfh-col-sm-8 ctfh-offset-sm-2">
+                <p class="ctf-progress-error">
+                    <svg class="ctf-progress-error-icon" width="20" height="20" viewBox="0 0 24 24">
+                        <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
+                    </svg>
+                    {{errorMessage}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

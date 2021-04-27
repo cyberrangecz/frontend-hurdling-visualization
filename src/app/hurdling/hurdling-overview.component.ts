@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import data from '../../assets/mock.json';
 
 @Component({
   selector: 'app-hurdling-overview',
@@ -7,10 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HurdlingOverviewComponent implements OnInit {
   title = 'app';
-
+  data:JSON;
   constructor() { }
 
   ngOnInit() {
+    this.data = data as any;
   }
-
 }

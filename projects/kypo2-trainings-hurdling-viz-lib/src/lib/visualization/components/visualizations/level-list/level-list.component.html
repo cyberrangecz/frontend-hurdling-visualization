@@ -1,0 +1,37 @@
+<div class="container">
+	<div class="levels-row">
+		<div
+			*ngFor="let level of visualizationData.levels"
+			[ngClass]="{ faded: isFinished(level.id)}"
+			class="level"
+			[matTooltip]="getLevelTooltip(level)"
+			[matTooltipClass]="'line-broken-tooltip'">
+			<div>
+				{{ parseLevelName(level) }}
+			</div>
+			<div *ngIf="isFinished(level.id)">
+				{{ visualizationData.playerProgress.length }} / {{ visualizationData.playerProgress.length }}
+			</div>
+			<div *ngIf="!isFinished(level.id)"
+				(click)="getPlayersForLevel(level.id).length != 0 ? filterPlayers(getPlayersForLevel(level.id)) : ''"
+				 [ngClass]="{
+				 	clickable: getPlayersForLevel(level.id).length != 0,
+				  	faded: getPlayersForLevel(level.id).length === 0
+				 }">
+				{{ getPlayersForLevel(level.id).length }} playing
+			</div>
+		</div>
+
+		<div class="level" matTooltip="Game finished">
+			<div>Game finished</div>
+			<div (click)="getFinishedPlayers().length != 0 ? filterPlayers(getFinishedPlayers()) : ''"
+				[ngClass]="{
+					clickable: getFinishedPlayers().length != 0,
+					faded: getFinishedPlayers().length === 0
+				}">
+				{{ getFinishedPlayers().length }}
+				{{getFinishedPlayers().length != 1 ? "trainees" : "trainee"}}
+			</div>
+		</div>
+	</div>
+</div>

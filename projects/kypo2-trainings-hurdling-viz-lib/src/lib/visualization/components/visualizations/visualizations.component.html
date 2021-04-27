@@ -1,0 +1,11 @@
+<ng-container *ngIf="visualizationData$ | async">
+	<kypo2-viz-hurdling 
+		[visualizationData]="visualizationData$ | async" 
+		[view]="view"
+		[colorScheme]="colorScheme"
+		[eventService]="colorScheme"
+		[setDashboardView]="setDashboardView"
+		[externalFilters]="externalFilters"
+		[gameColors]="gameColors"
+		[playerColorScheme]="playerColorScheme"></kypo2-viz-hurdling>
+</ng-container>

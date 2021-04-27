@@ -32,7 +32,7 @@ export class FilteringService {
     let filtered: GenericObject[] = [];
     if (typeof gamedataset !== 'undefined') {
       filtered = gamedataset.filter(function(d: GenericObject): boolean {
-        return (d.currentState === 'finished') === byFinished;
+        return (d.currentState === 'FINISHED') === byFinished;
       });
     }
 

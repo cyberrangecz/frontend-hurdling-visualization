@@ -1,4 +1,4 @@
 export enum View {
-	progress = 1,
-	overview = 2
+	Progress = "progress",
+	Overview = "overview"
 }
