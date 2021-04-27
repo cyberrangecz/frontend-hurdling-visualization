@@ -1,4 +1,4 @@
-import { GameAnalysisComponent } from '../components/game-analysis/game-analysis.component';
+import { GameAnalysisComponent } from '../components/visualizations/game-analysis/game-analysis.component';
 
 export interface GameAnalysisEventService {
 

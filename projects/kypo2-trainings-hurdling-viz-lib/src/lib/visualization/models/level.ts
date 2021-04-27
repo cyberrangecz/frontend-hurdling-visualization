@@ -1,6 +1,17 @@
+
+import { LevelTypeEnum } from '../enums/level-type.enum';
+import { Hint } from './hint';
+
 export class Level {
-	id: string;
-	number: number;
-	title: string;
-	game: boolean;
-}
+    id: number;
+    title: string;
+    maxScore: number;
+    levelType: LevelTypeEnum;
+    estimatedDuration: number;
+    order: number;
+    content: string;
+    flag: string;
+    solution: string;
+    solutionPenalized: boolean;
+    hints: Hint[];
+  }

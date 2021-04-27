@@ -6,18 +6,13 @@ const HOME_URL = 'https://localhost:4200'
 
 export const environment = {
   production: true,
-  trainingServiceUrl: 'https://172.19.0.22/kypo2-rest-training',
+  trainingServiceUrl: 'https://172.19.0.22/kypo2-rest-training/api/v1/',
   elasticSearchServiceUrl: 'https://172.19.0.22/kypo-elasticsearch-service/api/v1/',
-  // OIDC SETTINGS
-  // Url of the Identity Provider
-  issuer: 'https://oidc.muni.cz/oidc/',
   // URL of the SPA to redirect the user after silent refresh
   silentRefreshRedirectUri: HOME_URL,
   // URL of the SPA to redirect the user to after login
   redirectUri: HOME_URL,
   // The SPA's id. The SPA is registered with this id at the config-server
-  clientId: 'b53f2660-8fa0-4d32-94e4-23a59d7e7077',
-  // set the scope for the permissions the client should request
   scope: 'openid profile email',
   sessionChecksEnabled: false,
   authConfig: {

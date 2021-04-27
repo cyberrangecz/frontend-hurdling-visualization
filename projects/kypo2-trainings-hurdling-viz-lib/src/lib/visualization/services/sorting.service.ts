@@ -8,8 +8,6 @@ export class SortingService {
   private d3: D3;
   private view;
   private levels;
-  private time: number;
-  private lastLevelIndex: number;
   constructor(d3service: D3Service) {
     this.d3 = d3service.getD3();
   }
@@ -21,7 +19,7 @@ export class SortingService {
     sortLevel: number,
     view,
     levels
-  ): GenericObject[] {
+  ): GenericObject[] { 
     this.view = view;
     this.levels = levels;
 
@@ -34,26 +32,36 @@ export class SortingService {
         sortedGamedataset = this.sortByName(gamedataset, order);
         break;
       case 'time':
-        sortedGamedataset = this.sortByTime(gamedataset, order);
+        sortedGamedataset = this.sortByNumericProperty('totalTime', gamedataset, order);
         break;
       case 'level':
         sortedGamedataset = this.sortByLevelTime(gamedataset, sortLevel, order);
         break;
+      case 'hints':
+        sortedGamedataset = this.sortByNumericProperty('hints', gamedataset, order);
+        break;
+      case 'score':
+        sortedGamedataset = this.sortByNumericProperty('score', gamedataset, order);
+        break;
+      case 'flags':
+        sortedGamedataset = this.sortByNumericProperty('flags', gamedataset, order);
+        break;
+
     }
 
     return sortedGamedataset;
   }
 
-  sortByTime(gamedataset: GenericObject[], order: Order): GenericObject[] {
+  sortByNumericProperty(property, gamedataset: GenericObject[], order: Order): GenericObject[] {
     let sorted: GenericObject[] = [];
     if (typeof gamedataset !== 'undefined') {
       sorted = gamedataset.slice(0);
       sorted.sort(
-        function(teamA: GenericObject, teamB: GenericObject): number {
-          if (order === Order.asc)
-            return this.d3.descending(teamA.totalTime, teamB.totalTime);
-          else return this.d3.ascending(teamA.totalTime, teamB.totalTime);
-        }.bind(this)
+          function(teamA: GenericObject, teamB: GenericObject): number {
+            if (order === Order.asc)
+              return this.d3.descending(teamA[property], teamB[property]);
+            else return this.d3.ascending(teamA[property], teamB[property]);
+          }.bind(this)
       );
     }
     return sorted;
@@ -116,8 +124,8 @@ export class SortingService {
       sorted = gamedataset.slice(0);
       sorted.sort(
         function(teamA: GenericObject, teamB: GenericObject): number {
-          const nameA: string = String(teamA.team).toLowerCase(),
-            nameB: string = String(teamB.team).toLowerCase();
+          const nameA: string = String(teamA.playerName).toLowerCase(),
+            nameB: string = String(teamB.playerName).toLowerCase();
           const compared: boolean =
             order === Order.asc ? nameA > nameB : nameA < nameB;
           return 0 - (compared ? 1 : -1);

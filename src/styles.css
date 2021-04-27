@@ -1,4 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+body {
+	font-family: Roboto, "Helvetica Neue", sans-serif;
+	margin: 0px;
+	background-color: #f6f6f6;
+}
 
-body { font-family: Roboto, "Helvetica Neue", sans-serif; }
+.level-grid-container, .progress-bar, .player-grid-container, .container-fluid, .visualization-container {
+	background-color: white;
+	border-radius: 2px;
+}
+
+.player-grid-container {
+	margin: 10px 20px 1px;
+	padding: 10px 0;
+}
+
+.level-grid-container {
+	margin: 1px 20px 0px !important;
+	padding: 1px 0;
+}
+
+.vis-participant-grid {
+	margin: 10px auto 0px !important;
+}
+
+.visualization-container {
+	margin: 1px 20px;
+	padding: 10px 0;
+}

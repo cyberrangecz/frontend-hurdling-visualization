@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +15,7 @@ import { MouseMoveDirective } from './visualization/directives/mousemove.directi
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -38,7 +38,7 @@ describe('AppComponent', () => {
     }).compileComponents();
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();

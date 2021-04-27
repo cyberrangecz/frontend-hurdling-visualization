@@ -1,0 +1,25 @@
+import { PlayerLevelDTO } from '../DTOs/player-level-dto';
+import { PlayerLevel } from '../models/player-level';
+import { EventMapper } from './event-mapper';
+import { HintMapper } from './hint-mapper';
+import { ScoreMapper } from './score-mapper';
+
+export class PlayerLevelMapper {
+    static fromDTOs(dtos: PlayerLevelDTO[]): PlayerLevel[] {
+        const result = dtos.map((dto) => PlayerLevelMapper.fromDTO(dto));
+        return result;
+    }
+
+    static fromDTO(dto: PlayerLevelDTO): PlayerLevel {
+        const result = new PlayerLevel;
+        result.startTime = dto.start_time/1000;
+        result.endTime = dto.end_time/1000;
+        result.id = dto.id;
+        result.state = dto.state;
+        result.wrongFlags_number = dto.wrong_flags_number;
+        result.hintsTaken = dto.hints_taken;
+        result.events = EventMapper.fromDTOs(dto.events);
+        result.score = ScoreMapper.fromDTOs(dto.events)
+        return result;
+    }
+}

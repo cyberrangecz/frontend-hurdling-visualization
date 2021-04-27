@@ -1,0 +1,1 @@
+export class JSONGameData { information: any; events: any; players: any; }

@@ -1,4 +1,6 @@
+import { User } from '@sentinel/auth';
 import { GenericObject } from './generic-object.type';
+import { ProgressData } from './progress-data';
 
 export class GameData {
 	time: number;
@@ -9,4 +11,5 @@ export class GameData {
 	planDataset?: GenericObject[];
 	levelsTimePlan?: number[];
 	teams?: GenericObject[];
+	participants?: User[];
 }
