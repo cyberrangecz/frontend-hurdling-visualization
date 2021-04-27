@@ -126,7 +126,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   public selectedFilterValue = 1;
   public columns: string[] = ['time', 'score', 'hints', 'flags'];
 
-  public hasData = false;
+  public hasData;
   public errorMessage: string = null;
   public runsToCompare: Array<{id: string, avatar: string}> = [];
   public filteredPlayers: Player[];
@@ -631,7 +631,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
 
   createPlanSegments(planLayers) {
     // draw segment (row in column) for each team
-    let displayedParticipants = this.filteredPlayers ? this.filteredPlayers.length : this.participants;
+    let displayedParticipants = this.filteredPlayers  ? this.filteredPlayers.length : this.participants.length;
     
     let index = -1;
     this.planSegments = planLayers
