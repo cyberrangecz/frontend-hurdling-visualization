@@ -46,7 +46,7 @@
         </kypo2-viz-hurdling-overview-progress-bar>
     </ng-container>
 
-    <div *ngIf="view == 'progress'" class="player-grid-container">
+    <div *ngIf="view == 'progress' && !playerDetailId" class="player-grid-container">
         <kypo2-viz-hurdling-player-selection
             [visualizationData]="visualizationData"
             [selectedPlayerView]="selectedPlayerView"
@@ -62,8 +62,18 @@
             (filteredPlayers)="setFilteredPlayers($event)">
         </kypo2-viz-hurdling-level-list>
     </div>
+
+
+    <div *ngIf="playerDetailId" class="player-detail-container">
+        <kypo2-player-detail
+        [player]=getPlayerData(playerDetailId)
+        [visualizationData]="visualizationData"
+        (hideDetail)="onPlayerDetailChange()">
+        </kypo2-player-detail>
+    </div>
+    
  
-    <div class="visualization-container" [ngClass]="{
+    <div *ngIf="!playerDetailId" class="visualization-container" [ngClass]="{
 					progress: view == 'progress',
 					final: view == 'overview'
 					}">
@@ -125,7 +135,7 @@
 
         <div class="ctfh-row ctfh-no-gutters ctf-main-container">
             <div class="ctfh-col-2 final-2-name">
-                <div class="ctf-progress-column ctf-progress-teamcolumn ctf-progress-column-data" id="ctf-progress-teamcolumn"></div>
+                <div class="ctf-progress-column ctf-progress-teamcolumn ctf-progress-column-data" id="ctf-progress-teamcolumn" (click)="showPlayerDetail($event)"></div>
         </div>
 
             <div *ngIf="view == 'overview'" class="ctfh-col-2 short">
@@ -176,3 +186,4 @@
         </div>
     </div>
 </div>
+

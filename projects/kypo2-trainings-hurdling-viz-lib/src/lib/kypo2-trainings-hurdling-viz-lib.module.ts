@@ -24,6 +24,9 @@ import { VisualizationDataDefaultApi } from './visualization/api/visualization-d
 import { VisualizationsDataService } from './visualization/services/visualizations-data.service';
 import { VisualizationsDataConcreteService } from './visualization/services/visualizations-data-concrete.service';
 import { VisualizationsComponent } from './visualization/components/visualizations/visualizations.component';
+import { PlayerDetailComponent } from './visualization/components/visualizations/player-detail/player-detail.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -36,7 +39,8 @@ import { VisualizationsComponent } from './visualization/components/visualizatio
     OverviewProgressBarComponent,
     LevelListComponent,
     LegendComponent,
-    VisualizationsComponent
+    VisualizationsComponent,
+    PlayerDetailComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +48,9 @@ import { VisualizationsComponent } from './visualization/components/visualizatio
     MatProgressBarModule,
     MatTooltipModule,
     MatGridListModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule,
+    MatDividerModule,
   ],
   providers: [
     D3Service,
