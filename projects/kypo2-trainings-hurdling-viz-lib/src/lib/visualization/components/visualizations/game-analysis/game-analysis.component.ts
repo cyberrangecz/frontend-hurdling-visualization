@@ -94,7 +94,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   private filterSubscription: Subscription;
   private highlightSubscription: Subscription;
   private activeParticipants: User[];
-  
+
 
   // zooming
   private panValue = 0;
@@ -130,6 +130,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   public errorMessage: string = null;
   public runsToCompare: Array<{id: string, avatar: string}> = [];
   public filteredPlayers: Player[];
+  public playerDetailId: number;
 
   constructor(
     d3Service: D3Service,
@@ -141,7 +142,6 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   ) {
     this.d3 = d3Service.getD3();
   }
-
 
   ngOnChanges(): void {
     this.configService.gameColors = this.gameColors;
@@ -1431,6 +1431,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       .data(gameData.teams)
       .enter()
       .append('text')
+      .attr('playerId', (d: GenericObject) => d.playerId)
       .text((d: GenericObject): string => d.playerName)
       .attr(
         'y',
@@ -1438,7 +1439,8 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
           this.yScale(d.playerName) + this.yScale.bandwidth() * 0.6 + this.padding.top
       )
       .attr('x', 130)
-      .style('text-anchor', 'end');
+      .style('text-anchor', 'end')
+      .attr('cursor', () => this.view == 'progress' ? 'pointer' : 'default');
   }
 
   private addPlayerAvatar(teamDataLayer, gameData: GameData) {
@@ -1447,6 +1449,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       .data(gameData.teams)
       .enter()
       .append('image')
+      .attr('playerId', (d: GenericObject) => d.playerId)
       .attr(
         'xlink:href',
         (d: GenericObject): string => 'data:image/png;base64,' + d.playerAvatar
@@ -1461,7 +1464,8 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
           this.padding.top -
           10
       )
-      .attr('x', 120);
+      .attr('x', 120)
+      .attr('cursor', () => this.view == 'progress' ? 'pointer' : 'default');
   }
 
   addDataColumns() {
@@ -1786,6 +1790,15 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
 
   onPlayerViewChange() {
     this.drawChart();
+  }
+
+  onPlayerDetailChange() {
+    this.playerDetailId = null;
+  }
+
+  showPlayerDetail(event) {
+    if(this.view==View.Progress)
+      this.playerDetailId = event.path[0].attributes.playerId.value;
   }
 
   ngOnDestroy() {
