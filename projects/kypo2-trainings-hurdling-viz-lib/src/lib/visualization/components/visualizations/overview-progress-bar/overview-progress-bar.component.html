@@ -1,7 +1,7 @@
 <div class="progress-bar">
 	<div class="header">
 		<span>Time allocation</span>
-		<span class="estimated-end-time" matTooltip="Estimated end time">
+		<span *ngIf="this.getLongestEstimate()" class="estimated-end-time" matTooltip="Estimated end time">
 			{{estimatedEndTime | date: "HH:mm"}}
 		</span>
 	</div>

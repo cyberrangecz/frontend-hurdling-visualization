@@ -24,7 +24,7 @@ export class SortingService {
     this.levels = levels;
 
     let order: Order, sortedGamedataset: GenericObject[];
-
+    
     order = sortReverse ? Order.desc : Order.asc;
 
     switch (sortType) {
@@ -36,6 +36,9 @@ export class SortingService {
         break;
       case 'level':
         sortedGamedataset = this.sortByLevelTime(gamedataset, sortLevel, order);
+        break;
+      case 'active-level':
+        sortedGamedataset = this.sortByActiveLevelTime(gamedataset, sortLevel, order);
         break;
       case 'hints':
         sortedGamedataset = this.sortByNumericProperty('hints', gamedataset, order);
@@ -113,6 +116,59 @@ export class SortingService {
           else return this.d3.ascending(timeA, timeB);
         }.bind(this)
       );
+    }
+
+    return notYetInLevel.concat(currentlyInLevel.concat(finishedLevel));
+  }
+
+  sortByActiveLevelTime(
+    gamedataset: GenericObject[],
+    level: number,
+    order: Order
+  ): GenericObject[] {
+    let finishedLevel,
+      currentlyInLevel,
+      notYetInLevel: GenericObject[] = [];
+    if (typeof gamedataset !== 'undefined') {
+      finishedLevel = gamedataset
+        .slice(0)
+        .filter(team => typeof team['level' + level] !== 'undefined');
+
+      currentlyInLevel = gamedataset
+        .slice(0)
+        .filter(
+          team =>
+            typeof team['level' + level] === 'undefined' &&
+            team['currentState'] === 'level' + level
+        );
+
+      notYetInLevel = gamedataset
+        .slice(0)
+        .filter(
+          team =>
+            typeof team['level' + level] === 'undefined' &&
+            team['currentState'] !== 'level' + level
+        );
+
+        currentlyInLevel.sort((a,b) => {
+          a.totalTime;
+
+          let suma = 0;
+          
+          this.levels.forEach((level) => {
+            const levelTime = a['level'+(level.order+1)];
+              suma += levelTime ? levelTime : 0;
+          })
+
+          let sumb = 0;
+
+          this.levels.forEach((level) => {
+            const levelTime = b['level'+(level.order+1)];
+              sumb += levelTime ? levelTime : 0;
+          })
+
+          return  order == Order.asc ? (b.totalTime - sumb) - (a.totalTime - suma) : (a.totalTime - suma) - (b.totalTime - sumb);
+        });
     }
 
     return notYetInLevel.concat(currentlyInLevel.concat(finishedLevel));

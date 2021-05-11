@@ -95,7 +95,7 @@
 
 .ctf-progress-hover .game-layer .faded,
 .ctf-game-progress .game-layer rect {
-    opacity: 0.5 !important;
+    opacity: 0.5;
 }
 
 .visualization-container.final .game-layer .faded.data-hover {
@@ -114,6 +114,7 @@
 .ctf-progress .game-layer .preserved {
     opacity: 1 !important;
 }
+
 
 /* axes */
 .ctf-progress-wrapper .axis .tick text {
@@ -400,4 +401,16 @@
 
 .empty-data {
     text-align: center;
+}
+
+.legend-container {
+    margin: 0 1%;
+}
+
+.fade {
+    opacity: 0.2 !important;
+}
+
+.hidden {
+	opacity: 0 !important;
 }

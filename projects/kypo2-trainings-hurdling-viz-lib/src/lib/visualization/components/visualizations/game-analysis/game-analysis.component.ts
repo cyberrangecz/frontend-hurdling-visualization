@@ -21,11 +21,10 @@ import { DisplayView } from '../../../models/view';
 import { GameAnalysisEventService } from '../../../models/game-analysis-event-service';
 import { ConfigService } from '../../../config/config.service';
 import { interval, Observable, Subscription } from 'rxjs';
-import { PlayerSelectionService } from '../../../services/player-selection.service';
 import { User } from '@sentinel/auth';
 import { VisualizationData } from '../../../models/visualization-data';
 import { VisualizationsDataService } from '../../../services/visualizations-data.service';
-import { map } from 'rxjs/operators';
+import { map, max } from 'rxjs/operators';
 import { Level } from '../../../models/level';
 import { LevelTypeEnum } from '../../../enums/level-type.enum';
 import { PlanDataEntry } from '../../../models/plan-data-entry';
@@ -35,6 +34,7 @@ import { HintTakenEvent } from '../../../models/hint-taken-event';
 import { Player } from '../../../models/player';
 import { WrongFlagEvent } from '../../../models/wrong-flag-event';
 import { TrainingRunEndedEvent } from '../../../models/training-run-ended-event';
+import { Order } from '../../../models/order.enum';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -93,7 +93,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   private currentTime;
   private filterSubscription: Subscription;
   private highlightSubscription: Subscription;
-  private activeParticipants: User[];
+  private levelSorted:  Level;
 
 
   // zooming
@@ -115,8 +115,9 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   private plandata: PlanData;
 
   public time = 0;
+  public startTime = 0;
   public participants;
-  public filterStatus: string = '';
+  public filterStatus = '';
   public sortType = 'name';
   public sortReverse = false;
   public sortLevel = 0;
@@ -138,7 +139,6 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     private filteringService: FilteringService,
     private configService: ConfigService,
     private appConfig: AppConfig,
-    private playerSelectionService: PlayerSelectionService,
   ) {
     this.d3 = d3Service.getD3();
   }
@@ -148,8 +148,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     this.setData();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   checkIfActive(player: Player): boolean {
     return this.visualizationData.playerProgress.find(playerProgress => playerProgress.userRefId == player.userRefId) ? true : false;
@@ -158,11 +157,11 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   ngAfterViewInit(): void  {
     this.setData()
     this.setFilterStatus();
-    this.subscribeHighlightPlayer();
+    this.initializeZoom();
   }
 
   setData(){
-    this.visualizationData.startTime = this.getFirstEventTimestamp();
+    this.startTime = this.getFirstEventTimestamp();
     this.time = this.getTime();
     this.currentTime=this.time;
     this.levels=this.visualizationData.levels;
@@ -172,7 +171,6 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     this.plandataset=this.getUpdatedPlandataset(this.gamedataset);
     this.participants = this.visualizationData.players;
     this.drawChart();
-    this.initializeZoom();
   }
 
   getTime(): number {
@@ -185,10 +183,10 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       .length == this.visualizationData.playerProgress.length;
 
     if(allFinished) {
-      return this.getLatestEventTimestamp() - this.visualizationData.startTime;
+      return this.getLatestEventTimestamp() - this.startTime;
     }
     else {
-      return this.visualizationData.currentTime - this.visualizationData.startTime;
+      return this.visualizationData.currentTime - this.startTime;
     }
   } 
 
@@ -228,7 +226,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       gameDataEntry.events=this.getEventsForPlayer(playerProgress.userRefId);
       gameDataEntry.totalTime=this.getTotalTime(playerProgress.userRefId)
       gameDataEntry.currentState=this.getStateForPlayer(playerProgress.userRefId);
-      gameDataEntry['start']=(this.getFirstLevelTimestamp(playerProgress.userRefId)-this.visualizationData.startTime);
+      gameDataEntry['start']=(this.getFirstLevelTimestamp(playerProgress.userRefId)-this.startTime);
       playerProgress.levels.forEach((level, index=1) => {
         if (level.state == 'FINISHED') {
           gameDataEntry['level'+(index+1)]=(level.endTime - level.startTime);
@@ -254,13 +252,13 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   }
 
   getStateForPlayer(playerId: number): string {
-    const levelsFinishedCount = this.getPlayerLevels(playerId).filter(playerLevel => playerLevel.state == "FINISHED").length;
-    return levelsFinishedCount == this.levels.length ? "FINISHED" : 'level'+(levelsFinishedCount+1);
+    const levelsFinishedCount = this.getPlayerLevels(playerId).filter(playerLevel => playerLevel.state == 'FINISHED').length;
+    return levelsFinishedCount == this.levels.length ? 'FINISHED' : 'level'+(levelsFinishedCount+1);
   }
 
   getTotalTime(playerId: number): number {
-    const playerStartTime = (this.getFirstLevelTimestamp(playerId)-this.visualizationData.startTime);
-    if(this.getStateForPlayer(playerId) == "FINISHED") {
+    const playerStartTime = (this.getFirstLevelTimestamp(playerId)-this.startTime);
+    if(this.getStateForPlayer(playerId) == 'FINISHED') {
       const playerLevels = this.getPlayerLevels(playerId);
       return playerLevels[playerLevels.length-1].events.slice(-1)[0].gameTime - playerStartTime + this.gamedataset.find(player => player.playerId == playerId)?.start;
     }
@@ -289,6 +287,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       .map(event => {
         event.levelNumber = this.getLevelNumber(event.levelId),
         event.playerName = this.getPlayerData(playerId).name
+        event.playerId = playerId;
         return event
       })
   }
@@ -370,7 +369,6 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       sortedPlandataset = sortedPlandataset.filter(dataRow =>
         this.filteredPlayers.find(player => player.name === dataRow.playerName) !== undefined);
     }
-
     return { gameDataset: sortedGamedataset, planDataset: sortedPlandataset };
   }
 
@@ -381,6 +379,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     gamedataset.forEach((d: GameDataEntry) => {
       const planDataEntry = new PlanDataEntry();
       planDataEntry.playerName = d.playerName;
+      planDataEntry.playerId = d.playerId;
       planDataEntry['start'] = 0;
       this.levels.forEach((level,index) => {
         const timePlan: number = this.levelsTimePlan[index];
@@ -472,7 +471,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     // create svg
     // calculate the height first, width can change when the scrollbar is added
     this.wrapperWidth = Math.max(
-      document.getElementById(element).getBoundingClientRect().width, // original (standalone) size
+      document.getElementById(element)?.getBoundingClientRect().width, // original (standalone) size
       window.innerWidth - (window.innerWidth) * 0.37
     ); // get width in the dashboard as a 75% piece of a halfpage
     const maxHeight: number = Math.min(
@@ -631,7 +630,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
 
   createPlanSegments(planLayers) {
     // draw segment (row in column) for each team
-    let displayedParticipants = this.filteredPlayers  ? this.filteredPlayers.length : this.participants.length;
+    const displayedParticipants = this.filteredPlayers  ? this.filteredPlayers.length : this.participants.length;
     
     let index = -1;
     this.planSegments = planLayers
@@ -888,7 +887,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
             .style('opacity', () =>
               this.sortLevel !== 0 &&
                 (typeof data['level' + this.sortLevel] === 'undefined' &&
-                  currentState !== 'level' + this.sortLevel) ? 0.3 : 1
+                  currentState !== 'level' + this.sortLevel) ? 0.3 : 0.5
             );
         }
 
@@ -1478,7 +1477,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     const teamDataLayer: any = this.addOneColumn('team', );
     const compareDataLayer: any = this.addOneColumn('compare', );
 
-    if (this.selectedPlayerView === 'avatar') {
+   if (this.selectedPlayerView === 'avatar') {
       this.addPlayerAvatar(teamDataLayer, this.gamedata);
     } else {
       this.addPlayerName(teamDataLayer, this.gamedata);
@@ -1555,6 +1554,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     pan = Math.max(-(this.width - this.wrapperWidth), pan);
     pan = Math.min(0, pan);
     this.gameChart.style('transform', 'translate(' + pan + 'px, 0)');
+    this.d3.selectAll('#ctf-progress-time').style('transform','translate('+(pan)+'px ,0px)')
   }
 
   onResize() {
@@ -1570,7 +1570,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
         scale = newZoomValue / this.zoomValue,
         dx =
           (-$event.left + this.panValue) * scale + $event.left - this.panValue;
-
+      
       this.zoomValue = newZoomValue;
       this.drawChart();
 
@@ -1579,7 +1579,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
       setTimeout(() => {
         this.outerWrapper.classed('ctf-progress-zoom', false);
       }, 150);
-
+      
       this.pan(dx);
       this.updatePanValue();
     }
@@ -1617,6 +1617,14 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     this.updatePanValue();
   }
 
+  setSort(level: Level) {
+    this.sortType = 'active-level';
+    this.sortReverse = level.id === this.levelSorted?.id ? !this.sortReverse : false;
+    this.sortLevel = level.order+1;
+    this.levelSorted = level;
+    this.drawChart();
+  }
+
   onFilterValueChange(): void {
     this.setFilterStatus();
     this.drawChart();
@@ -1648,6 +1656,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
         .substring(transform.indexOf('translate(') + 10, transform.indexOf(')'))
         .split(','),
       xStr: string = translate[0];
+
     let x: number = parseInt(xStr.substr(0, xStr.length - 2));
     if (!x) x = 0;
     this.panValue = x;
@@ -1704,51 +1713,68 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
     }
   }
 
-  private subscribeHighlightPlayer() {
-    this.highlightSubscription = this.playerSelectionService.getHighlightedPlayer().subscribe(player => {
-      if (player !== null) {
-        this.participants.forEach(item => {
-          if (item.id === player.id) {
-            this.highlightGivenPlayer(item.name);
-          } else {
-            this.unhighlightGivenPlayer(item.name);
-          }
-        });
-      } else {
-        this.participants.forEach(item => {
-          this.unhighlightGivenPlayer(item.name);
-        });
-      }
-    });
-  }
-
-
-
- 
-  /* for analysis manipulation */
-
-  highlightGivenPlayer(playerId: string): void {
-    this.outerWrapper.classed('ctf-progress-hover', true);
+  
+  highlightGivenPlayer(playerId: number): void {
+    this.outerWrapper?.classed('ctf-progress-hover', true);
+    // remove fade class from text
     this.d3
         .selectAll('.data text')
-        .filter((data: any) => data.id.toString() === playerId)
-        .classed('data-hover', true);
+        .filter((data: any) => {return data.playerId === playerId})
+        .classed('fade', false);
+    
+    // remove fade class from game segments
     this.d3
       .selectAll('.game .game-layer rect')
-      .filter((data: any) => data.data.id.toString() === playerId)
-      .classed('data-hover', true);
+      .filter((data: any) => {return data.data.playerId === playerId})
+      .classed('fade', false);
+
+    // remove fade class from plan segments
+    this.d3
+      .selectAll('.plan .plan-layer rect')
+      .filter((data: any) => {return data.data.playerId === playerId})
+      .classed('fade', false)
+      .classed('hidden', false);
+
+    // remove fade class from events  
+    this.d3
+      .selectAll('.events .events-row path')
+      .filter((data: any) => {return data.events[0].playerId === playerId})
+      .classed('fade', false);
   }
 
-  unhighlightGivenPlayer(playerId: string): void {
-    this.outerWrapper.classed('ctf-progress-hover', false);
+  unhighlightGivenPlayer(playerId: number): void {
+    this.outerWrapper?.classed('ctf-progress-hover', false);
+    // add fade class to text  
     this.d3
         .selectAll('.data text')
-        .filter((data: any) => data.id.toString() === playerId)
-        .classed('data-hover', false);
+        .filter((data: any) => data.playerId === playerId)
+        .classed('fade', true);
+
+    // add fade class to game segments  
     this.d3
       .selectAll('.game .game-layer rect')
-      .filter((data: any) => data.data.id.toString() === playerId)
-      .classed('data-hover', false);
+      .filter((data: any) => data.data.playerId === playerId)
+      .classed('fade', true);
+
+    // add fade class to plan segments  
+    this.d3
+      .selectAll('.plan .plan-layer rect')
+      .filter((data: any) => {return data.data.playerId === playerId})
+      .classed('fade', true);
+
+      const totalTime = this.gamedataset.find(player => player.playerId == playerId).totalTime;
+
+    // add hidden class to plan segments for already passed levels
+    this.d3
+      .selectAll('.plan .plan-layer rect')
+      .filter((data: any) => {return data.data.playerId === playerId && data[1] < totalTime})
+      .classed('hidden', true);
+
+    // add fade class to events  
+    this.d3
+      .selectAll('.events .events-row path')
+      .filter((data: any) => {return data.events[0].playerId === playerId})
+      .classed('fade', true);
   }
 
   /**
@@ -1794,6 +1820,30 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
 
   onPlayerDetailChange() {
     this.playerDetailId = null;
+    this.drawChart();
+  }
+
+  onZoomReset() {
+    this.zoomValue = 1;
+    this.drawChart();
+  }
+
+  setHighlightedPlayer(player: Player) {
+    if(player) {
+      this.visualizationData.playerProgress.forEach(p => {
+        if (p.userRefId == player.userRefId) {
+          this.highlightGivenPlayer(p.userRefId);
+        }
+        else {
+          this.unhighlightGivenPlayer(p.userRefId);
+        }
+      })
+    }
+    else {
+      this.visualizationData.playerProgress.forEach(p => {
+          this.highlightGivenPlayer(p.userRefId);
+      })
+    }
   }
 
   showPlayerDetail(event) {

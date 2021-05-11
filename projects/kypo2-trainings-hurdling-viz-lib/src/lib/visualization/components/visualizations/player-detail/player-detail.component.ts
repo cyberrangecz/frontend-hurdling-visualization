@@ -68,7 +68,23 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   }
 
   getLevelColor(levelId: number): string {
-    return this.getCurrentPlayerLevel().id == levelId ? 'green' : 'lightgray';
+    const currentLevel = this. getCurrentLevel();
+    if(currentLevel.id != levelId) {
+      return 'lightgray';
+    }
+    const minutesInLevel = (this.visualizationData.currentTime- this.getCurrentPlayerLevel().startTime)/60;
+    if(minutesInLevel<currentLevel.estimatedDuration ) {
+      return 'green';
+    }
+
+    if(minutesInLevel>currentLevel.estimatedDuration && minutesInLevel < currentLevel.estimatedDuration*1.5) {
+      return 'orange';
+    }
+
+    if(minutesInLevel>currentLevel.estimatedDuration ) {
+      return 'red';
+    }
+    return 'lightgray';
   }
 
   getWrongFlags(): WrongFlagData[] {
@@ -115,10 +131,9 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     if(currentLevel.id == levelId) {
       let res = this.timeDifference(this.visualizationData.currentTime, this.getCurrentPlayerLevel().startTime);
       const minutesInLevel = (this.visualizationData.currentTime- this.getCurrentPlayerLevel().startTime)/60;
-      if(minutesInLevel > currentLevel.estimatedDuration && currentLevel.estimatedDuration != 0) {
+      if(Math.floor(minutesInLevel) > currentLevel.estimatedDuration && currentLevel.estimatedDuration != 0) {
         res += ` (~ ${Math.floor(minutesInLevel - currentLevel.estimatedDuration)} minutes behind)`
       }
-      
       return res;
     }
     return '';

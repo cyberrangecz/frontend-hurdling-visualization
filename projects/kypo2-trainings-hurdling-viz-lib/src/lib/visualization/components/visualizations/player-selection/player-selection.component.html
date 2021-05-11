@@ -2,76 +2,53 @@
 	<div class="kypo2-viz-hurdling-player-tooltip"></div>
 	<div class="displayed-indicator">
 		{{ getDisplayedPlayers().length }} of
-		<span matTooltip="Click to show all active" (click)="showAllPlayers()" class="trainee-selector">{{ visualizationData.players.length }} trainees</span>
+		<span>{{ visualizationData.players.length }} trainees</span>
 		displayed
+
+			<span>
+				<button class="trainee-selector" mat-button (click)="showAllPlayers()">Show all</button>
+			</span>
+			<span>
+				<button class="trainee-selector" mat-button (click)="hideAllPlayers()">Hide all</button>
+			</span>
+
 	</div>
-	<mat-grid-list cols="{{ numberOfColumns }}" rowHeight="1:1" gutterSize="2%">
+	<mat-grid-list cols="{{ numberOfColumns }}" rowHeight="1:1.4" gutterSize="2%" (mouseout)="hideTooltip()">
 		<mat-grid-tile class="participant-tile" *ngFor="let player of visualizationData.players">
-			<ng-container
-				*ngIf="selectedPlayerView == 'avatar'; then avatar; else name">
-			</ng-container>
-			<ng-template #avatar>
-				<div
-					(click)="checkIfActive(player) ? togglePlayer(player) : false"
-					[ngClass]="{
-					unselected: !checkIfSelected(player),
-					selected: checkIfSelected(player),
-					pointer: checkIfActive(player)
-					}"
-					class="player-container"
-					(mouseover)="over(player)"
-					(mouseout)="out()">
-					<div (mousemove)="showTooltip(player.name, $event)"
-						 (mouseleave)="hideTooltip()"
-						class="overlap"
-						[ngClass]="{ 'not-active': !checkIfActive(player) }">
-						<svg>
-							<image
-								width="80%"
-								height="80%"
-								class="participant-avatar"
-								[attr.xlink:href]="'data:image/png;base64,' + player.picture"></image>
-						</svg>
-					</div>
-					<div (mousemove)="showTooltip(player.name, $event)"
-						 (mouseleave)="hideTooltip()"
-						 *ngIf="!checkIfActive(player)"
-						 class="overlap not-active-text">
-						N/A
-					</div>
-					<div *ngIf="checkIfActive(player) && (checkLatePlayer(player) || checkWrongFlags(player) || checkOutOfHints(player))" class="overlap warning"
-						 (mousemove)="buildAndShowTooltip(player, $event)"
-						 (mouseleave)="hideTooltip()">
-						!
-					</div>
-				</div>
-			</ng-template>
-			<ng-template #name>
-				<div
-					(click)="checkIfActive(player) ? togglePlayer(player) : false"
-					[ngClass]="{
-					unselected: !checkIfSelected(player),
-					selected: checkIfSelected(player),
-					pointer: checkIfActive(player)
-					}"
-					class="player-container"
-					(mouseover)="over(player)"
-					(mouseout)="out()">
+			<ng-container>
+				<div class="participant-tile-container" (mouseover)="over(player)"
+				(mouseout)="out()">
 					<div
-						class="overlap"
-						[ngClass]="{ 'not-active': !checkIfActive(player) }">
-						<div class="participant-name">{{ player.name }}</div>
+					(click)="checkIfActive(player) ? togglePlayer(player) : false"
+					[ngClass]="{
+					unselected: !checkIfSelected(player),
+					selected: checkIfSelected(player),
+					pointer: checkIfActive(player)
+					}"
+					class="player-container">
+						<div class="player-avatar-container" 
+							(mousemove)="buildAndShowPlayerTooltip(player, $event)"
+							(mouseout)="hideTooltip()"
+							[ngClass]="{ 'not-active': !checkIfActive(player) }">
+							<img class="participant-avatar" src="{{'data:image/jpg;base64,' + player.picture}}">
+						</div>
+						<div (mousemove)="showTooltip(player.name, $event)"
+							(mouseout)="hideTooltip()"
+							*ngIf="!checkIfActive(player)"
+							class="not-active-text overlap">
+							N/A
+						</div>
 					</div>
-					<div *ngIf="!checkIfActive(player)" class="overlap not-active-text">
-						N/A
-					</div>
-					<div *ngIf="checkIfActive(player) && (checkLatePlayer(player) || checkWrongFlags(player) || checkOutOfHints(player))" class="overlap warning"
-						 (mousemove)="buildAndShowTooltip(player, $event)"
-						 (mouseleave)="hideTooltip()">
+					<div (click)="checkIfActive(player) ? togglePlayer(player) : false" class="participant-name" [ngClass]="{ 'not-active': !checkIfActive(player), pointer: checkIfActive(player), 'unselected-name': !checkIfSelected(player)}">{{player.name}}</div>
+					<div (click)="fadeCurrentWarnings(player)" *ngIf="checkIfActive(player) && hasWarnings(player)" class="warning"
+						[ngClass]="{'faded': allCurrentWarningsFaded(player) }"
+						(mouseover)="buildAndShowWarningTooltip(player, $event)"
+						(mouseout)="hideTooltip()">
 						!
 					</div>
 				</div>
-			</ng-template>
+			</ng-container>
 		</mat-grid-tile>
+		
 	</mat-grid-list>
 </div>

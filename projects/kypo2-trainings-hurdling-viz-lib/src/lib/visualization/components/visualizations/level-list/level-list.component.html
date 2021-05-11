@@ -13,7 +13,7 @@
 				{{ visualizationData.playerProgress.length }} / {{ visualizationData.playerProgress.length }}
 			</div>
 			<div *ngIf="!isFinished(level.id)"
-				(click)="getPlayersForLevel(level.id).length != 0 ? filterPlayers(getPlayersForLevel(level.id)) : ''"
+				(click)="getPlayersForLevel(level.id).length != 0 ? filterPlayers(getPlayersForLevel(level.id), level) : ''"
 				 [ngClass]="{
 				 	clickable: getPlayersForLevel(level.id).length != 0,
 				  	faded: getPlayersForLevel(level.id).length === 0
@@ -24,7 +24,7 @@
 
 		<div class="level" matTooltip="Game finished">
 			<div>Game finished</div>
-			<div (click)="getFinishedPlayers().length != 0 ? filterPlayers(getFinishedPlayers()) : ''"
+			<div (click)="getFinishedPlayers().length != 0 ? filterPlayers(getFinishedPlayers(), null) : ''"
 				[ngClass]="{
 					clickable: getFinishedPlayers().length != 0,
 					faded: getFinishedPlayers().length === 0
