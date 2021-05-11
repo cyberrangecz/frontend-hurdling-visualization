@@ -1,6 +1,8 @@
 import { ProgressData } from '../../../models/progress-data';
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { VisualizationData } from '../../../models/visualization-data';
+import { PlayerProgress } from '../../../models/player-progress';
+import { TrainingRunStartedEvent } from '../../../models/training-run-started-event';
 
 @Component({
   selector: 'kypo2-viz-hurdling-overview-progress-bar',
@@ -16,15 +18,13 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
   estimatedEndTime: Date;
   scheduledEndTime: Date;
 
-  constructor() { }
-
-  ngOnInit() {
-    this.setStartTime();
+  ngOnInit(): void  {
     this.setScheduledEndTime();
     this.updateEstimatedEndTime();
   }
 
-  ngOnChanges() {
+  ngOnChanges(): void  {
+    this.setStartTime();
     this.updateCurrentTime();
     this.updateEstimatedEndTime();
   }
@@ -41,20 +41,23 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
     return Math.round((q / d) * 100);
   }
 
-  updateEstimatedEndTime() {
-    this.estimatedEndTime = new Date(this.visualizationData.estimatedEndTime*1000);
+  updateEstimatedEndTime(): void {
+    this.estimatedEndTime = new Date(this.visualizationData.startTime*1000);
+    this.estimatedEndTime.setSeconds(this.estimatedEndTime.getSeconds() + this.getLongestEstimate());
+    if (this.estimatedEndTime < this.scheduledEndTime) {
+      this.estimatedEndTime = this.scheduledEndTime;
+    }
   }
 
-  setScheduledEndTime() {
-    this.scheduledEndTime = new Date(this.visualizationData.startTime*1000);
-    this.scheduledEndTime.setMinutes(this.scheduledEndTime.getMinutes() + this.getEstimatedTimeForLevels());
+  setScheduledEndTime():void {
+    this.scheduledEndTime = new Date(this.visualizationData.estimatedEndTime*1000);
   }
 
-  getEstimatedTimeForLevels() {
+  getEstimatedTimeForLevels(): number  {
     return this.visualizationData.levels.map(level => level.estimatedDuration).reduce((a, b) => a + b, 0);
   }
 
-  setStartTime() {
+  setStartTime(): void  {
     this.startTime = new Date(this.visualizationData.startTime*1000);
   }
 
@@ -67,17 +70,36 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
     const diffHrs = Math.floor((diff % 86400000) / 3600000);
     const diffMins = Math.round(((diff % 86400000) % 3600000) / 60000);
     let res = '';
-    if(diffMins < 0)
-      return 'Finished';
     if (diffHrs > 0)
       res = diffHrs === 1 ? diffHrs + ' hour ' : diffHrs + ' hours ';
     res = res.concat(diffMins === 1 ? diffMins + ' minute left' : diffMins + ' minutes left');
     return res;
   }
 
-  updateCurrentTime() {
+  updateCurrentTime(): void  {
     this.currentTime = new Date(this.visualizationData.currentTime*1000);
   }
 
+  getLongestEstimate(): number {
+    return this.visualizationData.playerProgress.map(team => this.getEstimateForTeam(team)).sort().reverse()[0];
+  }
 
+  getEstimateForTeam(playerProgressData: PlayerProgress): number  {
+    let estimatedTimeToFinish = 0;
+    this.visualizationData.levels.forEach(level => {
+      if(!playerProgressData.levels.find(playerLevel => playerLevel.id === level.id)) {
+        estimatedTimeToFinish += level.estimatedDuration;
+      }
+    })
+    return  this.visualizationData.currentTime - this.visualizationData.startTime + estimatedTimeToFinish*60;
+  }
+
+  getStartEventTimestamp(team: PlayerProgress): number {
+    return team.levels
+      .reduce((accumulator, value) => accumulator.concat(value), [])
+      .map(levels => levels.events)
+      .reduce((accumulator, value) => accumulator.concat(value), [])
+      .find(event => event instanceof TrainingRunStartedEvent)
+      .timestamp
+  }
 }

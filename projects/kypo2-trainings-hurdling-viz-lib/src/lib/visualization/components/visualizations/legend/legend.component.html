@@ -59,5 +59,8 @@
             <svg class="ctf-progress-legend-icon" width="20" height="20" viewBox="0 0 24 24"><path [attr.d]="pathConfig.zoom"/></svg>
             Ctrl + Scroll
         </span>
+        <span>
+            <button class="zoom-reset-button" mat-button (click)="zoomResetChange.emit('')">Reset zoom</button>
+        </span>
     </div>
 </div>

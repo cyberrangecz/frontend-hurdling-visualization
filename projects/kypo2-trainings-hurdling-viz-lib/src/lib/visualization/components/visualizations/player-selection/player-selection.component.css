@@ -16,8 +16,9 @@
 }
 
 .participant-avatar {
-	height: 80%;
-	width: 80%;
+	height: 50%;
+	width: 50%;
+	margin: 25%
 }
 
 .pointer {
@@ -39,12 +40,7 @@
 }
 
 .participant-name {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
-	font-size: 14px;
+	font-size: 0.8vw;
 }
 
 .displayed-indicator {
@@ -53,15 +49,16 @@
 
 .player-container {
 	width: 75%;
-	height: 75%;
+	height: 0px;
+	margin: 12.5%;
+	padding-top: 75%;
 }
 
-.overlap {
+.player-avatar-container {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	margin: 12.5%;
 }
 
 .not-active-text {
@@ -73,16 +70,27 @@
 }
 
 .warning {
-	padding-top: 0px;
-	padding-left: 0px;
+	position: absolute;
+	top: 0;
+	left: 0;
 	display: flex;
-	font-size: xx-large;
+	font-size: 1.5vw;
 	color: red;
+	cursor: pointer;
+}
+
+.overlap {
+	position: absolute;
+	top: 20%;
+	left: 0;
+	width: 100%;
+	height: 25%;
+	font-size: 1vw;
 }
 
 .kypo2-viz-hurdling-player-tooltip {
 	visibility: hidden;
-	transition: visibility 0s, opacity 0.5s linear;
+	transition: visibility 0s, opacity 0.1s linear;
 	position: absolute;
 	font-family: Roboto, Arial, sans-serif;
 	font-weight: 400;
@@ -99,6 +107,23 @@
 }
 
 .trainee-selector {
-	cursor: pointer;
+	padding: 0;
 	color: rgb(48, 61, 136);
 }
+
+.participant-tile-container {
+	width: 100%;
+	height: 100%;
+}
+
+.unselected-name, .faded{
+	opacity: 30%;
+}
+
+
+@media screen and (min-width: 1780px) {
+	.participant-name {
+		font-size: inherit;
+	}
+  }
+  

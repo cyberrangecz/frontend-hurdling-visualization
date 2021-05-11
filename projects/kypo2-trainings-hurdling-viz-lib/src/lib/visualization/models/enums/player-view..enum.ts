@@ -1,4 +1,5 @@
 export enum PlayerView {
     Name = 'name',
-    Avatar = 'avatar'
+    Avatar = 'avatar',
+    Both = 'both'
 }

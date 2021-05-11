@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AppConfig} from '../../../../app.config';
 import { View } from '../../../models/view.enum';
 
@@ -10,6 +10,8 @@ import { View } from '../../../models/view.enum';
 export class LegendComponent implements OnInit {
 
   @Input() selectedViewValue = View.Progress;
+
+  @Output() zoomResetChange = new EventEmitter();
 
   public pathConfig;
 

@@ -9,7 +9,7 @@ export class PlayerMapper {
 
     static fromDTO(dto: PlayerDTO): Player {
         const result = new Player;
-        result.name = dto.given_name + dto.family_name;
+        result.name = dto.given_name + ' ' + dto.family_name;
         result.picture = dto.picture;
         result.userRefId = dto.user_ref_id;
         return result;

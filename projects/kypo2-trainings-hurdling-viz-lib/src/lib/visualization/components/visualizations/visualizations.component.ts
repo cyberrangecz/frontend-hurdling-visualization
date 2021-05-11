@@ -75,26 +75,27 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
     .subscribe(() => {
       let tmp = JSON.parse(JSON.stringify(this.JSONData)) as VisualizationDataDTO;
       tmp.player_progress
-      .forEach(playerProgress => playerProgress.levels.forEach(level => level.events = level.events.filter(event => event.timestamp < time)))
-      tmp.player_progress = tmp.player_progress.filter(playerProgress => playerProgress.levels[0].start_time < time)
+      .forEach(playerProgress => playerProgress.levels.forEach(level => level.events = level.events.filter(event => event.timestamp/1000 < time)))
+      tmp.player_progress = tmp.player_progress.filter(playerProgress => playerProgress.levels[0].start_time/1000 < time)
+
       tmp.player_progress
       .forEach(playerProgress => playerProgress.levels.forEach(level => {
         const isCompleted = level.events.findIndex(event => event.type == EventType.levelCompleted) != -1;
-        if(!isCompleted) {
-          level.state = null;
-          level.end_time = null;
-        }
         const hasStarted = level.events.findIndex(event => event.type == EventType.levelStarted) != -1;
         if(!hasStarted) {
           level.start_time = null;
           level.state = null;
           level.end_time = null;
         }
-        level.wrong_flags_number=level.events.filter(event => event.timestamp <= time && event.type==EventType.wrongFlag).length;
-        level.hints_taken=level.events.filter(event => event.timestamp <= time && event.type==EventType.hint).map(level=> level.hint_id);
+        if(!isCompleted) {
+          level.state = null;
+          level.end_time = null;
+        }
+        level.wrong_flags_number=level.events.filter(event => event.timestamp/1000 <= time && event.type==EventType.wrongFlag).length;
+        level.hints_taken=level.events.filter(event => event.timestamp/1000 <= time && event.type==EventType.hint).map(level=> level.hint_id);
       }))
       tmp.current_time=time;
-      time+=interval*10;
+      time+=interval/1000*10;
       this.visualizationData$ = of(VisualizationDataMapper.fromDTO(tmp))
       // stop simulation when all players are finished
       this.isAlive = !(tmp.player_progress.every(playerProgress => playerProgress.levels.every(level => level.state == 'FINISHED')) && tmp.player_progress.length != 0);

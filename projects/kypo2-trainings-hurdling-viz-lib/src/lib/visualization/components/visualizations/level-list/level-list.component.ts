@@ -1,4 +1,3 @@
-import { PlayerSelectionService } from '../../../services/player-selection.service';
 import { Component, OnInit, Input, ViewEncapsulation, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Level } from '../../../models/level';
 import { User } from '@sentinel/auth';
@@ -16,6 +15,7 @@ export class LevelListComponent  {
   @Input() visualizationData: VisualizationData;
 
   @Output() filteredPlayers = new EventEmitter<Player[]>();
+  @Output() playerSort = new EventEmitter<Level>();
   
   constructor() { }
   ngOnInit() {
@@ -59,8 +59,9 @@ export class LevelListComponent  {
     return level.title;
   }
 
-  filterPlayers(players: Player[]){
+  filterPlayers(players: Player[], level: Level): void{
     this.filteredPlayers.emit(players);
+    if(level) this.playerSort.emit(level);
   }
 
   parseLevelName(level: Level) {

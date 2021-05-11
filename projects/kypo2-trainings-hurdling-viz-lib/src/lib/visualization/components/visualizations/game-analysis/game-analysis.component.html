@@ -31,9 +31,6 @@
 								</select>
 							</div>
 						</div>
-                        <kypo2-viz-hurdling-legend
-                            [selectedViewValue]="view">/
-                        </kypo2-viz-hurdling-legend>
 					</div>
 				</div>
 			</div>
@@ -52,6 +49,7 @@
             [selectedPlayerView]="selectedPlayerView"
             [filteredPlayers]="filteredPlayers"
             (filteredPlayersChange)="setFilteredPlayers($event)"
+            (highlightPlayerChange)="setHighlightedPlayer($event)"
             >
         </kypo2-viz-hurdling-player-selection>
     </div>
@@ -59,7 +57,8 @@
     <div *ngIf="view == 'progress'" class="level-grid-container">
         <kypo2-viz-hurdling-level-list
             [visualizationData]="visualizationData"
-            (filteredPlayers)="setFilteredPlayers($event)">
+            (filteredPlayers)="setFilteredPlayers($event)"
+            (playerSort)="setSort($event)">
         </kypo2-viz-hurdling-level-list>
     </div>
 
@@ -107,7 +106,7 @@
                     <span *ngIf="time && view == 'progress'"
                           class="ctf-progress-header-column"
                           id="ctf-progress-time"
-                          [ngStyle]="{'left.px': xScale(time) - (xScale(time) < 120 ? 0 : 120), 'top.px': 1}"
+                          [ngStyle]="{'left.px': xScale(time) - (xScale(time) < 140 ? 0 : 120)}"
                           matTooltip="Elapsed time">
                         {{ getTimeString(time) }}
                     </span>
@@ -170,6 +169,12 @@
                     </div>
                 </div>
             </ng-container>
+        </div>
+        <div class="legend-container">
+            <kypo2-viz-hurdling-legend
+                [selectedViewValue]="view"
+                (zoomResetChange)="onZoomReset()">
+             </kypo2-viz-hurdling-legend>
         </div>
     </div>
 
