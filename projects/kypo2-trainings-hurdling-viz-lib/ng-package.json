@@ -2,6 +2,9 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/kypo2-trainings-hurdling-viz-lib",
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "@muni-kypo-crp/d3-service": "@muni-kypo-crp/d3-service"
+    }
   }
 }
