@@ -95,6 +95,14 @@
     display: flex;
  }
 
+ .command-timeline-container {
+    margin-top: 2%;
+}
+
+.command-timeline {
+    display: flex;
+ }
+
  .overview-button {
     cursor: pointer;
     color: #3f51b5;

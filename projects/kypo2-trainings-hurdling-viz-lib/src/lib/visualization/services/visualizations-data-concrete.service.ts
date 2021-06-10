@@ -28,8 +28,17 @@ getData(trainingInstanceId: number): Observable<VisualizationData> {
   
 }
 
-getPlayers(): Observable<Player[]> {
-  return null;
+getCommandLineData(trainingInstanceId: number, trainingRunId: number): Observable<any> {
+  return this.visualizationApi.getTrainingRunData(trainingInstanceId, trainingRunId).pipe(
+    tap(
+      (commandLineData) => {
+        this.commandLineDataSubject$.next(commandLineData);
+      },
+      (err) => {
+        console.log(err)
+      }
+    )
+  );
 }
 
 }

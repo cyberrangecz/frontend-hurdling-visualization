@@ -65,6 +65,10 @@
       <div>Detailed timeline</div>
       <div class="level-timeline" (window:resize)="onResize()"></div>
     </div>
+    <div class="command-timeline-container">
+      <div>Command timeline</div>
+      <div class="command-timeline" (window:resize)="onResize()"></div>
+    </div>
   </div>
   <div *ngIf="!getCurrentPlayerLevel()">
     Player finished

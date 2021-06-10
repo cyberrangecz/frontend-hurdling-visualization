@@ -11,6 +11,7 @@ export class PlayerProgressMapper {
     static fromDTO(dto: PlayerProgressDTO): PlayerProgress {
         const result = new PlayerProgress();
         result.userRefId = dto.user_ref_id;
+        result.trainingRunId = dto.training_run_id;
         result.levels = PlayerLevelMapper.fromDTOs(dto.levels);
         return result
     }

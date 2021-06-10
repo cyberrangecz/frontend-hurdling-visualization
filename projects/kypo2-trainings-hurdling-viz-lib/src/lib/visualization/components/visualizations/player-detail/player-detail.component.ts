@@ -1,7 +1,9 @@
-import { Component, Input, OnChanges, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, Input, OnChanges, Output, EventEmitter, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { D3, D3Service } from '@muni-kypo-crp/d3-service';
+import { take } from 'rxjs/operators';
 import { AppConfig } from '../../../../app.config';
 import { LevelTypeEnum } from '../../../enums/level-type.enum';
+import { CommandLineEntry } from '../../../models/command-line-entry';
 import { GameTimeOverviewData } from '../../../models/game-time-overview-data';
 import { Hint } from '../../../models/hint';
 import { HintTakenEvent } from '../../../models/hint-taken-event';
@@ -12,6 +14,7 @@ import { PlayerLevel } from '../../../models/player-level';
 import { VisualizationData } from '../../../models/visualization-data';
 import { WrongFlagData } from '../../../models/wrong-flag-data';
 import { WrongFlagEvent } from '../../../models/wrong-flag-event';
+import { VisualizationsDataService } from '../../../services/visualizations-data.service';
 
 @Component({
   selector: 'kypo2-player-detail',
@@ -22,24 +25,29 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
 
   @Input() player: Player;
   @Input() visualizationData: VisualizationData;
+  @Input() trainingInstanceId: number;
 
   @Output() hideDetail = new EventEmitter();
 
   private readonly d3: D3;
 
-  constructor( d3Service: D3Service, private appConfig: AppConfig,) { 
+  commandLineData;
+
+  constructor( d3Service: D3Service, private appConfig: AppConfig, private visualizationDataService: VisualizationsDataService) { 
     this.d3 = d3Service.getD3();
   }
-
   
   ngOnChanges(): void {
     this.createGameTimeOverview();
     this.createLevelTimeline();
+    this.createCommandTimeline();
+    
   }
 
   ngAfterViewInit(): void {
     this.createGameTimeOverview();
     this.createLevelTimeline();
+    this.createCommandTimeline();
   }
 
   getCurrentLevel(): Level {
@@ -308,6 +316,85 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     });
   }
 
+  createCommandTimeline(): void {
+    
+
+    if(!this.getCurrentLevel()) {
+      return;
+    }
+
+    const playerTrainingRunId = this.visualizationData.playerProgress
+        .find(player => player.userRefId == this.player.userRefId).trainingRunId;
+
+    this.visualizationDataService.getCommandLineData(this.trainingInstanceId, playerTrainingRunId)
+    .pipe(take(1))
+    .subscribe((commands: CommandLineEntry[]) => {
+
+      this.d3.select('.command-timeline').html('');
+
+      const offset = (this.visualizationData.currentTime - this.getCurrentPlayerLevel().startTime)*0.05;
+      const startTime = this.getCurrentPlayerLevel().startTime;
+      const currentTime = this.visualizationData.currentTime;
+
+      const commandsForLevel = commands.filter(command => command.timestamp >= startTime - offset );
+
+      const width = '100%';
+      const height = 100;
+
+      const el   = document.getElementsByClassName('command-timeline');
+      const rect = el[0] ? el[0].getBoundingClientRect() : {width: 0};
+      
+      let sumTime = startTime;
+      const data = [];
+      data.push({timestamp: startTime-offset, commandsUsed: 0})
+      data.push({timestamp: startTime, commandsUsed: 0})
+      const period = 30; // commands are groupped every 30 seconds
+      while(sumTime <= currentTime) {
+        const commandsUsed = commandsForLevel.filter(command => command.timestamp >= sumTime && command.timestamp <= sumTime+period).length;
+        data.push({timestamp: sumTime, commandsUsed: commandsUsed});
+        data.push({timestamp: sumTime+period, commandsUsed: commandsUsed});
+        sumTime+=period;
+      }
+    
+      // append chart to its position
+      const commandTimeline = this.d3.select('.command-timeline')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+      // Add X axis
+      const x = this.d3.scaleTime()
+      .domain([startTime-offset, currentTime+offset])
+      .range([ 0, rect.width - 1 ]);
+
+      commandTimeline.append('g')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(this.d3.axisBottom(x));
+
+      // Add Y axis
+      const y = this.d3.scaleLinear()
+      .domain([0, this.d3.max(data, function(d) { return d.commandsUsed; })])
+      .range([ height, 0 ]);
+
+      commandTimeline.append('g')
+      .call(this.d3.axisLeft(y))
+      .call(g => g.select('.domain').remove());
+
+      // Add the area to the chart
+      commandTimeline.append('path')
+      .datum(data)
+      .attr('fill', '#cce5df')
+      .attr('stroke', '#69b3a2')
+      .attr('stroke-width', 1.5)
+      .attr('d', this.d3.area()
+        .x((d:any) => { return x(d.timestamp) })
+        .y0(y(0))
+        .y1((d: any) => { return y(d.commandsUsed) }) as any
+        )
+      });
+  }
+
+
   getTimelineData(): LevelTimelineData[] {
     const data = [];
     const currentLevel = this.getCurrentLevel();
@@ -338,6 +425,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   onResize(): void {
     this.createLevelTimeline();
     this.createGameTimeOverview();
+    this.createCommandTimeline();
   }
 
   onOverviewClick(): void {

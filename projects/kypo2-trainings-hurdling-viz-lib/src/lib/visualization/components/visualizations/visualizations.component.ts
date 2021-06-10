@@ -42,7 +42,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
     
   }
 
-  ngOnInit() {
+  ngOnInit() { 
     if(this.JSONData) {
       if(this.view === View.Overview){
         this.visualizationData$ = of(VisualizationDataMapper.fromDTO(this.JSONData));

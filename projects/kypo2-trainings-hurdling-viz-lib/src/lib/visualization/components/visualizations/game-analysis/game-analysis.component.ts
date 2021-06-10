@@ -1,6 +1,5 @@
 import { PlayerView } from '../../../models/enums/player-view..enum';
-import { ProgressData } from '../../../models/progress-data';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, AfterViewInit, Output, ViewEncapsulation, OnInit, ComponentFactoryResolver} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, AfterViewInit, Output, ViewEncapsulation, OnInit} from '@angular/core';
 import { Axis, D3, D3Service, ScaleBand, ScaleLinear } from '@muni-kypo-crp/d3-service';
 import { DataEntry } from '../../../models/data-entry';
 import { GameConfig } from '../../../models/game-config';
@@ -20,11 +19,8 @@ import { PreparedData } from '../../../models/preparedData';
 import { DisplayView } from '../../../models/view';
 import { GameAnalysisEventService } from '../../../models/game-analysis-event-service';
 import { ConfigService } from '../../../config/config.service';
-import { interval, Observable, Subscription } from 'rxjs';
-import { User } from '@sentinel/auth';
+import { Subscription } from 'rxjs';
 import { VisualizationData } from '../../../models/visualization-data';
-import { VisualizationsDataService } from '../../../services/visualizations-data.service';
-import { map, max } from 'rxjs/operators';
 import { Level } from '../../../models/level';
 import { LevelTypeEnum } from '../../../enums/level-type.enum';
 import { PlanDataEntry } from '../../../models/plan-data-entry';
@@ -34,7 +30,6 @@ import { HintTakenEvent } from '../../../models/hint-taken-event';
 import { Player } from '../../../models/player';
 import { WrongFlagEvent } from '../../../models/wrong-flag-event';
 import { TrainingRunEndedEvent } from '../../../models/training-run-ended-event';
-import { Order } from '../../../models/order.enum';
 
 @Component({
   selector: 'kypo2-viz-hurdling',
@@ -56,6 +51,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
   @Input() externalFilters;
   @Input() gameColors = this.appConfig.gameColors;
   @Input() playerColorScheme: string[];
+  @Input() trainingInstanceId: number;
 
 
   @Output() outputSelectedPlayers = new EventEmitter<any[]>();
@@ -1848,7 +1844,7 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
 
   showPlayerDetail(event) {
     if(this.view==View.Progress)
-      this.playerDetailId = event.path[0].attributes.playerId.value;
+      this.playerDetailId = event.path[0].attributes.playerId?.value;
   }
 
   ngOnDestroy() {
