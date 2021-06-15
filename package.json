@@ -13,7 +13,7 @@
     "build-library": "ng build kypo2-trainings-hurdling-viz-lib --configuration production && cp ./src/styles.css ./dist/kypo2-trainings-hurdling-viz-lib",
     "create-package": "cd dist/kypo2-trainings-hurdling-viz-lib && npm pack",
     "build-and-pack": "npm install && npm run build-library && npm run create-package",
-    "ci-update-version": "cd ./projects/kypo2-trainings-hurdling-viz-lib/ && npm version $VERSION",
+    "ci-update-version": "cd ./projects/kypo2-trainings-hurdling-viz-lib/ && npm version $TAG_VERSION",
     "ci-build-and-pack": "npm ci --cache .npm --prefer-offline && npm run build-library && npm run create-package",
     "ci-publish-package": "cd dist/kypo2-trainings-hurdling-viz-lib && npm publish"
   },
