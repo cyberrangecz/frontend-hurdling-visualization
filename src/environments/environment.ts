@@ -6,7 +6,7 @@ const HOME_URL = 'https://localhost:4200'
 
 export const environment = {
   production: false,
-  trainingServiceUrl: 'https://172.19.0.22/kypo2-rest-training/api/v1/',
+  trainingServiceUrl: 'https://172.19.0.22/kypo-rest-training/api/v1/',
   elasticSearchServiceUrl: 'https://172.19.0.22/kypo-elasticsearch-service/api/v1/',
   // URL of the SPA to redirect the user after silent refresh
   silentRefreshRedirectUri: HOME_URL,
@@ -20,7 +20,7 @@ export const environment = {
       'https://172.19.0.22'
     ],
     authorizationStrategyConfig: {
-      authorizationUrl: 'https://172.19.0.22/kypo2-rest-user-and-group/api/v1/users/info'
+      authorizationUrl: 'https://172.19.0.22/kypo-rest-user-and-group/api/v1/users/info'
     },
     providers: [
       {
