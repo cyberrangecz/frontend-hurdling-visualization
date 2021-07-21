@@ -69,7 +69,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   initSimulation(interval: number = 1000):void {
     let visualizationData = this.JSONData;
     let time = visualizationData.start_time;
-
+    
     timer(0,interval)
     .pipe(takeWhile(() => this.isAlive))
     .subscribe(() => {
@@ -87,8 +87,8 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
           level.state = null;
           level.end_time = null;
         }
-        if(!isCompleted) {
-          level.state = null;
+        else if(!isCompleted) {
+          level.state = "RUNNING";
           level.end_time = null;
         }
         level.wrong_flags_number=level.events.filter(event => event.timestamp/1000 <= time && event.type==EventType.wrongFlag).length;
