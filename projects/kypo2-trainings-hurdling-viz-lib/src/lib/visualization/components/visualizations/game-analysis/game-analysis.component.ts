@@ -444,7 +444,22 @@ export class GameAnalysisComponent implements OnChanges, OnDestroy, OnInit, Afte
 
   getEstimatedTime(): number {
     const levelsTimePlanSum = this.levelsTimePlan.reduce((a, b) => a + b, 0);
-    return this.view === View.Progress ? levelsTimePlanSum * 1.25 : levelsTimePlanSum;
+    return this.view === View.Progress ? this.getLongestEstimate() : levelsTimePlanSum;
+  }
+
+  getLongestEstimate(): number {
+    let longestEstimate = 0;
+    let elapsedTime = this.visualizationData.currentTime - this.visualizationData.startTime;
+    this.visualizationData.playerProgress.forEach(playerProgress => {
+      let remainingTime = playerProgress.levels.map((playerLevel, i) => {
+        return (playerLevel.state != "FINISHED")  ? this.visualizationData.levels[i].estimatedDuration * 60 : 0;
+      }).reduce((a, b) => a + b, 0);
+      const estimate = elapsedTime + remainingTime;
+      if(longestEstimate < estimate) {
+        longestEstimate = estimate;
+      }
+    })
+    return longestEstimate;
   }
 
   drawChartBase(baseConfig: BaseConfig): void {
