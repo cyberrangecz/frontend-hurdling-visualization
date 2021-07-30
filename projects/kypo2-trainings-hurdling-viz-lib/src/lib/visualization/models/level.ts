@@ -10,7 +10,7 @@ export class Level {
     estimatedDuration: number;
     order: number;
     content: string;
-    flag: string;
+    answer: string;
     solution: string;
     solutionPenalized: boolean;
     hints: Hint[];

@@ -7,7 +7,7 @@ export class PlayerLevel {
     startTime: number;
     endTime: number;
     hintsTaken: number[];
-    wrongFlags_number: number;
+    wrongAnswers_number: number;
     events: Event[];
     score: number;
   }

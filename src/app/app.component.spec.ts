@@ -9,7 +9,7 @@ import { D3Service } from 'd3-ng2-service';
 import { LoadDataService } from './visualization/services/load-data.service';
 import { LoadCsvDataService } from './visualization/services/load-csv-data.service';
 import { PapaParseModule } from 'ngx-papaparse';
-import { GameAnalysisComponent } from './visualization/components/game-analysis/game-analysis.component';
+import { TrainingAnalysisCompoent } from './visualization/components/training-analysis/training-analysis.component';
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
 import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
@@ -19,7 +19,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        GameAnalysisComponent,
+        TrainingAnalysisCompoent,
         MouseWheelDirective,
         MouseMoveDirective,
         ColumnHeaderComponent

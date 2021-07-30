@@ -4,7 +4,7 @@ import { DisplayView } from './visualization/models/view';
 
 export class AppConfig {
 	levelsTimePlan: number[];
-	gameColors: string[];
+	trainingColors: string[];
 	playerColors: string[];
 	darkColor: string;
 	eventShapePaths: GenericObject;
@@ -18,13 +18,13 @@ export class AppConfig {
 	defaultView: View;
 	viewOptions: DisplayView[];
 	filterOptions: DisplayView[];
-	wrongFlagWarningThreshold: number;
+	wrongAnswerWarningThreshold: number;
 	assetsRoot: string;
 }
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
 	levelsTimePlan: [],
-	gameColors: ['#ebebeb', '#dadada', '#c0c0c0', '#aeaeae', '#9b9b9b', '#646464', '#3e3e3c'],
+	trainingColors: ['#ebebeb', '#dadada', '#c0c0c0', '#aeaeae', '#9b9b9b', '#646464', '#3e3e3c'],
 	playerColors: ['#D8008C', '#92D88C', '#372A9F', '#9035A6', '#D88C8C', '#7A9EBD', '#D8D88C', '#ADAAE1', '#8CD8C7'],
 	// playerColors: ['#D88C8C', '#7A9EBD', '#D8D88C', '#92D88C', '#ADAAE1', '#D8008C', '#8CD8C7'],
 	darkColor: '#2f2f2f',
@@ -75,14 +75,14 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 		},
 		{
 			id: 2,
-			name: 'Game finished'
+			name: 'Training finished'
 		},
 		{
 			id: 3,
-			name: 'Game not finished'
+			name: 'Training not finished'
 		}
 	],
-	wrongFlagWarningThreshold: 5,
+	wrongAnswerWarningThreshold: 5,
 	assetsRoot: '/portlet_ctf_progress-0.1/',
 };
 

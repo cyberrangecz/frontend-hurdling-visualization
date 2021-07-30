@@ -48,8 +48,8 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
         res.player = player;
         res.isActive = false;
         res.isSelected = null;
-        res.warnings = {wrongFlagWarning: false, hintWarning: false, tooLongWarning: false};
-        res.fadedWarnings = {wrongFlagWarning: false, hintWarning: false, tooLongWarning: false};
+        res.warnings = {wrongAnswerWarning: false, hintWarning: false, tooLongWarning: false};
+        res.fadedWarnings = {wrongAnswerWarning: false, hintWarning: false, tooLongWarning: false};
         this.playerSelectData.push(res)
         this.filteredPlayers.push(player);
       }
@@ -65,13 +65,13 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
       else
         {player.isSelected = this.filteredPlayers.find(p => p.userRefId === player.player.userRefId) ? true : false;}
       player.warnings = {
-          wrongFlagWarning: this.checkWrongFlags(player.player), 
+          wrongAnswerWarning: this.checkWrongAnswers(player.player),
           hintWarning: this.checkOutOfHints(player.player), 
           tooLongWarning: this.checkLatePlayer(player.player)};
 
-      if(!player.warnings.hintWarning && !player.warnings.wrongFlagWarning && !player.warnings.tooLongWarning ) {
+      if(!player.warnings.hintWarning && !player.warnings.wrongAnswerWarning && !player.warnings.tooLongWarning ) {
         player.fadedWarnings = {
-          wrongFlagWarning: this.checkWrongFlags(player.player), 
+          wrongAnswerWarning: this.checkWrongAnswers(player.player),
           hintWarning: this.checkOutOfHints(player.player), 
           tooLongWarning: this.checkLatePlayer(player.player)};
       }
@@ -134,8 +134,8 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
       tooltipText += '\n is too long in the current level ';
       conjunction = 'and';
     }
-    if (this.checkWrongFlags(player)) {
-      tooltipText += '\n' + conjunction + ' submitted many wrong flags ';
+    if (this.checkWrongAnswers(player)) {
+      tooltipText += '\n' + conjunction + ' submitted many wrong answers ';
       conjunction = 'and';
     }
     if (this.checkOutOfHints(player))
@@ -191,8 +191,8 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
         (this.getCurrentPlayerLevel(player).startTime + this.getCurrentLevel(player).estimatedDuration*60 * 1.5)
   }
 
-  checkWrongFlags(player: Player): boolean {
-    return this.getNumOfWrongFlags(player) >= CTF_PROGRESS_CONFIG.wrongFlagWarningThreshold;
+  checkWrongAnswers(player: Player): boolean {
+    return this.getNumOfWrongAnswers(player) >= CTF_PROGRESS_CONFIG.wrongAnswerWarningThreshold;
   }
 
   checkOutOfHints(player: Player): boolean {
@@ -204,8 +204,8 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
     return levelHints.length == levelHintsTaken.length;
   }
 
-  getNumOfWrongFlags(player: Player): number {
-    return this.getCurrentPlayerLevel(player)?.wrongFlags_number;
+  getNumOfWrongAnswers(player: Player): number {
+    return this.getCurrentPlayerLevel(player)?.wrongAnswers_number;
   }
 
   getCurrentPlayerLevel(player: Player): PlayerLevel {
@@ -230,7 +230,7 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
 
   hasWarnings(player: Player): boolean {
     const playerWarnings = this.playerSelectData.find(p => p.player.userRefId === player.userRefId).warnings
-    return playerWarnings.hintWarning || playerWarnings.tooLongWarning || playerWarnings.wrongFlagWarning;
+    return playerWarnings.hintWarning || playerWarnings.tooLongWarning || playerWarnings.wrongAnswerWarning;
   }
 
   allCurrentWarningsFaded(player: Player): boolean {
@@ -238,14 +238,14 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
     const fadedWarnings = this.playerSelectData.find(p => p.player.userRefId === player.userRefId).fadedWarnings;
     return  warnings.hintWarning == fadedWarnings.hintWarning && 
             warnings.tooLongWarning == fadedWarnings.tooLongWarning && 
-            warnings.wrongFlagWarning == fadedWarnings.wrongFlagWarning;
+            warnings.wrongAnswerWarning == fadedWarnings.wrongAnswerWarning;
   }
 
   fadeCurrentWarnings(player: Player): void {
     const playerData = this.playerSelectData.find(p => p.player.userRefId === player.userRefId);
     playerData.fadedWarnings.tooLongWarning = this.checkLatePlayer(player);
     playerData.fadedWarnings.hintWarning = this.checkOutOfHints(player);
-    playerData.fadedWarnings.wrongFlagWarning = this.checkWrongFlags(player);
+    playerData.fadedWarnings.wrongAnswerWarning = this.checkWrongAnswers(player);
   }
 
 }

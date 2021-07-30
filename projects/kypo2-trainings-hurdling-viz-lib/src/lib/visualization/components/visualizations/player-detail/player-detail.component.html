@@ -1,6 +1,6 @@
 <div class="player-header">
   <div class="navigation-header">
-    <span class="overview-button" (click)="onOverviewClick()">Game progress overview</span>
+    <span class="overview-button" (click)="onOverviewClick()">Training progress overview</span>
     <span> > </span> 
     <span>Player details</span>
     
@@ -11,14 +11,14 @@
     </div>
     <div class="player-overview-details">
       <div>{{player.name}}</div>
-        <div class="game-time-overview"></div>
+        <div class="training-time-overview"></div>
     </div>
   </div>
 
   <div *ngIf="getCurrentPlayerLevel()">
     <mat-divider></mat-divider>
 
-    <div *ngIf="isGameLevel()" class="hints-container">
+    <div *ngIf="isTrainingLevel()" class="hints-container">
       <div>
         Used {{getHintsUsed()}} of {{getHints().length}} hints:
       </div>
@@ -46,17 +46,17 @@
       </div>
     </div>
 
-    <div *ngIf="isGameLevel()" class="flag-container">
-      <div class="correct-flag">
-        <div class="correct-flag-title">{{getCurrentLevel().flag}}</div>
-        <div>(correct flag)</div>
+    <div *ngIf="isTrainingLevel()" class="answer-container">
+      <div class="correct-answer">
+        <div class="correct-answer-title">{{getCurrentLevel().answer}}</div>
+        <div>(correct answer)</div>
       </div>
-      <mat-divider class="flag-divider" [vertical]="true" ></mat-divider>
-      <div class="flag-list">
-        <div *ngFor="let wrongFlag of getWrongFlags()" class="wrong-flag">
-          <div class="wrong-flag-title">{{wrongFlag.value}}</div>
-          <div>{{wrongFlag.timesUsed}}x</div>
-          <div class="used-time">{{wrongFlag.lastUsed}}</div>
+      <mat-divider class="answer-divider" [vertical]="true" ></mat-divider>
+      <div class="answer-list">
+        <div *ngFor="let wrongAnswer of getWrongAnswers()" class="wrong-answer">
+          <div class="wrong-answer-title">{{wrongAnswer.value}}</div>
+          <div>{{wrongAnswer.timesUsed}}x</div>
+          <div class="used-time">{{wrongAnswer.lastUsed}}</div>
         </div>
       </div>
     </div>

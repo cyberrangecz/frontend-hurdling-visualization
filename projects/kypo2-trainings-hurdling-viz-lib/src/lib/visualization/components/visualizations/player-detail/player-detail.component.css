@@ -55,35 +55,35 @@
     transform: scale(0.6, 0.6);
  }
 
- .flag-container {
+ .answer-container {
     margin-top: 2%;
     display: flex;
  }
 
-.flag-list {
+.answer-list {
     display: flex;
     flex-grow: 100;
 }
 
-.wrong-flag {
+.wrong-answer {
     margin-right: 4%;
     text-align: center;
 }
 
-.wrong-flag-title {
+.wrong-answer-title {
     color: red;
 }
 
-.correct-flag {
+.correct-answer {
     margin-right: 3%;
     text-align: center;
 }
 
-.correct-flag-title {
+.correct-answer-title {
     color: green;
 }
 
-.flag-divider {
+.answer-divider {
     margin-right: 3%;
 }
 

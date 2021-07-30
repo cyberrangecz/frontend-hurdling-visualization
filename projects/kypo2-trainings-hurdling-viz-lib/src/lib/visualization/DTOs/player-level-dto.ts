@@ -7,6 +7,6 @@ export class PlayerLevelDTO {
     start_time: number;
     end_time: number;
     hints_taken: number[];
-    wrong_flags_number: number;
+    wrong_answers_number: number;
     events: EventDTO[];
   }

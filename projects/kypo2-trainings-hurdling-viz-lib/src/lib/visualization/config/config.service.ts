@@ -6,16 +6,16 @@ export class ConfigService {
   private readonly _config: HurdlingVisualizationConfig;
   private _trainingDefinitionId: number;
   private _trainingInstanceId: number;
-  private _gameColors: string[];
+  private _trainingColors: string[];
   private _simulationInterval: number;
   private _loadDataInterval: number;
 
-  get gameColors(): string[] {
-    return this._gameColors;
+  get trainingColors(): string[] {
+    return this._trainingColors;
   }
 
-  set gameColors(value: string[]) {
-    this._gameColors = value;
+  set trainingColors(value: string[]) {
+    this._trainingColors = value;
   }
 
   get simulationInterval(): number {

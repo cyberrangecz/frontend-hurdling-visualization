@@ -10,7 +10,7 @@ import { AppConfig } from '../../../app.config';
 import { View } from '../../models/view.enum';
 import { EventType } from '../../models/enums/event-type.enum';
 import { PlayerView } from '../../models/enums/player-view..enum';
-import { GameAnalysisEventService } from '../../models/game-analysis-event-service';
+import { TrainingAnalysisEventService } from '../../models/training-analysis-event-service';
 
 @Component({
   selector: 'kypo-hurdling-visualization',
@@ -25,10 +25,10 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   @Input() view = this.appConfig.defaultView;
   @Input() selectedPlayerView: PlayerView = PlayerView.Avatar;
   @Input() colorScheme: string[];
-  @Input() eventService: GameAnalysisEventService;
+  @Input() eventService: TrainingAnalysisEventService;
   @Input() setDashboardView = false;
   @Input() externalFilters;
-  @Input() gameColors = this.appConfig.gameColors;
+  @Input() trainingColors = this.appConfig.trainingColors;
   @Input() playerColorScheme: string[];
 
   visualizationData$: Observable<VisualizationData>;
@@ -91,7 +91,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
           level.state = "RUNNING";
           level.end_time = null;
         }
-        level.wrong_flags_number=level.events.filter(event => event.timestamp/1000 <= time && event.type==EventType.wrongFlag).length;
+        level.wrong_answers_number=level.events.filter(event => event.timestamp/1000 <= time && event.type==EventType.wrongAnswer).length;
         level.hints_taken=level.events.filter(event => event.timestamp/1000 <= time && event.type==EventType.hint).map(level=> level.hint_id);
       }))
       tmp.current_time=time;

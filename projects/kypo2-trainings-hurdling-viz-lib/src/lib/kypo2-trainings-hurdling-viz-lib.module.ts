@@ -2,7 +2,7 @@ import { OverviewProgressBarComponent } from './visualization/components/visuali
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { GameAnalysisComponent } from './visualization/components/visualizations/game-analysis/game-analysis.component';
+import { TrainingAnalysisComponent } from './visualization/components/visualizations/training-analysis/training-analysis.component';
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
 import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
 import { ColumnHeaderComponent } from './visualization/components/visualizations/column-header/column-header.component';
@@ -31,7 +31,7 @@ import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
-    GameAnalysisComponent,
+    TrainingAnalysisComponent,
     PlayerSelectionComponent,
     MouseWheelDirective,
     MouseMoveDirective,
@@ -62,7 +62,7 @@ import { MatDividerModule } from '@angular/material/divider';
     { provide: VisualizationsDataService, useClass: VisualizationsDataConcreteService }
   ],
   exports: [
-    GameAnalysisComponent,
+    TrainingAnalysisComponent,
     VisualizationsComponent,
     PlayerSelectionComponent
   ]

@@ -5,7 +5,7 @@ import { HintTakenEvent } from '../models/hint-taken-event';
 import { SolutionDisplayedEvent } from '../models/solution-displayed-event';
 import { TrainingRunEndedEvent } from '../models/training-run-ended-event';
 import { TrainingRunStartedEvent } from '../models/training-run-started-event';
-import { WrongFlagEvent } from '../models/wrong-flag-event';
+import { WrongAnswerEvent } from '../models/wrong-answer-event';
 
 export class EventMapper {
     static fromDTOs(dtos: EventDTO[]): Event[] {
@@ -26,20 +26,25 @@ export class EventMapper {
                 event.hintTitle = dto.hint_title;
                 break;
             }
+            case EventType.wrongAnswer: {
+                event = new WrongAnswerEvent();
+                event.answerContent = dto.answer_content;
+                break;
+            }
             case EventType.wrongFlag: {
-                event = new WrongFlagEvent();
-                event.flagContent = dto.flag_content;
+                event = new WrongAnswerEvent();
+                event.answerContent = dto.answer_content;
                 break;
             }
             case EventType.solution: {
                 event = new SolutionDisplayedEvent();
                 break;
             }
-            case EventType.gameFinished: {
+            case EventType.trainingFinished: {
                 event = new TrainingRunEndedEvent();
                 break;
             }
-            case EventType.gameStart: {
+            case EventType.trainingStart: {
                 event = new TrainingRunStartedEvent();
                 break;
             }
@@ -48,7 +53,7 @@ export class EventMapper {
             }
         }
         event.timestamp = dto.timestamp/1000;
-        event.gameTime = dto.game_time/1000;
+        event.trainingTime = dto.training_time/1000;
         event.levelId = dto.level;
         return event;
     }

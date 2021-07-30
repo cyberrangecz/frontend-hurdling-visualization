@@ -89,29 +89,29 @@
     transition: none;
 }
 
-.visualization-container.final .game-layer .data-hover {
+.visualization-container.final .training-layer .data-hover {
     opacity: 0.5 !important;
 }
 
-.ctf-progress-hover .game-layer .faded,
-.ctf-game-progress .game-layer rect {
+.ctf-progress-hover .training-layer .faded,
+.ctf-training-progress .training-layer rect {
     opacity: 0.5;
 }
 
-.visualization-container.final .game-layer .faded.data-hover {
+.visualization-container.final .training-layer .faded.data-hover {
     opacity: 0.6 !important
 }
 
-.visualization-container.final .game-layer .preserved.data-hover {
+.visualization-container.final .training-layer .preserved.data-hover {
     opacity: 0.8 !important;
 }
 
-.visualization-container.final  .ctf-game-progress .game-segment-finished {
+.visualization-container.final  .ctf-training-progress .training-segment-finished {
     opacity: 0.9 !important;
 }
 
-.visualization-container.final  .game-layer .preserved,
-.ctf-progress .game-layer .preserved {
+.visualization-container.final  .training-layer .preserved,
+.ctf-progress .training-layer .preserved {
     opacity: 1 !important;
 }
 
@@ -155,9 +155,9 @@
     pointer-events: none;
 }
 
-/* game chart */
-.ctf-progress-wrapper .ctf-game-overview,
-.ctf-progress-wrapper .ctf-game-progress {
+/* training chart */
+.ctf-progress-wrapper .ctf-training-overview,
+.ctf-progress-wrapper .ctf-training-progress {
     overflow-x: hidden;
 }
 

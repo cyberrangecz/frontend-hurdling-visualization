@@ -7,31 +7,31 @@ import { GenericObject } from '../models/generic-object.type';
 export class FilteringService {
   constructor() {}
 
-  filter(gamedataset: GenericObject[], selectedFilterValue): GenericObject[] {
-    let filteredGamedataset: GenericObject[];
+  filter(trainingDataSet: GenericObject[], selectedFilterValue): GenericObject[] {
+    let filteredTrainingDataSet: GenericObject[];
 
     switch (selectedFilterValue) {
       case 1:
-        filteredGamedataset = gamedataset;
+        filteredTrainingDataSet = trainingDataSet;
         break;
       case 2:
-        filteredGamedataset = this.filterByFinished(gamedataset, true);
+        filteredTrainingDataSet = this.filterByFinished(trainingDataSet, true);
         break;
       case 3:
-        filteredGamedataset = this.filterByFinished(gamedataset, false);
+        filteredTrainingDataSet = this.filterByFinished(trainingDataSet, false);
         break;
     }
 
-    return filteredGamedataset;
+    return filteredTrainingDataSet;
   }
 
   filterByFinished(
-    gamedataset: GenericObject[],
+    trainingDataSet: GenericObject[],
     byFinished: boolean
   ): GenericObject[] {
     let filtered: GenericObject[] = [];
-    if (typeof gamedataset !== 'undefined') {
-      filtered = gamedataset.filter(function(d: GenericObject): boolean {
+    if (typeof trainingDataSet !== 'undefined') {
+      filtered = trainingDataSet.filter(function(d: GenericObject): boolean {
         return (d.currentState === 'FINISHED') === byFinished;
       });
     }

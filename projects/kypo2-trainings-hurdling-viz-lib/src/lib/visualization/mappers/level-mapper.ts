@@ -14,7 +14,7 @@ export class LevelMapper {
       result.id = dto.id;
       result.content = dto.content;
       result.estimatedDuration = dto.estimated_duration;
-      result.flag = dto.flag;
+      result.answer = dto.answer;
       result.levelType = LevelMapper.levelTypeResolver(dto.level_type);
       result.maxScore = dto.max_score;
       result.order = dto.order;
@@ -29,7 +29,7 @@ export class LevelMapper {
       switch(levelTypeDTO) {
         case 'INFO_LEVEL': return LevelTypeEnum.Info;
         case 'ASSESSMENT_LEVEL': return LevelTypeEnum.Assessment;
-        case 'GAME_LEVEL': return LevelTypeEnum.Game;
+        case 'TRAINING_LEVEL': return LevelTypeEnum.Training;
 
       }
     }
