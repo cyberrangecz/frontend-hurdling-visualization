@@ -54,8 +54,8 @@ export class LevelListComponent  {
   }
 
   getLevelTooltip(level: Level) {
-    if (level.flag)
-      return level.title + '\nCorrect flag: ' + level.flag;
+    if (level.answer)
+      return level.title + '\nCorrect answer: ' + level.answer;
     return level.title;
   }
 
@@ -66,11 +66,11 @@ export class LevelListComponent  {
 
   parseLevelName(level: Level) {
     let name = level.levelType.charAt(0).toUpperCase() + level.levelType.slice(1) + ' level ';
-    name += level.levelType === 'game' ? this.getGameLevelNumber(level) : '';
+    name += level.levelType === 'training' ? this.getTrainingLevelNumber(level) : '';
     return name;
   }
 
-  private getGameLevelNumber(level: Level): number {
-    return this.visualizationData.levels.filter(level => level.levelType == 'game').indexOf(level)+1;
+  private getTrainingLevelNumber(level: Level): number {
+    return this.visualizationData.levels.filter(level => level.levelType == 'training').indexOf(level)+1;
   }
 }

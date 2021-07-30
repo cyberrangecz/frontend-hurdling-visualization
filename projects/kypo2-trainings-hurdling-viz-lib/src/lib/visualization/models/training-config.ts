@@ -1,8 +1,8 @@
-import { GameData } from './game-data';
+import { TrainingData } from './training-data';
 import { GenericObject } from './generic-object.type';
 
-export class GameConfig {
-	data: GameData;
+export class TrainingConfig {
+	data: TrainingData;
 	currentLevelColor: string;
 	eventShapePaths: GenericObject;
 	time: number;

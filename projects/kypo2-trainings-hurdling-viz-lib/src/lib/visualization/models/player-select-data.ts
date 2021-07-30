@@ -9,7 +9,7 @@ export class PlayerSelectData {
   }
 
 export class Warnings {
-    wrongFlagWarning: boolean;
+    wrongAnswerWarning: boolean;
     hintWarning: boolean;
     tooLongWarning: boolean;
 }

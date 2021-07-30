@@ -16,7 +16,7 @@ export class PlayerLevelMapper {
         result.endTime = dto.end_time/1000;
         result.id = dto.id;
         result.state = dto.state;
-        result.wrongFlags_number = dto.wrong_flags_number;
+        result.wrongAnswers_number = dto.wrong_answers_number;
         result.hintsTaken = dto.hints_taken;
         result.events = EventMapper.fromDTOs(dto.events);
         result.score = ScoreMapper.fromDTOs(dto.events)

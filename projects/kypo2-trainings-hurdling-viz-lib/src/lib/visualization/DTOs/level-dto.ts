@@ -8,7 +8,7 @@ export class LevelDTO {
     estimated_duration: number;
     order: number;
     content: string;
-    flag: string;
+    answer: string;
     solution: string;
     solution_penalized: boolean;
     hints: HintDTO[];

@@ -4,7 +4,7 @@ import { take } from 'rxjs/operators';
 import { AppConfig } from '../../../../app.config';
 import { LevelTypeEnum } from '../../../enums/level-type.enum';
 import { CommandLineEntry } from '../../../models/command-line-entry';
-import { GameTimeOverviewData } from '../../../models/game-time-overview-data';
+import { TrainingTimeOverviewData } from '../../../models/training-time-overview-data';
 import { Hint } from '../../../models/hint';
 import { HintTakenEvent } from '../../../models/hint-taken-event';
 import { Level } from '../../../models/level';
@@ -12,8 +12,8 @@ import { LevelTimelineData } from '../../../models/level-timeline-data';
 import { Player } from '../../../models/player';
 import { PlayerLevel } from '../../../models/player-level';
 import { VisualizationData } from '../../../models/visualization-data';
-import { WrongFlagData } from '../../../models/wrong-flag-data';
-import { WrongFlagEvent } from '../../../models/wrong-flag-event';
+import { WrongAnswerData } from '../../../models/wrong-answer-data';
+import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
 import { VisualizationsDataService } from '../../../services/visualizations-data.service';
 
 @Component({
@@ -38,14 +38,14 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   }
   
   ngOnChanges(): void {
-    this.createGameTimeOverview();
+    this.createTrainingTimeOverview();
     this.createLevelTimeline();
     this.createCommandTimeline();
     
   }
 
   ngAfterViewInit(): void {
-    this.createGameTimeOverview();
+    this.createTrainingTimeOverview();
     this.createLevelTimeline();
     this.createCommandTimeline();
   }
@@ -95,27 +95,27 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     return 'lightgray';
   }
 
-  getWrongFlags(): WrongFlagData[] {
-    const wrongFlagData = [];
+  getWrongAnswers(): WrongAnswerData[] {
+    const wrongAnswerData = [];
     this.getCurrentPlayerLevel().events
-      .filter(event => event instanceof WrongFlagEvent)
+      .filter(event => event instanceof WrongAnswerEvent)
       .forEach(event => {
-        const index = wrongFlagData.findIndex(data => data.value == (event as WrongFlagEvent).flagContent);
+        const index = wrongAnswerData.findIndex(data => data.value == (event as WrongAnswerEvent).answerContent);
         if(index != -1) {
-          wrongFlagData[index].timesUsed++;
-          const wrongFlagLastTime =  Math.ceil((this.visualizationData.currentTime - event.timestamp)/60);
-          wrongFlagData[index].lastUsed = wrongFlagLastTime == 1 ? wrongFlagLastTime + ' minute ago' : wrongFlagLastTime + ' minutes ago';
+          wrongAnswerData[index].timesUsed++;
+          const wrongAnswerLastTime =  Math.ceil((this.visualizationData.currentTime - event.timestamp)/60);
+          wrongAnswerData[index].lastUsed = wrongAnswerLastTime == 1 ? wrongAnswerLastTime + ' minute ago' : wrongAnswerLastTime + ' minutes ago';
         }
         else {
-          const wrongFlagDataEntry = new WrongFlagData();
-          wrongFlagDataEntry.value = (event as WrongFlagEvent).flagContent;
-          wrongFlagDataEntry.timesUsed = 1;
-          const wrongFlagLastTime = Math.ceil((this.visualizationData.currentTime - event.timestamp)/60);
-          wrongFlagDataEntry.lastUsed =  wrongFlagLastTime == 1 ? wrongFlagLastTime + ' minute ago' : wrongFlagLastTime + ' minutes ago';
-          wrongFlagData.push(wrongFlagDataEntry);
+          const wrongAnswerDataEntry = new WrongAnswerData();
+          wrongAnswerDataEntry.value = (event as WrongAnswerEvent).answerContent;
+          wrongAnswerDataEntry.timesUsed = 1;
+          const wrongAnswerLastTime = Math.ceil((this.visualizationData.currentTime - event.timestamp)/60);
+          wrongAnswerDataEntry.lastUsed =  wrongAnswerLastTime == 1 ? wrongAnswerLastTime + ' minute ago' : wrongAnswerLastTime + ' minutes ago';
+          wrongAnswerData.push(wrongAnswerDataEntry);
         }
     });
-    return wrongFlagData;
+    return wrongAnswerData;
   }
 
   getUsedHintTime(hint: Hint): string {
@@ -165,9 +165,9 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     return num < 10 ? `0${num}` : `${num}`;
   }
 
-  createGameTimeOverview(): void {
+  createTrainingTimeOverview(): void {
 
-    this.d3.select('.game-time-overview').html('');
+    this.d3.select('.training-time-overview').html('');
 
     if(!this.getCurrentLevel()) {
       return;
@@ -175,7 +175,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
 
     let sum = 0;
     const data = this.visualizationData.levels.map((level) => {
-      const data = new GameTimeOverviewData();
+      const data = new TrainingTimeOverviewData();
       data.start = sum
       sum+=level.estimatedDuration > 0 ? level.estimatedDuration*60 : 60;
       data.end = sum;
@@ -186,7 +186,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     const width = '100%';
     const height = 10;
 
-    const chart = this.d3.select('.game-time-overview')
+    const chart = this.d3.select('.training-time-overview')
       .append('svg') 
       .attr('class', 'chart')
       .attr('width', width)
@@ -405,12 +405,12 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     levelStarted.color = 'black';
     data.push(levelStarted);
     this.getCurrentPlayerLevel().events
-      .filter(event => event instanceof HintTakenEvent || event instanceof WrongFlagEvent)
+      .filter(event => event instanceof HintTakenEvent || event instanceof WrongAnswerEvent)
       .forEach(event => {
         const eventTimelineData = new LevelTimelineData();
         eventTimelineData.icon = this.appConfig.eventShapePaths[event.type];
         eventTimelineData.value = event instanceof HintTakenEvent 
-                                    ? (event as HintTakenEvent).hintTitle : (event as WrongFlagEvent).flagContent;
+                                    ? (event as HintTakenEvent).hintTitle : (event as WrongAnswerEvent).answerContent;
         eventTimelineData.color = event instanceof HintTakenEvent ? 'black' : 'red';            
         eventTimelineData.timestamp = event.timestamp;
         data.push(eventTimelineData)
@@ -418,13 +418,13 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     return data;
   }
 
-  isGameLevel(): boolean {
-    return this.getCurrentLevel()?.levelType == LevelTypeEnum.Game;
+  isTrainingLevel(): boolean {
+    return this.getCurrentLevel()?.levelType == LevelTypeEnum.Training;
   }
 
   onResize(): void {
     this.createLevelTimeline();
-    this.createGameTimeOverview();
+    this.createTrainingTimeOverview();
     this.createCommandTimeline();
   }
 

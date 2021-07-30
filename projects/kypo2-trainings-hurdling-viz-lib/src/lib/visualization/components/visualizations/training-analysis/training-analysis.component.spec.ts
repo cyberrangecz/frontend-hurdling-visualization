@@ -1,28 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
-import { NgModule, DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-
 import { View } from '../../models/view.enum';
-
-import { GameAnalysisComponent } from './game-analysis.component';
+import { TrainingAnalysisComponent } from './training-analysis.component';
 import { ColumnHeaderComponent } from '../column-header/column-header.component';
-
 import { LoadDataService } from '../../services/load-data.service';
-import { D3Service, D3, Axis, ScaleBand, ScaleLinear, ScaleOrdinal } from 'd3-ng2-service';
+import { D3Service } from 'd3-ng2-service';
 import { PapaParseModule, Papa } from 'ngx-papaparse';
-// import { Observable } from 'rxjs/Observable';
-// import { fromPromise } from 'rxjs/observable/fromPromise';
- import { Observable ,  from as fromPromise } from 'rxjs';
+ import { from as fromPromise } from 'rxjs';
 import {ConfigService} from '../../config/config.service';
 import {AppConfig} from '../../../app.config';
-describe('GameAnalysisComponent', () => {
-  let component: GameAnalysisComponent;
-  let fixture: ComponentFixture<GameAnalysisComponent>;
+describe('TrainingAnalysisComponent', () => {
+  let component: TrainingAnalysisComponent;
+  let fixture: ComponentFixture<TrainingAnalysisComponent>;
   const testConfig: AppConfig = {
     levelsTimePlan: [1200, 1500, 1900, 2100, 2200, 2200],
-    gameColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
+    trainingColors: ['#1c89b8', '#20ac4c', '#ff9d3c', '#fc5248'],
     darkColor: '#2f2f2f',
     eventShapePaths: {
         'hint': 'M15,7.9c0,3.9-3.1,7-7,7c-3.9,0-7-3.1-7-7c0-3.9,3.1-7,7-7C11.9,0.9,15,4,15,7.9z',
@@ -39,10 +32,10 @@ describe('GameAnalysisComponent', () => {
     defaultView: View.overview
   };
   const loadServiceStub: any = {
-    getGameAndPlanData: function(apiUrl: string, gameId: string, levelsTimePlan: number[]) {
+    getTrainingAndPlanData: function(apiUrl: string, trainingId: string, levelsTimePlan: number[]) {
       return fromPromise(new Promise(function (resolve, reject) {
             const data = {
-              'gameDataset': [
+              'trainingDataset': [
                 {
                   'team': '9003585',
                   'events': [],
@@ -142,7 +135,7 @@ describe('GameAnalysisComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
-        GameAnalysisComponent,
+        TrainingAnalysisComponent,
         ColumnHeaderComponent
       ],
       imports: [
@@ -161,7 +154,7 @@ describe('GameAnalysisComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GameAnalysisComponent);
+    fixture = TestBed.createComponent(TrainingAnalysisComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -224,17 +217,17 @@ describe('GameAnalysisComponent', () => {
     fixture.whenStable().then(() => {
         const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        const levelElements = nativeElement.querySelectorAll('.game-layer');
+        const levelElements = nativeElement.querySelectorAll('.training-layer');
         expect(levelElements.length).toEqual(4);
     });
   }));
 
-  it('should contain 1 empty column before game start and 4 level columns in progress view', waitForAsync(() => {
+  it('should contain 1 empty column before training start and 4 level columns in progress view', waitForAsync(() => {
     component.switchToProgressView();
     fixture.whenStable().then(() => {
         const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        const levelElements = nativeElement.querySelectorAll('.game-layer');
+        const levelElements = nativeElement.querySelectorAll('.training-layer');
         expect(levelElements.length).toEqual(5);
     });
   }));
@@ -244,7 +237,7 @@ describe('GameAnalysisComponent', () => {
     fixture.whenStable().then(() => {
         const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        const levelElements = nativeElement.querySelectorAll('.game-layer');
+        const levelElements = nativeElement.querySelectorAll('.training-layer');
         expect(levelElements[0].getAttribute('fill')).toEqual('#1c89b8');
         expect(levelElements[1].getAttribute('fill')).toEqual('#20ac4c');
         expect(levelElements[2].getAttribute('fill')).toEqual('#ff9d3c');
@@ -257,7 +250,7 @@ describe('GameAnalysisComponent', () => {
     fixture.whenStable().then(() => {
         const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        const levelElements = nativeElement.querySelectorAll('.game-layer');
+        const levelElements = nativeElement.querySelectorAll('.training-layer');
         expect(levelElements[0].getAttribute('fill')).toEqual('transparent');
         expect(levelElements[1].getAttribute('fill')).toEqual('#1c89b8');
         expect(levelElements[2].getAttribute('fill')).toEqual('#20ac4c');
@@ -272,7 +265,7 @@ describe('GameAnalysisComponent', () => {
     fixture.whenStable().then(() => {
         const nativeElement: any = fixture.debugElement.query(By.css('.ctf-progress')).nativeElement;
         fixture.detectChanges();
-        const levelElement = nativeElement.querySelector('.game-layer');
+        const levelElement = nativeElement.querySelector('.training-layer');
         const levelSegment = levelElement.querySelectorAll('rect');
         expect(levelSegment.length).toEqual(3);
     });

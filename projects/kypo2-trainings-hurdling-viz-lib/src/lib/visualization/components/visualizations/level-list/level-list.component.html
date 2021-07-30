@@ -22,8 +22,8 @@
 			</div>
 		</div>
 
-		<div class="level" matTooltip="Game finished">
-			<div>Game finished</div>
+		<div class="level" matTooltip="Training finished">
+			<div>Training finished</div>
 			<div (click)="getFinishedPlayers().length != 0 ? filterPlayers(getFinishedPlayers(), null) : ''"
 				[ngClass]="{
 					clickable: getFinishedPlayers().length != 0,

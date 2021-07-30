@@ -1,12 +1,12 @@
 import { Event } from './event';
 
-export class GameDataEntry {
+export class TrainingDataEntry {
     playerId: number;
     playerName: string;
     playerAvatar: string;
     events: Event[];
     eventGroups: [];
-    flags: number;
+    answers: number;
     hints: number;
     totalTime: number;
     score: number;

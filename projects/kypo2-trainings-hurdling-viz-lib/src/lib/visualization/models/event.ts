@@ -1,7 +1,7 @@
 export abstract class Event {
     type: string;
     timestamp: number;
-    gameTime: number;
+    trainingTime: number;
     levelId: number;
     levelNumber: number;
     playerId: number;

@@ -1,8 +1,8 @@
 import { Event } from "./event";
 
-export class WrongFlagEvent extends Event {
+export class WrongAnswerEvent extends Event {
     type: string;
-    flagContent: string;
+    answerContent: string;
 
     constructor() {
         super();
@@ -10,6 +10,6 @@ export class WrongFlagEvent extends Event {
     }
 
     getContent() {
-        return 'Wrong flag submitted: <i>' + this.flagContent + '</i>'
+        return 'Wrong answer submitted: <i>' + this.answerContent + '</i>'
     }
 }

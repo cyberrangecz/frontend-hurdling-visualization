@@ -1,4 +1,4 @@
-export class GameTimeOverviewData {
+export class TrainingTimeOverviewData {
     start: number;
     end: number;
     levelId: number;

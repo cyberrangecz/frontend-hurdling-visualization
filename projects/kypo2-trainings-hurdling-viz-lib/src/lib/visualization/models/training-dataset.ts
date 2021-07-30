@@ -1,4 +1,4 @@
-export class gameDataset {
+export class trainingDataset {
     playerId: number;
     events: Event[];
     eventsGroups;

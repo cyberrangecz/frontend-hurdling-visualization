@@ -1,6 +1,6 @@
 import { Level } from './level';
 
-export class Game {
+export class Training {
 	id: string;
 	name: string;
 	levels: Level[];
