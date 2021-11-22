@@ -7,18 +7,18 @@ const routes: Routes = [
   {
     path: 'hurdling',
     loadChildren: () => import('./hurdling/hurdling.module').then(m => m.HurdlingModule),
-    canActivate: [SentinelAuthGuardWithLogin],
+    // canActivate: [SentinelAuthGuardWithLogin],
   },
   {
     path: '',
     redirectTo: 'hurdling',
     pathMatch: 'full'
   },
-  {
-    path: 'login',
-    component: SentinelAuthProviderListComponent,
-    canActivate: [SentinelNegativeAuthGuard]
-  },
+  // {
+  //   path: 'login',
+  //   component: SentinelAuthProviderListComponent,
+  //   canActivate: [SentinelNegativeAuthGuard]
+  // },
   {
     path: '**',
     redirectTo: 'hurdling'

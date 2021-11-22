@@ -26,6 +26,7 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
 
   public numberOfColumns = 12;
   public gridWidth = 60;
+  public PlayerView = PlayerView;
   private d3;
   private highlightedPlayer: Player;
   private playerSelectData: PlayerSelectData[] = [];
@@ -81,7 +82,7 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
  
 
     if('visualizationData' in changes) {
-    this.filteredPlayersChange.emit(this.playerSelectData.filter(p => p.isSelected).map(p=>p.player)) 
+      this.filteredPlayersChange.emit(this.playerSelectData.filter(p => p.isSelected).map(p=>p.player))
     }
   }
 

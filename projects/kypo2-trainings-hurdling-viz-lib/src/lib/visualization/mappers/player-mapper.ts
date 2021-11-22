@@ -1,17 +1,19 @@
 import { PlayerDTO } from '../DTOs/player-dto';
 import { Player } from '../models/player';
+import {PlayerProgressDTO} from '../DTOs/player-progress-dto';
 
 export class PlayerMapper {
-    static fromDTOs(dtos: PlayerDTO[]): Player[] {
-        const result = dtos.map((dto) => PlayerMapper.fromDTO(dto));
+    static fromDTOs(dtos: PlayerDTO[], progressPlayersDtos: PlayerProgressDTO[]): Player[] {
+        const result = dtos.map((dto, index) => PlayerMapper.fromDTO(dto, progressPlayersDtos[index]));
         return result;
     }
 
-    static fromDTO(dto: PlayerDTO): Player {
+    static fromDTO(dto: PlayerDTO, progressPlayerDto: PlayerProgressDTO): Player {
         const result = new Player;
         result.name = dto.given_name + ' ' + dto.family_name;
         result.picture = dto.picture;
         result.userRefId = dto.user_ref_id;
+        result.trainingRunId = progressPlayerDto ? progressPlayerDto.training_run_id : null;
         return result;
     }
 }

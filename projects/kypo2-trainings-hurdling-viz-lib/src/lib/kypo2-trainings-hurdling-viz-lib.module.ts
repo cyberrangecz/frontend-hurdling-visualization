@@ -75,7 +75,7 @@ export class Kypo2TrainingsHurdlingVizLibModule {
     }
   }
 
-  static forRoot(config: Kypo2TrainingsHurdlingVizLibModule): ModuleWithProviders<Kypo2TrainingsHurdlingVizLibModule> {
+  static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<Kypo2TrainingsHurdlingVizLibModule> {
     return {
       ngModule: Kypo2TrainingsHurdlingVizLibModule,
       providers: [
