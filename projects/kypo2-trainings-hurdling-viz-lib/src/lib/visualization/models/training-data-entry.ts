@@ -12,4 +12,5 @@ export class TrainingDataEntry {
     score: number;
     currentState: string;
     start: number;
+    trainingRunId: number;
 }

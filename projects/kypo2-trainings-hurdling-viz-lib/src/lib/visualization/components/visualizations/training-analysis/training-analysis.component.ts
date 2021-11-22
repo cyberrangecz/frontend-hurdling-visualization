@@ -1,5 +1,14 @@
 import { PlayerView } from '../../../models/enums/player-view..enum';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, AfterViewInit, Output, ViewEncapsulation, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Axis, D3, D3Service, ScaleBand, ScaleLinear } from '@muni-kypo-crp/d3-service';
 import { DataEntry } from '../../../models/data-entry';
 import { TrainingConfig } from '../../../models/training-config';
@@ -37,7 +46,7 @@ import { TrainingRunEndedEvent } from '../../../models/training-run-ended-event'
   styleUrls: ['./training-analysis.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, AfterViewInit {
+export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterViewInit {
   
   
   @Input() visualizationData: VisualizationData;
@@ -53,8 +62,9 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
   @Input() playerColorScheme: string[];
   @Input() trainingInstanceId: number;
 
-
-  @Output() outputSelectedPlayers = new EventEmitter<any[]>();
+  @Input() selectedPlayers: Player[];
+  @Output() outputSelectedPlayers = new EventEmitter<number[]>();
+  @Output() highlightedPlayer = new EventEmitter<number>();
 
   private wrapperWidth: number;
   private wrapperHeight: number;
@@ -90,6 +100,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
   private filterSubscription: Subscription;
   private highlightSubscription: Subscription;
   private levelSorted:  Level;
+  private selectedTrainees: number[] = [];
 
 
   // zooming
@@ -143,8 +154,6 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
     this.configService.trainingColors = this.trainingColors;
     this.setData();
   }
-
-  ngOnInit(): void {}
 
   checkIfActive(player: Player): boolean {
     return this.visualizationData.playerProgress.find(playerProgress => playerProgress.userRefId == player.userRefId) ? true : false;
@@ -213,6 +222,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
     const trainingDataSet = [];
     this.visualizationData.playerProgress.forEach(playerProgress => {
       const trainingDataEntry = new TrainingDataEntry();
+      trainingDataEntry.trainingRunId = playerProgress.trainingRunId;
       trainingDataEntry.playerId = playerProgress.userRefId;
       trainingDataEntry.playerName = this.getPlayerData(playerProgress.userRefId).name;
       trainingDataEntry.playerAvatar=this.getPlayerData(playerProgress.userRefId).picture;
@@ -359,11 +369,15 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
     let sortedPlanDataSet = this.getUpdatedPlanDataSet(sortedTrainingDataSet);
 
     // filter players from player selection component
-    if (this.filteredPlayers) {
-      sortedTrainingDataSet = sortedTrainingDataSet.filter(dataRow =>
-        this.filteredPlayers.find(player => player.name === dataRow.playerName) !== undefined);
-      sortedPlanDataSet = sortedPlanDataSet.filter(dataRow =>
-        this.filteredPlayers.find(player => player.name === dataRow.playerName) !== undefined);
+    if (this.selectedPlayers) {
+      sortedTrainingDataSet = (sortedTrainingDataSet.filter((data) => this.selectedPlayers.find((player) => player.userRefId === data.playerId)));
+      sortedPlanDataSet = (sortedPlanDataSet.filter((data) => this.selectedPlayers.find((player) => player.userRefId === data.playerId)));
+    }
+    else if (!this.selectedPlayers && this.filteredPlayers) {
+      sortedTrainingDataSet = sortedTrainingDataSet.filter((dataRow) =>
+        this.filteredPlayers.find((player) => player.name === dataRow.playerName) !== undefined);
+      sortedPlanDataSet = sortedPlanDataSet.filter((dataRow) =>
+        this.filteredPlayers.find((player) => player.name === dataRow.playerName) !== undefined);
     }
     return { trainingDataSet: sortedTrainingDataSet, planDataSet: sortedPlanDataSet };
   }
@@ -917,6 +931,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
         return finalWidth;
       })
         .on('mouseover', (d: GenericObject, teamIndex: number, nodes) => {
+          this.highlightedPlayer.emit(d.data.playerId);
         // highlight team on hover 
         this.outerWrapper.classed('ctf-progress-hover', true);
         this.d3
@@ -985,7 +1000,13 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
         if (this.eventService) {
           this.eventService.trainingAnalysisOnBarClick(d.data.id.toString());
         }
-        this.outputSelectedPlayers.emit(this.runsToCompare);
+        if (this.selectedTrainees.indexOf(d.data.trainingRunId) !== -1) {
+          this.selectedTrainees.splice(this.selectedTrainees.indexOf(d.data.trainingRunId), 1);
+        } else {
+          this.selectedTrainees.push(d.data.trainingRunId);
+        }
+        this.outputSelectedPlayers.emit(this.selectedTrainees);
+
         this.outerWrapper.classed('ctf-progress-hover', true);
         this.d3
           .selectAll('.data text')
@@ -994,16 +1015,24 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, OnInit, 
         this.d3
           .selectAll('.training .training-layer rect')
           .filter((data: any) => data.data.id === d.data.id)
-          .classed('preserved', (data: any) =>
-            this.runsToCompare.some(run => run.id === data.data.id)
-          );
+          .classed('preserved', (data: any) => {
+            if (this.view == View.Overview) {
+              return this.selectedTrainees.some(run => run === data.data.trainingRunId);
+            } else {
+              return this.runsToCompare.some(run => run.id === data.data.id);
+            }
+          });
         if (this.view === View.Overview) {
           // in progress view we want to keep the unfinished levels highlighted
           this.d3
             .selectAll('.training .training-layer rect')
-            .classed('faded', () =>
-              this.runsToCompare.length > 0
-            );
+            .classed('faded', () => {
+              if (this.view == View.Overview) {
+                return this.selectedTrainees.length > 0;
+              } else {
+                return this.runsToCompare.length > 0;
+              }
+            });
         }
       })
       .style('fill', (d: GenericObject, i: string, nodes) => {

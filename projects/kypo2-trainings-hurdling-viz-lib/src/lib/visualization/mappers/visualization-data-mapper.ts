@@ -11,7 +11,7 @@ export class VisualizationDataMapper {
     result.estimatedEndTime = dto.estimated_end_time;
     result.currentTime = dto.current_time;
     result.levels = LevelMapper.fromDTOs(dto.levels);
-    result.players = PlayerMapper.fromDTOs(dto.players);
+    result.players = PlayerMapper.fromDTOs(dto.players, dto.player_progress);
     result.playerProgress = PlayerProgressMapper.fromDTOs(dto.player_progress);
     return result;
   }

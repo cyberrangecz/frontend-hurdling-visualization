@@ -30,7 +30,10 @@
 							(mousemove)="buildAndShowPlayerTooltip(player, $event)"
 							(mouseout)="hideTooltip()"
 							[ngClass]="{ 'not-active': !checkIfActive(player) }">
-							<img class="participant-avatar" src="{{'data:image/jpg;base64,' + player.picture}}">
+							<div *ngIf="checkIfActive(player) && (selectedPlayerView === PlayerView.Avatar || selectedPlayerView === PlayerView.Both)">
+								<img class="participant-avatar" src="{{'data:image/jpg;base64,' + player.picture}}">
+							</div>
+								<p *ngIf="selectedPlayerView === PlayerView.Name && checkIfActive(player)">{{player.name}}</p>
 						</div>
 						<div (mousemove)="showTooltip(player.name, $event)"
 							(mouseout)="hideTooltip()"
@@ -39,7 +42,7 @@
 							N/A
 						</div>
 					</div>
-					<div (click)="checkIfActive(player) ? togglePlayer(player) : false" class="participant-name" [ngClass]="{ 'not-active': !checkIfActive(player), pointer: checkIfActive(player), 'unselected-name': !checkIfSelected(player)}">{{player.name}}</div>
+					<div *ngIf="selectedPlayerView === PlayerView.Both" (click)="checkIfActive(player) ? togglePlayer(player) : false" class="participant-name" [ngClass]="{ 'not-active': !checkIfActive(player), pointer: checkIfActive(player), 'unselected-name': !checkIfSelected(player)}">{{player.name}}</div>
 					<div (click)="fadeCurrentWarnings(player)" *ngIf="checkIfActive(player) && hasWarnings(player)" class="warning"
 						[ngClass]="{'faded': allCurrentWarningsFaded(player) }"
 						(mouseover)="buildAndShowWarningTooltip(player, $event)"

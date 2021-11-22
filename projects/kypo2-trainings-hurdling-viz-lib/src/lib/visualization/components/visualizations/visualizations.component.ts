@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription, timer } from 'rxjs';
 import { filter, map, takeWhile } from 'rxjs/operators';
 import { ConfigService } from '../../config/config.service';
@@ -11,6 +11,7 @@ import { View } from '../../models/view.enum';
 import { EventType } from '../../models/enums/event-type.enum';
 import { PlayerView } from '../../models/enums/player-view..enum';
 import { TrainingAnalysisEventService } from '../../models/training-analysis-event-service';
+import {Player} from "../../models/player";
 
 @Component({
   selector: 'kypo-hurdling-visualization',
@@ -31,6 +32,11 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   @Input() trainingColors = this.appConfig.trainingColors;
   @Input() playerColorScheme: string[];
 
+  @Input() selectedTrainees: Player[];
+  @Input() isStandalone: boolean;
+  @Output() highlightedPlayer: EventEmitter<number> = new EventEmitter();
+  @Output() outputSelectedPlayers = new EventEmitter<number[]>();
+
   visualizationData$: Observable<VisualizationData>;
 
   private isAlive = true;
@@ -38,9 +44,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   constructor(
     private visualizationDataService: VisualizationsDataService,
     private appConfig: AppConfig
-  ) {
-    
-  }
+  ) {}
 
   ngOnInit() { 
     if(this.JSONData) {
@@ -104,11 +108,22 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   }
 
   initUpdateSubscription() {
-    timer(0, this.appConfig.loadDataInterval)
-    .pipe(takeWhile(() => this.isAlive))
-    .subscribe(() => this.loadData())
+    if (this.isStandalone) {
+      this.loadData();
+    } else {
+      timer(0, this.appConfig.loadDataInterval)
+          .pipe(takeWhile(() => this.isAlive))
+          .subscribe(() => this.loadData())
+    }
   }
 
+  emitHighlightedPlayer(event: number): void {
+    this.highlightedPlayer.emit(event);
+  }
+
+  selectedPlayers(event: number[]): void {
+    this.outputSelectedPlayers.emit(event);
+  }
 
   ngOnDestroy(): void {
     this.isAlive = false;

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { VisualizationDataApi } from '../api/visualization-data-api.service';
-import { Player } from '../models/player';
 import { VisualizationData } from '../models/visualization-data';
 import { VisualizationsDataService } from './visualizations-data.service';
 
