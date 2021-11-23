@@ -833,7 +833,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
       .tickFormat((d: any) => this.getXAxisTickFormat(d))
       .tickSize(5)
       .tickValues(this.d3.range(0, this.time, this.getXAxisTickInterval()));
-    this.d3.select('.axis.axis-x').call(this.xAxis);
+    this.d3.select('.axis.axis-x').call(this.xAxis as any);
   }
 
   createColumnForEachLevel(layers) {
@@ -930,7 +930,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
         }
         return finalWidth;
       })
-        .on('mouseover', (d: GenericObject, teamIndex: number, nodes) => {
+        .on('mouseover', (_, d: GenericObject) => {
           this.highlightedPlayer.emit(d.data.playerId);
         // highlight team on hover 
         this.outerWrapper.classed('ctf-progress-hover', true);
@@ -949,7 +949,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           .style('opacity', 0.9);
 
         let thisLevel;
-        const datum: GenericObject = this.d3.select(nodes[teamIndex].parentNode).datum();
+        const datum: GenericObject = this.d3.select(layer.nodes()[layer.nodes().indexOf(this)].parentNode).datum();
         thisLevel = view == View.Overview ? this.findLevelByKey(datum.index+1) : this.findLevelByKey(datum.index);
         this.tooltip
           .html((): string => {
@@ -969,7 +969,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           this.eventService.trainingAnalysisOnBarMouseover(d.data.id.toString());
         }
       })
-      .on('mouseout', (d: GenericObject) => {
+      .on('mouseout', (_, d: GenericObject) => {
         this.tooltip
           .transition()
           .duration(0)
@@ -1262,7 +1262,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
         return 'translateX(' + this.xScale(teamOffset) + 'px)';
       })
       .attr('data-index', (d: GenericObject, i: number): number => i)
-      .on('mouseover', (d: any, teamIndex: number) => {
+      .on('mouseover', (_, d: any, teamIndex: number) => {
         // preserve team highlight
         this.outerWrapper.classed('ctf-progress-hover', true);
         d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed(
@@ -1270,7 +1270,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           true
         );
       })
-      .on('mouseout', (d: any, teamIndex: number) => {
+      .on('mouseout', (_, d: any, teamIndex: number) => {
         if (this.runsToCompare.length > 0) return;
         this.outerWrapper.classed('ctf-progress-hover', false);
         d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed(
