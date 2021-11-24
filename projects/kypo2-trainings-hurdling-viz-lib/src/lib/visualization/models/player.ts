@@ -3,4 +3,5 @@ export class Player {
     trainingRunId: number;
     name: string;
     picture: string;
+    teamIndex: number;
   }
