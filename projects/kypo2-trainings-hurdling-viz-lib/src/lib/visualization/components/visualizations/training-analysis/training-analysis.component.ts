@@ -226,6 +226,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
       trainingDataEntry.playerId = playerProgress.userRefId;
       trainingDataEntry.playerName = this.getPlayerData(playerProgress.userRefId).name;
       trainingDataEntry.playerAvatar=this.getPlayerData(playerProgress.userRefId).picture;
+      trainingDataEntry.teamIndex = this.getPlayerData(playerProgress.userRefId).teamIndex;
       trainingDataEntry.hints = this.getHintsForPlayer(playerProgress.userRefId);
       trainingDataEntry.score= this.getScoreForPlayer(playerProgress.userRefId);
       trainingDataEntry.answers=this.getAnswersForPlayer(playerProgress.userRefId);
@@ -930,7 +931,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
         }
         return finalWidth;
       })
-        .on('mouseover', (_, d: GenericObject) => {
+        .on('mouseover', (event, d: GenericObject) => {
           this.highlightedPlayer.emit(d.data.playerId);
         // highlight team on hover 
         this.outerWrapper.classed('ctf-progress-hover', true);
@@ -949,7 +950,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           .style('opacity', 0.9);
 
         let thisLevel;
-        const datum: GenericObject = this.d3.select(layer.nodes()[layer.nodes().indexOf(this)].parentNode).datum();
+        const datum: GenericObject = this.d3.select(event.currentTarget.parentNode).datum();
         thisLevel = view == View.Overview ? this.findLevelByKey(datum.index+1) : this.findLevelByKey(datum.index);
         this.tooltip
           .html((): string => {
@@ -989,7 +990,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           this.eventService.trainingAnalysisOnBarMouseout(d.data.id.toString());
         }
       })
-      .on('click', (d) => {
+      .on('click', (_, d) => {
         if (this.runsToCompare.some(run => run.id === d.data.id)) {
           this.runsToCompare = this.runsToCompare.filter(
             item => item.id !== d.data.id
@@ -1262,18 +1263,18 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
         return 'translateX(' + this.xScale(teamOffset) + 'px)';
       })
       .attr('data-index', (d: GenericObject, i: number): number => i)
-      .on('mouseover', (_, d: any, teamIndex: number) => {
+      .on('mouseover', (_, d: any) => {
         // preserve team highlight
         this.outerWrapper.classed('ctf-progress-hover', true);
-        d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed(
+        d3.selectAll('.data text:nth-child(' + (d.teamIndex + 1) + ')').classed(
           'data-hover',
           true
         );
       })
-      .on('mouseout', (_, d: any, teamIndex: number) => {
+      .on('mouseout', (_, d: any) => {
         if (this.runsToCompare.length > 0) return;
         this.outerWrapper.classed('ctf-progress-hover', false);
-        d3.selectAll('.data text:nth-child(' + (teamIndex + 1) + ')').classed(
+        d3.selectAll('.data text:nth-child(' + (d.teamIndex + 1) + ')').classed(
           'data-hover',
           false
         );
@@ -1294,7 +1295,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           return eventShapePaths[group.events[0].type];
         }
       })
-      .attr('fill', (d: GenericObject, i, nodes): string => {
+      .attr('fill', ( d: GenericObject, i, nodes): string => {
         const teamStruct: DataEntry = <DataEntry>(
           d3.select(nodes[i].parentNode).datum()
         );
@@ -1318,16 +1319,16 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
         const x = group.x - iconWidth / 2;
         return 'translate(' + x + ',' + y + ') scale(' + scale + ')';
       })
-      .on('mouseover', (d: any, i: number, nodes) => {
+      .on('mouseover', (_, d: any) => {
         this.tooltip
           .transition()
           .duration(200)
           .style('opacity', 0.9);
-        const teamNode = d3.select(nodes[i].parentNode),
-          teamStruct: DataEntry = <DataEntry>teamNode.datum(),
+        const teamNode = d,
+          teamStruct: DataEntry = <DataEntry>teamNode,
           y = this.yScale(teamStruct.playerName) + this.yScale.bandwidth() * 0.5 + 3;
         let teamOffset = 0;
-        const teamIndex: string = teamNode.attr('data-index');
+        const teamIndex: string = teamNode.level;
         if (typeof trainingData.teams[teamIndex].offsets !== 'undefined' &&
           typeof trainingData.teams[teamIndex].offsets[this.sortLevel] !== 'undefined') {
           teamOffset = trainingData.teams[teamIndex].offsets[this.sortLevel];

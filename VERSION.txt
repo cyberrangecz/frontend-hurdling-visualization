@@ -1,3 +1,4 @@
+12.0.5 Fix problems with d3v7
 12.0.4 Update to d3v7
 12.0.3 Rename terms game to training and flag to answer, new feature - display full estimate, fix local config paths, add build of example in CI 
 12.0.2 Update gitlab CI
