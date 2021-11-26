@@ -1,14 +1,11 @@
-
-import {Component, Input, OnInit, OnDestroy, OnChanges, Output, EventEmitter, SimpleChange, SimpleChanges} from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { CTF_PROGRESS_CONFIG } from '../../../../app.config';
-import {D3Service} from '@muni-kypo-crp/d3-service';
-import { User } from '@sentinel/auth';
+import { D3Service } from '@muni-kypo-crp/d3-service';
 import { VisualizationData } from '../../../models/visualization-data';
 import { Player } from '../../../models/player';
 import { PlayerView } from '../../../models/enums/player-view..enum';
 import { Level } from '../../../models/level';
 import { PlayerLevel } from '../../../models/player-level';
-import { View } from '../../../models/view.enum';
 import { PlayerSelectData } from '../../../models/player-select-data';
 @Component({
   selector: 'kypo2-viz-hurdling-player-selection',

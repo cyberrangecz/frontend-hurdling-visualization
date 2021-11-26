@@ -13,7 +13,7 @@
 			</span>
 
 	</div>
-	<mat-grid-list cols="{{ numberOfColumns }}" rowHeight="1:1.4" gutterSize="2%" (mouseout)="hideTooltip()">
+	<mat-grid-list cols="{{ numberOfColumns }}" rowHeight="1:1.6" gutterSize="2%" (mouseout)="hideTooltip()">
 		<mat-grid-tile class="participant-tile" *ngFor="let player of visualizationData.players">
 			<ng-container>
 				<div class="participant-tile-container" (mouseover)="over(player)"
