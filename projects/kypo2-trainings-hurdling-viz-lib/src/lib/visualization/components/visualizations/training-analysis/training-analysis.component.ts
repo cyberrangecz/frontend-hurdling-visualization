@@ -52,7 +52,7 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
   @Input() visualizationData: VisualizationData;
 
   @Input() view = this.appConfig.defaultView;
-  @Input() selectedPlayerView: PlayerView = PlayerView.Avatar;
+  @Input() selectedPlayerView: PlayerView = PlayerView.Both;
 
   @Input() colorScheme: string[];
   @Input() eventService: TrainingAnalysisEventService;
