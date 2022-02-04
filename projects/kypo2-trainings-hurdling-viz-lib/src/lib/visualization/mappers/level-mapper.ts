@@ -30,7 +30,7 @@ export class LevelMapper {
         case 'INFO_LEVEL': return LevelTypeEnum.Info;
         case 'ASSESSMENT_LEVEL': return LevelTypeEnum.Assessment;
         case 'TRAINING_LEVEL': return LevelTypeEnum.Training;
-
+        case 'ACCESS_LEVEL': return LevelTypeEnum.Access;
       }
     }
   }

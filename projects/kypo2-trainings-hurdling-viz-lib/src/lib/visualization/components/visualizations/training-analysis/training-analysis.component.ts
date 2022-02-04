@@ -957,8 +957,9 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
             return '<div>' +
                         '<span class="ctf-progress-tooltip-item"> ' +
                           (thisLevel.levelType === 'info' ? 'Info level' :
-                              thisLevel.levelType === 'assessment' ? 'Questionnaire level' :
-                                  'Level ' + this.getTrainingLevelIndex(thisLevel)) + ' </span>' +
+                              thisLevel.levelType === 'access' ? 'Access level' :
+                                  thisLevel.levelType === 'assessment' ? 'Questionnaire level' :
+                                      'Level ' + this.getTrainingLevelIndex(thisLevel)) + ' </span>' +
               '<span>' + thisLevel.title + '</span>' +
                     '</div>';
           })
@@ -1441,6 +1442,9 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
         let sortLevelName: string;
         if (this.levels[index].levelType === 'info') {
           sortLevelName = difference > 530 ? 'Info' : 'I';
+        }
+        if (this.levels[index].levelType === 'access') {
+          sortLevelName = difference > 530 ? 'Access' : 'A';
         }
         if (this.levels[index].levelType === 'assessment') {
           sortLevelName = difference > 530 ? 'Q' : 'Q';
