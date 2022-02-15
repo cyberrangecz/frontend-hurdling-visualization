@@ -112,15 +112,6 @@
             "protractorConfig": "./protractor.conf.js",
             "devServerTarget": "example-app:serve:development"
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": []
-          }
         }
       }
     },
