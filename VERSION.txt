@@ -1,3 +1,4 @@
+13.0.1 Fix event tooltip
 13.0.0 Update to Angular 13, CI/CD optimization, access level type added
 12.0.8 Fix default player select view
 12.0.7 Fix player selection component trainee name
