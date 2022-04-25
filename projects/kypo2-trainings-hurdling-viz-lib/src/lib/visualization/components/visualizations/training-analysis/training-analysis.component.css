@@ -1,12 +1,10 @@
 /* layout */
 .ctf-progress-wrapper * {
     box-sizing: border-box;
-    font-family: 'Roboto', "Helvetica Neue";
 }
 
 .ctf-progress-wrapper {
     box-sizing: border-box;
-    font-family: 'Roboto', "Helvetica Neue", sans-serif;
     position: relative;
     padding-bottom: 1em;
     width: 100%;
@@ -33,10 +31,6 @@
     margin: 0 0.75em 0.5em 0 !important;
     font-weight: 400 !important;
     line-height: 34px !important;
-}
-
-.ctf-progress {
-    font-family: 'Roboto', "Helvetica Neue", sans-serif;
 }
 
 .ctf-progress-chart {
