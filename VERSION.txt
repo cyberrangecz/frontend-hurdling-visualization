@@ -1,3 +1,4 @@
+13.1.0 Change polling strategy to use max retry attempts and increase timetout on error.
 13.0.1 Fix event tooltip
 13.0.0 Update to Angular 13, CI/CD optimization, access level type added
 12.0.8 Fix default player select view
