@@ -15,6 +15,7 @@ export class AppConfig {
 	zoomStep: number;
 	simulationInterval: number;
 	loadDataInterval: number;
+	retryAttempts: number;
 	defaultView: View;
 	viewOptions: DisplayView[];
 	filterOptions: DisplayView[];
@@ -57,6 +58,7 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
 	zoomStep: 0.25,
 	simulationInterval: 800,
 	loadDataInterval: 5000,
+	retryAttempts: 3,
 	defaultView: View.Overview,
 	viewOptions: [
 		{

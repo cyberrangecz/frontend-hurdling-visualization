@@ -1,16 +1,15 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription, timer } from 'rxjs';
-import { filter, map, takeWhile } from 'rxjs/operators';
-import { ConfigService } from '../../config/config.service';
-import { VisualizationDataDTO } from '../../DTOs/visualization-data-dto';
-import { VisualizationDataMapper } from '../../mappers/visualization-data-mapper';
-import { VisualizationData } from '../../models/visualization-data';
-import { VisualizationsDataService } from '../../services/visualizations-data.service';
-import { AppConfig } from '../../../app.config';
-import { View } from '../../models/view.enum';
-import { EventType } from '../../models/enums/event-type.enum';
-import { PlayerView } from '../../models/enums/player-view..enum';
-import { TrainingAnalysisEventService } from '../../models/training-analysis-event-service';
+import {catchError, delay, EMPTY, exhaustMap, Observable, of, repeat, retryWhen, timer} from 'rxjs';
+import {takeUntil, takeWhile, tap} from 'rxjs/operators';
+import {VisualizationDataDTO} from '../../DTOs/visualization-data-dto';
+import {VisualizationDataMapper} from '../../mappers/visualization-data-mapper';
+import {VisualizationData} from '../../models/visualization-data';
+import {VisualizationsDataService} from '../../services/visualizations-data.service';
+import {AppConfig} from '../../../app.config';
+import {View} from '../../models/view.enum';
+import {EventType} from '../../models/enums/event-type.enum';
+import {PlayerView} from '../../models/enums/player-view..enum';
+import {TrainingAnalysisEventService} from '../../models/training-analysis-event-service';
 import {Player} from "../../models/player";
 
 @Component({
@@ -46,7 +45,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
     private appConfig: AppConfig
   ) {}
 
-  ngOnInit() { 
+  ngOnInit() {
     if(this.JSONData) {
       if(this.view === View.Overview){
         this.visualizationData$ = of(VisualizationDataMapper.fromDTO(this.JSONData));
@@ -58,16 +57,14 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
     }
     else {
       this.visualizationData$ = this.visualizationDataService.visualizationData$;
-      this.loadData();
       this.initUpdateSubscription();
     }
   }
 
   private loadData() {
-    this.visualizationDataService
+    return this.visualizationDataService
       .getData(this.trainingInstanceId)
       .pipe(takeWhile(() => this.isAlive))
-      .subscribe();
   }
 
   initSimulation(interval: number = 1000):void {
@@ -108,13 +105,33 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   }
 
   initUpdateSubscription() {
+    let retryAttempt = 1;
+    let subscription$;
     if (this.isStandalone) {
-      this.loadData();
+      subscription$ = this.loadData();
     } else {
-      timer(0, this.appConfig.loadDataInterval)
-          .pipe(takeWhile(() => this.isAlive))
-          .subscribe(() => this.loadData())
+      subscription$ = of({}).pipe(
+          exhaustMap(() => this.loadData()), // waits for the response
+          tap(() => {
+            // reset retry on successful request if it was previously increased (this resets polling delay as well)
+            if (retryAttempt > 1) {
+              retryAttempt = 1
+            }
+          }),
+          catchError((err) => {
+            // on 4xx or 5xx backend response increase attempts
+            retryAttempt++;
+            if (retryAttempt <= this.appConfig.retryAttempts) {
+              return of(EMPTY) // catch error to allow additional attempt
+            } else {
+              return err
+            }
+          }),
+          delay(this.appConfig.loadDataInterval * retryAttempt), // increase delay exponentially on error
+          repeat()
+      );
     }
+    subscription$.pipe(takeWhile(() => this.isAlive)).subscribe();
   }
 
   emitHighlightedPlayer(event: number): void {
