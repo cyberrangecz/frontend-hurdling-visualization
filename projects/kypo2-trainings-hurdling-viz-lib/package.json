@@ -1,6 +1,6 @@
 {
   "name": "@muni-kypo-crp/hurdling-visualization",
-  "version": "13.0.1",
+  "version": "13.1.0",
   "peerDependencies": {
     "@angular/common": "^13.2.2",
     "@angular/core": "^13.2.2",
