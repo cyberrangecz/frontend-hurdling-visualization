@@ -3,7 +3,7 @@ import {AppConfig} from '../../../../app.config';
 import { View } from '../../../models/view.enum';
 
 @Component({
-  selector: 'kypo2-viz-hurdling-legend',
+  selector: 'kypo-viz-hurdling-legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.css']
 })

@@ -158,9 +158,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -337,9 +337,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -510,9 +510,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -677,9 +677,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -834,9 +834,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -985,9 +985,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -1133,9 +1133,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -1275,9 +1275,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -1411,9 +1411,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -1533,9 +1533,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'
@@ -1636,9 +1636,9 @@
 | * 6ff5133 -- Clear personal data from mocks
 |/  
 * 536cc0d -- Update project package.json version based on GitLab tag. Done by CI
-*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo2-auth-with-sentinel-auth' into 'master'
+*   7e71b87 -- Merge branch '40-replace-dependency-on-kypo-auth-with-sentinel-auth' into 'master'
 |\  
-| * f96b45b -- Resolve "Replace dependency on kypo2-auth with sentinel-auth"
+| * f96b45b -- Resolve "Replace dependency on kypo-auth with sentinel-auth"
 |/  
 * d111d53 -- Update project package.json version based on GitLab tag. Done by CI
 *   dd7a8da -- Merge branch '38-update-endpoint-for-training-events' into 'master'

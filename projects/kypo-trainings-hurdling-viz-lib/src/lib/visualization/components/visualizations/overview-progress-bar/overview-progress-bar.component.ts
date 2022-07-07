@@ -5,7 +5,7 @@ import { PlayerProgress } from '../../../models/player-progress';
 import { TrainingRunStartedEvent } from '../../../models/training-run-started-event';
 
 @Component({
-  selector: 'kypo2-viz-hurdling-overview-progress-bar',
+  selector: 'kypo-viz-hurdling-overview-progress-bar',
   templateUrl: './overview-progress-bar.component.html',
   styleUrls: ['./overview-progress-bar.component.css']
 })

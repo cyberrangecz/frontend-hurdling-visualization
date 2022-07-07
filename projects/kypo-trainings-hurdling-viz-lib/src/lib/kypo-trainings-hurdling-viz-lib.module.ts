@@ -18,7 +18,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { LevelListComponent } from './visualization/components/visualizations/level-list/level-list.component';
 import { LegendComponent } from './visualization/components/visualizations/legend/legend.component';
-import { HurdlingVisualizationConfig } from './visualization/config/kypo2-trainings-hurdling-viz-lib';
+import { HurdlingVisualizationConfig } from './visualization/config/kypo-trainings-hurdling-viz-lib';
 import { VisualizationDataApi } from './visualization/api/visualization-data-api.service';
 import { VisualizationDataDefaultApi } from './visualization/api/visualization-data-default-api.service';
 import { VisualizationsDataService } from './visualization/services/visualizations-data.service';
@@ -67,17 +67,17 @@ import { MatDividerModule } from '@angular/material/divider';
     PlayerSelectionComponent
   ]
 })
-export class Kypo2TrainingsHurdlingVizLibModule {
-  constructor(@Optional() @SkipSelf() parentModule: Kypo2TrainingsHurdlingVizLibModule) {
+export class KypoTrainingsHurdlingVizLibModule {
+  constructor(@Optional() @SkipSelf() parentModule: KypoTrainingsHurdlingVizLibModule) {
     if (parentModule) {
       throw new Error(
-        'Kypo2TrainingsHurdlingVizLibModule is already loaded. Import it in the main module only');
+        'KypoTrainingsHurdlingVizLibModule is already loaded. Import it in the main module only');
     }
   }
 
-  static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<Kypo2TrainingsHurdlingVizLibModule> {
+  static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<KypoTrainingsHurdlingVizLibModule> {
     return {
-      ngModule: Kypo2TrainingsHurdlingVizLibModule,
+      ngModule: KypoTrainingsHurdlingVizLibModule,
       providers: [
         {provide: HurdlingVisualizationConfig, useValue: config}
       ]

@@ -17,7 +17,7 @@ import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
 import { VisualizationsDataService } from '../../../services/visualizations-data.service';
 
 @Component({
-  selector: 'kypo2-player-detail',
+  selector: 'kypo-player-detail',
   templateUrl: './player-detail.component.html',
   styleUrls: ['./player-detail.component.css']
 })

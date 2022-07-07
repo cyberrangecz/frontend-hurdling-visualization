@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HurdlingVisualizationConfig} from './kypo2-trainings-hurdling-viz-lib';
+import {HurdlingVisualizationConfig} from './kypo-trainings-hurdling-viz-lib';
 
 @Injectable()
 export class ConfigService {

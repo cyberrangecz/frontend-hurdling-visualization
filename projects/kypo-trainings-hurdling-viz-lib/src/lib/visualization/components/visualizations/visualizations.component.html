@@ -1,5 +1,5 @@
 <ng-container *ngIf="visualizationData$ | async">
-	<kypo2-viz-hurdling 
+	<kypo-viz-hurdling 
 		[visualizationData]="visualizationData$ | async" 
 		[view]="view"
 		[colorScheme]="colorScheme"
@@ -13,5 +13,5 @@
 		(outputSelectedPlayers)="selectedPlayers($event)"
 		(highlightedPlayer)="emitHighlightedPlayer($event)">
 
-	</kypo2-viz-hurdling>
+	</kypo-viz-hurdling>
 </ng-container>

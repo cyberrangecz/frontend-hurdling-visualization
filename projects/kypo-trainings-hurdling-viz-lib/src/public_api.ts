@@ -1,11 +1,11 @@
 /*
- * Public API Surface of kypo2-trainings-hurdling-viz-lib
+ * Public API Surface of kypo-trainings-hurdling-viz-lib
  */
 
-export {Kypo2TrainingsHurdlingVizLibModule} from './lib/kypo2-trainings-hurdling-viz-lib.module';
+export {KypoTrainingsHurdlingVizLibModule} from './lib/kypo-trainings-hurdling-viz-lib.module';
 export {TrainingAnalysisComponent} from './lib/visualization/components//visualizations/training-analysis/training-analysis.component';
 export {PlayerSelectionComponent} from './lib/visualization/components/visualizations/player-selection/player-selection.component';
-export {HurdlingVisualizationConfig} from './lib/visualization/config/kypo2-trainings-hurdling-viz-lib';
+export {HurdlingVisualizationConfig} from './lib/visualization/config/kypo-trainings-hurdling-viz-lib';
 export {PlayerView} from  './lib/visualization/models/enums/player-view..enum';
 export {Player} from './lib/visualization/models/player';
 export {View} from './lib/visualization/models/view.enum';
