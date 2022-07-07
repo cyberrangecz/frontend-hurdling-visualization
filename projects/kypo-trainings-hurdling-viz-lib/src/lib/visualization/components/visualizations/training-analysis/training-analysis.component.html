@@ -38,38 +38,38 @@
     </div>
 
     <ng-container *ngIf="view == 'progress'">
-        <kypo2-viz-hurdling-overview-progress-bar
+        <kypo-viz-hurdling-overview-progress-bar
             [visualizationData]="visualizationData">
-        </kypo2-viz-hurdling-overview-progress-bar>
+        </kypo-viz-hurdling-overview-progress-bar>
     </ng-container>
 
     <div *ngIf="view == 'progress' && !playerDetailId" class="player-grid-container">
-        <kypo2-viz-hurdling-player-selection
+        <kypo-viz-hurdling-player-selection
             [visualizationData]="visualizationData"
             [selectedPlayerView]="selectedPlayerView"
             [filteredPlayers]="filteredPlayers"
             (filteredPlayersChange)="setFilteredPlayers($event)"
             (highlightPlayerChange)="setHighlightedPlayer($event)"
             >
-        </kypo2-viz-hurdling-player-selection>
+        </kypo-viz-hurdling-player-selection>
     </div>
 
     <div *ngIf="view == 'progress'" class="level-grid-container">
-        <kypo2-viz-hurdling-level-list
+        <kypo-viz-hurdling-level-list
             [visualizationData]="visualizationData"
             (filteredPlayers)="setFilteredPlayers($event)"
             (playerSort)="setSort($event)">
-        </kypo2-viz-hurdling-level-list>
+        </kypo-viz-hurdling-level-list>
     </div>
 
 
     <div *ngIf="playerDetailId" class="player-detail-container">
-        <kypo2-player-detail
+        <kypo-player-detail
         [player]=getPlayerData(playerDetailId)
         [visualizationData]="visualizationData"
         [trainingInstanceId]="trainingInstanceId"
         (hideDetail)="onPlayerDetailChange()">
-        </kypo2-player-detail>
+        </kypo-player-detail>
     </div>
     
  
@@ -81,13 +81,13 @@
             <div *ngIf="hasData"
                 class="ctfh-col-2 final-2-name">
                 <div class="ctf-progress-column ctf-progress-teamcolumn">
-                    <kypo2-viz-hurdling-column-header
+                    <kypo-viz-hurdling-column-header
                         (onSort)="onSortValueChange('name', $event.sortReverse)"
                         [sortType]="'name'"
                         [selectedSortType]="sortType"
                         [selectedSortReverse]="sortReverse"
                         [label]="'Trainee'">
-                    </kypo2-viz-hurdling-column-header>
+                    </kypo-viz-hurdling-column-header>
                 </div>
             </div>
 
@@ -95,7 +95,7 @@
 
             <div class="ctfh-col-8 {{view == 'overview' ? 'final-8' : ''}}" *ngIf="hasData">
                 <div class="ctf-progress-header-levels">
-                    <kypo2-viz-hurdling-column-header
+                    <kypo-viz-hurdling-column-header
                             *ngFor="let level of levelSortOptions"
                             (onSort)="onSortValueChange('level', $event.sortReverse, level.index)"
                             [sortType]="'level' + level.index"
@@ -103,7 +103,7 @@
                             [selectedSortReverse]="sortReverse"
                             [label]="level.name"
                             [level]="level">
-                    </kypo2-viz-hurdling-column-header>
+                    </kypo-viz-hurdling-column-header>
                     <span *ngIf="time && view == 'progress'"
                           class="ctf-progress-header-column"
                           id="ctf-progress-time"
@@ -119,13 +119,13 @@
                      class="ctfh-col-2 "
                      [ngClass]="{ 'final-2': view == 'overview' && column == 'time' }">
                     <div class="{{'ctf-progress-column ctf-progress-' + column + 'column'}}">
-                        <kypo2-viz-hurdling-column-header
+                        <kypo-viz-hurdling-column-header
                             (onSort)="onSortValueChange(column, $event.sortReverse)"
                             [sortType]="column"
                             [selectedSortType]="sortType"
                             [selectedSortReverse]="sortReverse"
                             [label]="column.charAt(0).toUpperCase() + column.slice(1)">
-                        </kypo2-viz-hurdling-column-header>
+                        </kypo-viz-hurdling-column-header>
                     </div>
                 </div>
             </ng-container>
@@ -172,10 +172,10 @@
             </ng-container>
         </div>
         <div class="legend-container">
-            <kypo2-viz-hurdling-legend
+            <kypo-viz-hurdling-legend
                 [selectedViewValue]="view"
                 (zoomResetChange)="onZoomReset()">
-             </kypo2-viz-hurdling-legend>
+             </kypo-viz-hurdling-legend>
         </div>
     </div>
 

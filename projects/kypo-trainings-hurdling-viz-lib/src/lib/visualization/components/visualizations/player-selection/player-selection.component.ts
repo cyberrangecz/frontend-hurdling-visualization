@@ -8,7 +8,7 @@ import { Level } from '../../../models/level';
 import { PlayerLevel } from '../../../models/player-level';
 import { PlayerSelectData } from '../../../models/player-select-data';
 @Component({
-  selector: 'kypo2-viz-hurdling-player-selection',
+  selector: 'kypo-viz-hurdling-player-selection',
   templateUrl: './player-selection.component.html',
   styleUrls: ['./player-selection.component.css']
 })
@@ -150,7 +150,7 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
   
   showTooltip(innerText, event): void {
     const tooltip = this.d3
-        .select('.vis-participant-grid .kypo2-viz-hurdling-player-tooltip');
+        .select('.vis-participant-grid .kypo-viz-hurdling-player-tooltip');
 
     tooltip
         .transition()
@@ -168,7 +168,7 @@ export class PlayerSelectionComponent implements OnInit, OnChanges {
 
   hideTooltip(): void {
     this.d3
-        .select('.kypo2-viz-hurdling-player-tooltip')
+        .select('.kypo-viz-hurdling-player-tooltip')
         .transition()
         .style('opacity', 0);
 

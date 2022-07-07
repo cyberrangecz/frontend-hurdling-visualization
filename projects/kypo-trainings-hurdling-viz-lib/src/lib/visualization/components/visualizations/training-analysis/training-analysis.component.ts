@@ -47,7 +47,7 @@ import { WrongAnswerEvent } from "../../../models/wrong-answer-event";
 import { TrainingRunEndedEvent } from "../../../models/training-run-ended-event";
 
 @Component({
-  selector: "kypo2-viz-hurdling",
+  selector: "kypo-viz-hurdling",
   templateUrl: "./training-analysis.component.html",
   styleUrls: ["./training-analysis.component.css"],
   encapsulation: ViewEncapsulation.None,

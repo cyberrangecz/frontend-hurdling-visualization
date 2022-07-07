@@ -5,7 +5,7 @@ import { Player } from '../../../models/player';
 import { VisualizationData } from '../../../models/visualization-data';
 
 @Component({
-  selector: 'kypo2-viz-hurdling-level-list',
+  selector: 'kypo-viz-hurdling-level-list',
   templateUrl: './level-list.component.html',
   styleUrls: ['./level-list.component.css'],
   encapsulation: ViewEncapsulation.None

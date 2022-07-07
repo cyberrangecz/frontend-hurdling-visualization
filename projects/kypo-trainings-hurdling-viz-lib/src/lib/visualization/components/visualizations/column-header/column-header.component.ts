@@ -3,7 +3,7 @@ import { ViewEncapsulation } from '@angular/core';
 import { CTF_PROGRESS_CONFIG } from '../../../../app.config';
 
 @Component({
-  selector: 'kypo2-viz-hurdling-column-header',
+  selector: 'kypo-viz-hurdling-column-header',
   templateUrl: './column-header.component.html',
   styleUrls: ['./column-header.component.css'],
   encapsulation: ViewEncapsulation.None

@@ -20,11 +20,11 @@
     "module": "esnext",
     "baseUrl": "./",
     "paths": {
-      "kypo2-trainings-hurdling-viz-lib": [
-        "dist/kypo2-trainings-hurdling-viz-lib"
+      "kypo-trainings-hurdling-viz-lib": [
+        "dist/kypo-trainings-hurdling-viz-lib"
       ],
-      "kypo2-trainings-hurdling-viz-lib/*": [
-        "dist/kypo2-trainings-hurdling-viz-lib/*"
+      "kypo-trainings-hurdling-viz-lib/*": [
+        "dist/kypo-trainings-hurdling-viz-lib/*"
       ]
     }
   }
