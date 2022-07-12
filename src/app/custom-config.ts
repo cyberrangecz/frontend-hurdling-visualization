@@ -3,5 +3,4 @@ import {HurdlingVisualizationConfig } from '../../projects/kypo-trainings-hurdli
 
 export const CustomConfig: HurdlingVisualizationConfig = {
   trainingServiceUrl: environment.trainingServiceUrl,
-  elasticSearchServiceUrl: environment.elasticSearchServiceUrl
 };
