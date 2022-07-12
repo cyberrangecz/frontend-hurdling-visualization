@@ -7,7 +7,6 @@ const HOME_URL = 'https://localhost:4200'
 export const environment = {
   production: true,
   trainingServiceUrl: 'https://172.19.0.22/kypo-rest-training/api/v1/',
-  elasticSearchServiceUrl: 'https://172.19.0.22/kypo-elasticsearch-service/api/v1/',
   // URL of the SPA to redirect the user after silent refresh
   silentRefreshRedirectUri: HOME_URL,
   // URL of the SPA to redirect the user to after login
