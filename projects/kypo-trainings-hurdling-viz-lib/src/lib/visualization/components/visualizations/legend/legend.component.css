@@ -4,7 +4,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     text-align: left;
-    margin-top: 0.2em;
+    margin: 5px 10px 5px;
 }
 
 .ctf-progress-legend-item {

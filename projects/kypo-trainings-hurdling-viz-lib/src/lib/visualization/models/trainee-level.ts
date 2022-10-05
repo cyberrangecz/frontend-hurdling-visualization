@@ -1,7 +1,6 @@
 import { Event } from './event';
-import { Hint } from './hint';
 
-export class PlayerLevel {
+export class TraineeLevel {
     id: number;
     state: string;
     startTime: number;

@@ -1,9 +1,9 @@
 import { Event } from './event';
 
 export class TrainingDataEntry {
-    playerId: number;
-    playerName: string;
-    playerAvatar: string;
+    traineeId: number;
+    traineeName: string;
+    traineeAvatar: string;
     events: Event[];
     eventGroups: [];
     answers: number;

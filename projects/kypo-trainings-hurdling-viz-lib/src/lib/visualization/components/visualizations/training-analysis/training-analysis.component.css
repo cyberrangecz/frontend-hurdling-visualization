@@ -1,5 +1,5 @@
 /* layout */
-.ctf-progress-wrapper * {
+.ctf-progress-wrapper .visualization-container * {
     box-sizing: border-box;
 }
 
@@ -79,7 +79,7 @@
 
 /* team highlighting */
 .visualization-container.final .ctf-progress-column text:not(.data-hover) {
-    fill: #d8d8d8;
+    /*fill: #d8d8d8;*/
     transition: none;
 }
 
@@ -406,5 +406,5 @@
 }
 
 .hidden {
-	opacity: 0 !important;
+    opacity: 0 !important;
 }

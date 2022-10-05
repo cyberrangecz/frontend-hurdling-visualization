@@ -1,8 +1,8 @@
 import { VisualizationDataDTO } from '../DTOs/visualization-data-dto';
 import { VisualizationData } from '../models/visualization-data';
 import { LevelMapper } from './level-mapper';
-import { PlayerMapper } from './player-mapper';
-import { PlayerProgressMapper } from './player-progress-mapper';
+import { TraineeMapper } from './trainee-mapper';
+import { TraineeProgressMapper } from './trainee-progress-mapper';
 
 export class VisualizationDataMapper {
   static fromDTO(dto: VisualizationDataDTO): VisualizationData {
@@ -11,8 +11,8 @@ export class VisualizationDataMapper {
     result.estimatedEndTime = dto.estimated_end_time;
     result.currentTime = dto.current_time;
     result.levels = LevelMapper.fromDTOs(dto.levels);
-    result.players = PlayerMapper.fromDTOs(dto.players, dto.player_progress);
-    result.playerProgress = PlayerProgressMapper.fromDTOs(dto.player_progress);
+    result.trainees = TraineeMapper.fromDTOs(dto.players, dto.player_progress);
+    result.traineeProgress = TraineeProgressMapper.fromDTOs(dto.player_progress);
     return result;
   }
 }

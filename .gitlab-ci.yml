@@ -90,4 +90,3 @@ deploy:
     - npm run ci-publish-package
   only:
     - tags
-

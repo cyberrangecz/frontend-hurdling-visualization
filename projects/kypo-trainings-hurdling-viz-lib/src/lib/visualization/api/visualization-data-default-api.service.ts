@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
-import { PlayerDTO } from '../DTOs/player-dto';
+import { TraineeDTO } from '../DTOs/trainee-dto';
 import { VisualizationDataDTO } from '../DTOs/visualization-data-dto';
 import { CommandLineMapper } from '../mappers/command-line-mapper';
-import { PlayerMapper } from '../mappers/player-mapper';
+import { TraineeMapper } from '../mappers/trainee-mapper';
 import { VisualizationDataMapper } from '../mappers/visualization-data-mapper';
 import { CommandLineEntry } from '../models/command-line-entry';
-import { Player } from '../models/player';
+import { Trainee } from '../models/trainee';
 import { VisualizationData } from '../models/visualization-data';
 import { VisualizationDataApi } from './visualization-data-api.service';
 
@@ -18,12 +18,12 @@ import { VisualizationDataApi } from './visualization-data-api.service';
  */
 @Injectable()
 export class VisualizationDataDefaultApi extends VisualizationDataApi {
-  
+
 
   constructor(private http: HttpClient, private configService: ConfigService) {
       super();
     }
-    
+
   /**
    * Sends http request to retrieve all data for visualizations
    */
@@ -48,7 +48,7 @@ export class VisualizationDataDefaultApi extends VisualizationDataApi {
   getTrainingRunData(trainingInstanceId: number, trainingRunId: number): Observable<CommandLineEntry[]> {
     return this.http
       .get<any>(
-        this.configService.config.trainingServiceUrl + 
+        this.configService.config.trainingServiceUrl +
         `visualizations/training-instances/${trainingInstanceId}/training-runs/${trainingRunId}/commands`
       )
       .pipe(

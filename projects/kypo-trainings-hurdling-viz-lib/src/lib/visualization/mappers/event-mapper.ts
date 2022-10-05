@@ -18,17 +18,12 @@ export class EventMapper {
     }
 
     private static eventResolver(dto: EventDTO): Event {
-        let event; 
+        let event;
         switch(dto.type) {
             case EventType.hint: {
                 event = new HintTakenEvent();
                 event.hintId = dto.hint_id;
                 event.hintTitle = dto.hint_title;
-                break;
-            }
-            case EventType.wrongAnswer: {
-                event = new WrongAnswerEvent();
-                event.answerContent = dto.answer_content;
                 break;
             }
             case EventType.wrongFlag: {
@@ -57,5 +52,4 @@ export class EventMapper {
         event.levelId = dto.level;
         return event;
     }
-
 }

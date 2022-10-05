@@ -4,8 +4,8 @@ export abstract class Event {
     trainingTime: number;
     levelId: number;
     levelNumber: number;
-    playerId: number;
-    playerName: string;
+    traineeId: number;
+    traineeName: string;
     protected constructor(){};
     abstract getContent(): string
 }

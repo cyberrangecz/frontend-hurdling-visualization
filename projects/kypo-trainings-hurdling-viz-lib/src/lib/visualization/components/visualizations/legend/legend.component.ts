@@ -16,7 +16,7 @@ export class LegendComponent implements OnInit {
   public pathConfig;
 
   constructor(private appConfig: AppConfig) {
-    this.pathConfig = appConfig.eventShapePaths;
+    this.pathConfig = { ...appConfig.shapes, ...appConfig.eventProps.eventShapes }
   }
 
   ngOnInit(): void {

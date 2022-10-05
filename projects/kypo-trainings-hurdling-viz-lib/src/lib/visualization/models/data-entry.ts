@@ -1,5 +1,5 @@
 export class DataEntry {
-	playerName: string;
+	traineeName: string;
 	event: string;
 	level: number;
 	time: number;

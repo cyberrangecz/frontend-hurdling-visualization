@@ -1,6 +1,6 @@
 import { LevelDTO } from '../DTOs/level-dto';
 import { Level } from '../models/level';
-import { LevelTypeEnum } from '../enums/level-type.enum'; 
+import { LevelTypeEnum } from '../enums/level-type.enum';
 import { HintMapper } from './hint-mapper';
 
 export class LevelMapper {
@@ -8,7 +8,7 @@ export class LevelMapper {
       const result = dtos.map(dto => LevelMapper.fromDTO(dto));
       return result;
     }
-  
+
     static fromDTO(dto: LevelDTO): Level {
       const result = new Level();
       result.id = dto.id;

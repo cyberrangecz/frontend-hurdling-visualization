@@ -7,12 +7,12 @@ body {
 	background-color: #f6f6f6;
 }
 
-.level-grid-container, .progress-bar, .player-grid-container, .container-fluid, .visualization-container, .player-detail-container {
+.level-grid-container, .progress-bar, .trainee-grid-container, .container-fluid, .visualization-container, .trainee-detail-container, .trainee-selection {
 	background-color: white;
 	border-radius: 2px;
 }
 
-.player-grid-container {
+.trainee-grid-container, .trainee-selection {
 	margin: 10px 20px 1px;
 	padding: 10px 0;
 }
@@ -31,7 +31,7 @@ body {
 	padding: 10px 0;
 }
 
-.player-detail-container {
+.trainee-detail-container {
 	margin: 1px 20px 0px !important;
 	padding: 1px 0;
 }
