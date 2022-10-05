@@ -4,12 +4,9 @@ export enum EventType {
         assessmentAnswers = 'cz.muni.csirt.kypo.events.trainings.AssessmentAnswers',
         trainingExited = 'cz.muni.csirt.kypo.events.trainings.TrainingRunSurrendered',
         hint = 'cz.muni.csirt.kypo.events.trainings.HintTaken',
-        wrongAnswer = 'cz.muni.csirt.kypo.events.trainings.WrongAnswerSubmitted',
-        wrongPasskey = 'cz.muni.csirt.kypo.events.trainings.WrongPasskeySubmitted',
-        wrongFlag = 'cz.muni.csirt.kypo.events.trainings.WrongFlagSubmitted',
-        levelStarted = 'cz.muni.csirt.kypo.events.trainings.LevelStarted',
+        wrongFlag = 'cz.muni.csirt.kypo.events.trainings.WrongAnswerSubmitted',
+        levelStarted = "cz.muni.csirt.kypo.events.trainings.LevelStarted",
         levelCompleted = 'cz.muni.csirt.kypo.events.trainings.LevelCompleted',
-        correctAnswer = 'cz.muni.csirt.kypo.events.trainings.CorrectAnswerSubmitted',
-        correctPasskey = 'cz.muni.csirt.kypo.events.trainings.CorrectPasskeySubmitted',
+        correctFlag = 'cz.muni.csirt.kypo.events.trainings.CorrectAnswerSubmitted',
         solution = 'cz.muni.csirt.kypo.events.trainings.SolutionDisplayed'
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Level } from '../../../models/level';
 import { User } from '@sentinel/auth';
-import { Player } from '../../../models/player';
+import { Trainee } from '../../../models/trainee';
 import { VisualizationData } from '../../../models/visualization-data';
 
 @Component({
@@ -14,43 +14,43 @@ export class LevelListComponent  {
 
   @Input() visualizationData: VisualizationData;
 
-  @Output() filteredPlayers = new EventEmitter<Player[]>();
-  @Output() playerSort = new EventEmitter<Level>();
-  
+  @Output() filteredTrainees = new EventEmitter<Trainee[]>();
+  @Output() traineeSort = new EventEmitter<Level>();
+
   constructor() { }
   ngOnInit() {
-    
+
   }
 
   ngOnChanges() {
-    
+
   }
 
-  getPlayersForLevel(levelId): Player[] {
-    const players: Player[] = [];
-    this.visualizationData.playerProgress.forEach(playerProgress => {
-      if(playerProgress.levels.find(level => level.id == levelId && level.startTime && !level.endTime)){
-        players.push(this.visualizationData.players.find(player => player.userRefId === playerProgress.userRefId));
+  getTraineesForLevel(levelId): Trainee[] {
+    const trainees: Trainee[] = [];
+    this.visualizationData.traineeProgress.forEach(traineeProgress => {
+      if(traineeProgress.levels.find(level => level.id == levelId && level.startTime && !level.endTime)){
+        trainees.push(this.visualizationData.trainees.find(trainee => trainee.userRefId === traineeProgress.userRefId));
       }
     });
-    return players;
+    return trainees;
   }
 
-  getFinishedPlayers() {
-    const players: Player[] = [];
-    this.visualizationData.playerProgress.forEach(playerProgress => {
-      const finishedLevels = playerProgress.levels.filter(level => level.state == 'FINISHED');
+  getFinishedTrainees() {
+    const trainees: Trainee[] = [];
+    this.visualizationData.traineeProgress.forEach(traineeProgress => {
+      const finishedLevels = traineeProgress.levels.filter(level => level.state == 'FINISHED');
       if(finishedLevels.length == this.visualizationData.levels.length){
-        players.push(this.visualizationData.players.find(player => player.userRefId == playerProgress.userRefId))
+        trainees.push(this.visualizationData.trainees.find(trainee => trainee.userRefId == traineeProgress.userRefId))
       }
     })
-    return players;
+    return trainees;
   }
 
   isFinished(levelId: number): boolean {
-    return this.visualizationData.playerProgress.map(playerProgress => 
-      playerProgress.levels.filter(level => 
-        level.id == levelId && level.state == 'FINISHED')).reduce((accumulator, value) => accumulator.concat(value), []).length == this.visualizationData.playerProgress.length;
+    return this.visualizationData.traineeProgress.map(traineeProgress =>
+      traineeProgress.levels.filter(level =>
+        level.id == levelId && level.state == 'FINISHED')).reduce((accumulator, value) => accumulator.concat(value), []).length == this.visualizationData.traineeProgress.length;
   }
 
   getLevelTooltip(level: Level) {
@@ -59,9 +59,9 @@ export class LevelListComponent  {
     return level.title;
   }
 
-  filterPlayers(players: Player[], level: Level): void{
-    this.filteredPlayers.emit(players);
-    if(level) this.playerSort.emit(level);
+  filterTrainees(trainees: Trainee[], level: Level): void{
+    this.filteredTrainees.emit(trainees);
+    if(level) this.traineeSort.emit(level);
   }
 
   parseLevelName(level: Level) {

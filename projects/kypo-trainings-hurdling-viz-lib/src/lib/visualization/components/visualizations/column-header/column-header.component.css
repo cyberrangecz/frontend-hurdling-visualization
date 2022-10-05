@@ -1,5 +1,5 @@
 /* header */
-.ctf-progress-header-column, span.ctf-progress-header-column { font-size: 14px; display: inline-block; white-space: nowrap; padding-right: 12px; position: relative; color: #2f2f2f; text-decoration: none; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none;  -ms-user-select: none; user-select: none; }
+.ctf-progress-header-column, span.ctf-progress-header-column { display: inline-block; white-space: nowrap; padding-right: 12px; position: relative; color: #2f2f2f; text-decoration: none; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none;  -ms-user-select: none; user-select: none; }
 .ctf-progress-header-column:hover, .ctf-progress-header-column:active { cursor: pointer; }
 .ctf-progress-header-arrow { position: absolute; right: -3px; display: block; width: 0; height: 0; border-style: solid; }
 .ctf-progress-header-arrow-up { top: 3px; border-width: 0 6px 6px 6px; border-color: transparent transparent #c4c4c4 transparent; }

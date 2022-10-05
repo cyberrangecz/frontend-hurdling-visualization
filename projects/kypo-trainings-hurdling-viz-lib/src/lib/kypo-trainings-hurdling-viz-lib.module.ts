@@ -2,6 +2,7 @@ import { OverviewProgressBarComponent } from './visualization/components/visuali
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ProgressComponent } from './visualization/components/visualizations/progress/progress.component';
 import { TrainingAnalysisComponent } from './visualization/components/visualizations/training-analysis/training-analysis.component';
 import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
 import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
@@ -13,7 +14,7 @@ import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
 import { D3Service } from '@muni-kypo-crp/d3-service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { PlayerSelectionComponent } from './visualization/components/visualizations/player-selection/player-selection.component';
+import { TraineeSelectionComponent } from './visualization/components/visualizations/trainee-selection/trainee-selection.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { LevelListComponent } from './visualization/components/visualizations/level-list/level-list.component';
@@ -24,15 +25,16 @@ import { VisualizationDataDefaultApi } from './visualization/api/visualization-d
 import { VisualizationsDataService } from './visualization/services/visualizations-data.service';
 import { VisualizationsDataConcreteService } from './visualization/services/visualizations-data-concrete.service';
 import { VisualizationsComponent } from './visualization/components/visualizations/visualizations.component';
-import { PlayerDetailComponent } from './visualization/components/visualizations/player-detail/player-detail.component';
+import { TraineeDetailComponent } from './visualization/components/visualizations/trainee-detail/trainee-detail.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
   declarations: [
+    ProgressComponent,
     TrainingAnalysisComponent,
-    PlayerSelectionComponent,
+    TraineeSelectionComponent,
     MouseWheelDirective,
     MouseMoveDirective,
     ColumnHeaderComponent,
@@ -40,7 +42,7 @@ import { MatDividerModule } from '@angular/material/divider';
     LevelListComponent,
     LegendComponent,
     VisualizationsComponent,
-    PlayerDetailComponent
+    TraineeDetailComponent
   ],
   imports: [
     CommonModule,
@@ -62,9 +64,10 @@ import { MatDividerModule } from '@angular/material/divider';
     { provide: VisualizationsDataService, useClass: VisualizationsDataConcreteService }
   ],
   exports: [
+    ProgressComponent,
     TrainingAnalysisComponent,
     VisualizationsComponent,
-    PlayerSelectionComponent
+    TraineeSelectionComponent
   ]
 })
 export class KypoTrainingsHurdlingVizLibModule {
@@ -75,7 +78,7 @@ export class KypoTrainingsHurdlingVizLibModule {
     }
   }
 
-  static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<KypoTrainingsHurdlingVizLibModule> {
+ static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<KypoTrainingsHurdlingVizLibModule> {
     return {
       ngModule: KypoTrainingsHurdlingVizLibModule,
       providers: [

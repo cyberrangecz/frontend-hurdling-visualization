@@ -12,3 +12,8 @@ To use the library you need to have installed:
 3.  Run the server with provided parameters `json-server -w ./utils/json-server/db.js --routes ./utils/json-server/routes.json --middlewares ./utils/json-server/server.js`.
 4.  Run `npm install`.
 5.  Run the app in local environment and ssl `ng serve --configuration local --ssl` and access it on `https://localhost:4200`.
+
+## How to simulate training run with provided dummy data
+
+1. To enable simulation, in hurdling-overview.component.ts, change the `ngOnInit()` function accordingly.
+2. Run the app in local environment and ssl `ng serve --configuration local --ssl` and access it on `https://localhost:4200`.

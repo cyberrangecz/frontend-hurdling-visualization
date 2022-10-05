@@ -1,14 +1,14 @@
-import { TrainingAnalysisComponent } from '../components/visualizations/training-analysis/training-analysis.component';
+import {TrainingAnalysisComponent} from '../components/visualizations/training-analysis/training-analysis.component';
 
 export interface TrainingAnalysisEventService {
 
     trainingAnalysisComponent: TrainingAnalysisComponent;
 
-    trainingAnalysisOnBarMouseover(playerId: string): void;
+    trainingAnalysisOnBarMouseover(traineeId: string): void;
 
-    trainingAnalysisOnBarMouseout(playerId: string): void;
+    trainingAnalysisOnBarMouseout(traineeId: string): void;
 
-    trainingAnalysisOnBarClick(playerId: string): void;
+    trainingAnalysisOnBarClick(traineeId: string): void;
 
     registerTrainingAnalysisComponent(component: TrainingAnalysisComponent): void;
 }

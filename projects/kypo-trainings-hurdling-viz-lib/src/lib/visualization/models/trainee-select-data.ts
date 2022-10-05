@@ -1,7 +1,7 @@
-import { Player } from './player';
+import { Trainee } from './trainee';
 
-export class PlayerSelectData {
-    player: Player;
+export class TraineeSelectData {
+    trainee: Trainee;
     isActive: boolean;
     isSelected: boolean;
     warnings: Warnings

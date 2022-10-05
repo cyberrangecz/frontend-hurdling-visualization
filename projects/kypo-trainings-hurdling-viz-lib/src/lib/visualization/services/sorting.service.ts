@@ -13,52 +13,52 @@ export class SortingService {
   }
 
   sort(
-    trainingDataSet: GenericObject[],
+    trainingdataset: GenericObject[],
     sortReverse: boolean,
     sortType: string,
     sortLevel: number,
     view,
     levels
-  ): GenericObject[] { 
+  ): GenericObject[] {
     this.view = view;
     this.levels = levels;
 
-    let order: Order, sortedTrainingDataSet: GenericObject[];
-    
+    let order: Order, sortedTrainingdataset: GenericObject[];
+
     order = sortReverse ? Order.desc : Order.asc;
 
     switch (sortType) {
       case 'name':
-        sortedTrainingDataSet = this.sortByName(trainingDataSet, order);
+        sortedTrainingdataset = this.sortByName(trainingdataset, order);
         break;
       case 'time':
-        sortedTrainingDataSet = this.sortByNumericProperty('totalTime', trainingDataSet, order);
+        sortedTrainingdataset = this.sortByNumericProperty('totalTime', trainingdataset, order);
         break;
       case 'level':
-        sortedTrainingDataSet = this.sortByLevelTime(trainingDataSet, sortLevel, order);
+        sortedTrainingdataset = this.sortByLevelTime(trainingdataset, sortLevel, order);
         break;
       case 'active-level':
-        sortedTrainingDataSet = this.sortByActiveLevelTime(trainingDataSet, sortLevel, order);
+        sortedTrainingdataset = this.sortByActiveLevelTime(trainingdataset, sortLevel, order);
         break;
       case 'hints':
-        sortedTrainingDataSet = this.sortByNumericProperty('hints', trainingDataSet, order);
+        sortedTrainingdataset = this.sortByNumericProperty('hints', trainingdataset, order);
         break;
       case 'score':
-        sortedTrainingDataSet = this.sortByNumericProperty('score', trainingDataSet, order);
+        sortedTrainingdataset = this.sortByNumericProperty('score', trainingdataset, order);
         break;
       case 'answers':
-        sortedTrainingDataSet = this.sortByNumericProperty('answers', trainingDataSet, order);
+        sortedTrainingdataset = this.sortByNumericProperty('answers', trainingdataset, order);
         break;
 
     }
 
-    return sortedTrainingDataSet;
+    return sortedTrainingdataset;
   }
 
-  sortByNumericProperty(property, trainingDataSet: GenericObject[], order: Order): GenericObject[] {
+  sortByNumericProperty(property, trainingdataset: GenericObject[], order: Order): GenericObject[] {
     let sorted: GenericObject[] = [];
-    if (typeof trainingDataSet !== 'undefined') {
-      sorted = trainingDataSet.slice(0);
+    if (typeof trainingdataset !== 'undefined') {
+      sorted = trainingdataset.slice(0);
       sorted.sort(
           function(teamA: GenericObject, teamB: GenericObject): number {
             if (order === Order.asc)
@@ -71,19 +71,19 @@ export class SortingService {
   }
 
   sortByLevelTime(
-    trainingDataSet: GenericObject[],
+    trainingdataset: GenericObject[],
     level: number,
     order: Order
   ): GenericObject[] {
     let finishedLevel,
       currentlyInLevel,
       notYetInLevel: GenericObject[] = [];
-    if (typeof trainingDataSet !== 'undefined') {
-      finishedLevel = trainingDataSet
+    if (typeof trainingdataset !== 'undefined') {
+      finishedLevel = trainingdataset
         .slice(0)
         .filter(team => typeof team['level' + level] !== 'undefined');
 
-      currentlyInLevel = trainingDataSet
+      currentlyInLevel = trainingdataset
         .slice(0)
         .filter(
           team =>
@@ -91,7 +91,7 @@ export class SortingService {
             team['currentState'] === 'level' + level
         );
 
-      notYetInLevel = trainingDataSet
+      notYetInLevel = trainingdataset
         .slice(0)
         .filter(
           team =>
@@ -122,19 +122,19 @@ export class SortingService {
   }
 
   sortByActiveLevelTime(
-    trainingDataSet: GenericObject[],
+    trainingdataset: GenericObject[],
     level: number,
     order: Order
   ): GenericObject[] {
     let finishedLevel,
       currentlyInLevel,
       notYetInLevel: GenericObject[] = [];
-    if (typeof trainingDataSet !== 'undefined') {
-      finishedLevel = trainingDataSet
+    if (typeof trainingdataset !== 'undefined') {
+      finishedLevel = trainingdataset
         .slice(0)
         .filter(team => typeof team['level' + level] !== 'undefined');
 
-      currentlyInLevel = trainingDataSet
+      currentlyInLevel = trainingdataset
         .slice(0)
         .filter(
           team =>
@@ -142,7 +142,7 @@ export class SortingService {
             team['currentState'] === 'level' + level
         );
 
-      notYetInLevel = trainingDataSet
+      notYetInLevel = trainingdataset
         .slice(0)
         .filter(
           team =>
@@ -154,7 +154,7 @@ export class SortingService {
           a.totalTime;
 
           let suma = 0;
-          
+
           this.levels.forEach((level) => {
             const levelTime = a['level'+(level.order+1)];
               suma += levelTime ? levelTime : 0;
@@ -174,14 +174,14 @@ export class SortingService {
     return notYetInLevel.concat(currentlyInLevel.concat(finishedLevel));
   }
 
-  sortByName(trainingDataSet: GenericObject[], order: Order): GenericObject[] {
+  sortByName(trainingdataset: GenericObject[], order: Order): GenericObject[] {
     let sorted: GenericObject[] = [];
-    if (typeof trainingDataSet !== 'undefined') {
-      sorted = trainingDataSet.slice(0);
+    if (typeof trainingdataset !== 'undefined') {
+      sorted = trainingdataset.slice(0);
       sorted.sort(
         function(teamA: GenericObject, teamB: GenericObject): number {
-          const nameA: string = String(teamA.playerName).toLowerCase(),
-            nameB: string = String(teamB.playerName).toLowerCase();
+          const nameA: string = String(teamA.traineeName).toLowerCase(),
+            nameB: string = String(teamB.traineeName).toLowerCase();
           const compared: boolean =
             order === Order.asc ? nameA > nameB : nameA < nameB;
           return 0 - (compared ? 1 : -1);

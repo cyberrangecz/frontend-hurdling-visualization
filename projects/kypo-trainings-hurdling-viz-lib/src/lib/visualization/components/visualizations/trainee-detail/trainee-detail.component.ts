@@ -9,21 +9,21 @@ import { Hint } from '../../../models/hint';
 import { HintTakenEvent } from '../../../models/hint-taken-event';
 import { Level } from '../../../models/level';
 import { LevelTimelineData } from '../../../models/level-timeline-data';
-import { Player } from '../../../models/player';
-import { PlayerLevel } from '../../../models/player-level';
+import { Trainee } from '../../../models/trainee';
+import { TraineeLevel } from '../../../models/trainee-level';
 import { VisualizationData } from '../../../models/visualization-data';
 import { WrongAnswerData } from '../../../models/wrong-answer-data';
 import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
 import { VisualizationsDataService } from '../../../services/visualizations-data.service';
 
 @Component({
-  selector: 'kypo-player-detail',
-  templateUrl: './player-detail.component.html',
-  styleUrls: ['./player-detail.component.css']
+  selector: 'kypo-trainee-detail',
+  templateUrl: './trainee-detail.component.html',
+  styleUrls: ['./trainee-detail.component.css']
 })
-export class PlayerDetailComponent implements OnChanges, AfterViewInit {
+export class TraineeDetailComponent implements OnChanges, AfterViewInit {
 
-  @Input() player: Player;
+  @Input() trainee: Trainee;
   @Input() visualizationData: VisualizationData;
   @Input() trainingInstanceId: number;
 
@@ -33,15 +33,15 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
 
   commandLineData;
 
-  constructor( d3Service: D3Service, private appConfig: AppConfig, private visualizationDataService: VisualizationsDataService) { 
+  constructor( d3Service: D3Service, private appConfig: AppConfig, private visualizationDataService: VisualizationsDataService) {
     this.d3 = d3Service.getD3();
   }
-  
+
   ngOnChanges(): void {
     this.createTrainingTimeOverview();
     this.createLevelTimeline();
     this.createCommandTimeline();
-    
+
   }
 
   ngAfterViewInit(): void {
@@ -51,12 +51,12 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   }
 
   getCurrentLevel(): Level {
-    return this.visualizationData.levels.find(level => level.id == this.getCurrentPlayerLevel()?.id)
+    return this.visualizationData.levels.find(level => level.id == this.getCurrentTraineeLevel()?.id)
   }
 
-  getCurrentPlayerLevel(): PlayerLevel {
-    return this.visualizationData.playerProgress
-      .find(p => p.userRefId == this.player.userRefId).levels.find(level => level.state != 'FINISHED');
+  getCurrentTraineeLevel(): TraineeLevel {
+    return this.visualizationData.traineeProgress
+      .find(p => p.userRefId == this.trainee.userRefId).levels.find(level => level.state != 'FINISHED');
   }
 
   getHints(): Hint[] {
@@ -64,11 +64,11 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   }
 
   getHintsUsed(): number {
-    return this.getCurrentPlayerLevel().hintsTaken?.length ? this.getCurrentPlayerLevel().hintsTaken.length : 0;
+    return this.getCurrentTraineeLevel().hintsTaken?.length ? this.getCurrentTraineeLevel().hintsTaken.length : 0;
   }
-  
+
   hintUsed(hint: Hint): boolean {
-    return this.getCurrentPlayerLevel().hintsTaken?.find(h => h == hint.id) ? true : false;
+    return this.getCurrentTraineeLevel().hintsTaken?.find(h => h == hint.id) ? true : false;
   }
 
   getLevelsTimePlan(): number[]{
@@ -80,7 +80,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     if(currentLevel.id != levelId) {
       return 'lightgray';
     }
-    const minutesInLevel = (this.visualizationData.currentTime- this.getCurrentPlayerLevel().startTime)/60;
+    const minutesInLevel = (this.visualizationData.currentTime- this.getCurrentTraineeLevel().startTime)/60;
     if(minutesInLevel<currentLevel.estimatedDuration ) {
       return 'green';
     }
@@ -97,7 +97,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
 
   getWrongAnswers(): WrongAnswerData[] {
     const wrongAnswerData = [];
-    this.getCurrentPlayerLevel().events
+    this.getCurrentTraineeLevel().events
       .filter(event => event instanceof WrongAnswerEvent)
       .forEach(event => {
         const index = wrongAnswerData.findIndex(data => data.value == (event as WrongAnswerEvent).answerContent);
@@ -119,7 +119,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   }
 
   getUsedHintTime(hint: Hint): string {
-    const hintTakenTime = this.getCurrentPlayerLevel().events
+    const hintTakenTime = this.getCurrentTraineeLevel().events
       .filter(event => event instanceof HintTakenEvent)
       .find((event: HintTakenEvent) => event.hintId == hint.id).timestamp;
     const hintTakenMinutes = Math.ceil((this.visualizationData.currentTime - hintTakenTime)/60);
@@ -137,8 +137,8 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   getUpperLevelData(levelId: number): string {
     const currentLevel = this.getCurrentLevel();
     if(currentLevel.id == levelId) {
-      let res = this.timeDifference(this.visualizationData.currentTime, this.getCurrentPlayerLevel().startTime);
-      const minutesInLevel = (this.visualizationData.currentTime- this.getCurrentPlayerLevel().startTime)/60;
+      let res = this.timeDifference(this.visualizationData.currentTime, this.getCurrentTraineeLevel().startTime);
+      const minutesInLevel = (this.visualizationData.currentTime- this.getCurrentTraineeLevel().startTime)/60;
       if(Math.floor(minutesInLevel) > currentLevel.estimatedDuration && currentLevel.estimatedDuration != 0) {
         res += ` (~ ${Math.floor(minutesInLevel - currentLevel.estimatedDuration)} minutes behind)`
       }
@@ -187,7 +187,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     const height = 10;
 
     const chart = this.d3.select('.training-time-overview')
-      .append('svg') 
+      .append('svg')
       .attr('class', 'chart')
       .attr('width', width)
       .attr('height', 5*height)
@@ -195,10 +195,10 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     const el   = document.getElementsByClassName('level-timeline');
     const rect = el[0] ? el[0].getBoundingClientRect() : {width: 0};
 
-    const scale = this.d3.scaleLinear() 
+    const scale = this.d3.scaleLinear()
       .domain([0, sum])
       .range([0, rect?.width - rect?.width*0.5]);
-     
+
     const bar = chart.selectAll('rect')
       .data(data)
       .enter()
@@ -214,7 +214,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
       .attr('rx', 3)
       .attr('ry', 3)
       .attr('fill', (d) => this.getLevelColor(d.levelId))
-      
+
       //append upper text
       bar
       .append('text')
@@ -231,10 +231,10 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
       .attr('x', (d): number => scale(d.start))
       .attr('y', 45)
       .attr('height', 10)
-      .text((d) => { 
+      .text((d) => {
         return this.getLowerLevelData(d.levelId);
       });
-    
+
   }
 
   createLevelTimeline(): void {
@@ -244,8 +244,8 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
       return;
     }
 
-    const offset = (this.visualizationData.currentTime - this.getCurrentPlayerLevel().startTime)*0.05;
-    const startTime = this.getCurrentPlayerLevel().startTime;
+    const offset = (this.visualizationData.currentTime - this.getCurrentTraineeLevel().startTime)*0.05;
+    const startTime = this.getCurrentTraineeLevel().startTime;
     const currentTime = this.visualizationData.currentTime;
 
     const width = '100%';
@@ -277,7 +277,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
 
     const events =levelTimeline
     .append('g')
-    .selectAll('path.event') 
+    .selectAll('path.event')
     .data(this.getTimelineData())
     .enter()
     .append('g');
@@ -317,23 +317,23 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
   }
 
   createCommandTimeline(): void {
-    
+
 
     if(!this.getCurrentLevel()) {
       return;
     }
 
-    const playerTrainingRunId = this.visualizationData.playerProgress
-        .find(player => player.userRefId == this.player.userRefId).trainingRunId;
+    const traineeTrainingRunId = this.visualizationData.traineeProgress
+        .find(trainee => trainee.userRefId == this.trainee.userRefId).trainingRunId;
 
-    this.visualizationDataService.getCommandLineData(this.trainingInstanceId, playerTrainingRunId)
+    this.visualizationDataService.getCommandLineData(this.trainingInstanceId, traineeTrainingRunId)
     .pipe(take(1))
     .subscribe((commands: CommandLineEntry[]) => {
 
       this.d3.select('.command-timeline').html('');
 
-      const offset = (this.visualizationData.currentTime - this.getCurrentPlayerLevel().startTime)*0.05;
-      const startTime = this.getCurrentPlayerLevel().startTime;
+      const offset = (this.visualizationData.currentTime - this.getCurrentTraineeLevel().startTime)*0.05;
+      const startTime = this.getCurrentTraineeLevel().startTime;
       const currentTime = this.visualizationData.currentTime;
 
       const commandsForLevel = commands.filter(command => command.timestamp >= startTime - offset );
@@ -343,7 +343,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
 
       const el   = document.getElementsByClassName('command-timeline');
       const rect = el[0] ? el[0].getBoundingClientRect() : {width: 0};
-      
+
       let sumTime = startTime;
       const data = [];
       data.push({timestamp: startTime-offset, commandsUsed: 0})
@@ -355,7 +355,7 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
         data.push({timestamp: sumTime+period, commandsUsed: commandsUsed});
         sumTime+=period;
       }
-    
+
       // append chart to its position
       const commandTimeline = this.d3.select('.command-timeline')
         .append('svg')
@@ -399,22 +399,22 @@ export class PlayerDetailComponent implements OnChanges, AfterViewInit {
     const data = [];
     const currentLevel = this.getCurrentLevel();
     const levelStarted = new LevelTimelineData();
-    levelStarted.icon = this.appConfig.eventShapePaths['hint'];
-    levelStarted.value = 'Started Level' + (currentLevel.order + 1);
-    levelStarted.timestamp = this.getCurrentPlayerLevel().startTime;
+    levelStarted.icon = this.appConfig.eventProps.eventShapes['hint'];
+    levelStarted.value = 'Started Level ' + (currentLevel.order + 1);
+    levelStarted.timestamp = this.getCurrentTraineeLevel().startTime;
     levelStarted.color = 'black';
     data.push(levelStarted);
-    this.getCurrentPlayerLevel().events
+    this.getCurrentTraineeLevel().events
       .filter(event => event instanceof HintTakenEvent || event instanceof WrongAnswerEvent)
       .forEach(event => {
         const eventTimelineData = new LevelTimelineData();
-        eventTimelineData.icon = this.appConfig.eventShapePaths[event.type];
-        eventTimelineData.value = event instanceof HintTakenEvent 
+        eventTimelineData.icon = this.appConfig.eventProps.eventShapes[event.type];
+        eventTimelineData.value = event instanceof HintTakenEvent
                                     ? (event as HintTakenEvent).hintTitle : (event as WrongAnswerEvent).answerContent;
-        eventTimelineData.color = event instanceof HintTakenEvent ? 'black' : 'red';            
+        eventTimelineData.color = event instanceof HintTakenEvent ? 'black' : 'red';
         eventTimelineData.timestamp = event.timestamp;
         data.push(eventTimelineData)
-    }) 
+    })
     return data;
   }
 

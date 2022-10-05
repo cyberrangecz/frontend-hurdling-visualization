@@ -1,4 +1,3 @@
-
 import { LevelTypeEnum } from '../enums/level-type.enum';
 import { Hint } from './hint';
 

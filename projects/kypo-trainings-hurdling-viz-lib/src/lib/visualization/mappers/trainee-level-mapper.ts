@@ -1,17 +1,17 @@
-import { PlayerLevelDTO } from '../DTOs/player-level-dto';
-import { PlayerLevel } from '../models/player-level';
+import { TraineeLevelDTO } from '../DTOs/trainee-level-dto';
+import { TraineeLevel } from '../models/trainee-level';
 import { EventMapper } from './event-mapper';
 import { HintMapper } from './hint-mapper';
 import { ScoreMapper } from './score-mapper';
 
-export class PlayerLevelMapper {
-    static fromDTOs(dtos: PlayerLevelDTO[]): PlayerLevel[] {
-        const result = dtos.map((dto) => PlayerLevelMapper.fromDTO(dto));
+export class TraineeLevelMapper {
+    static fromDTOs(dtos: TraineeLevelDTO[]): TraineeLevel[] {
+        const result = dtos.map((dto) => TraineeLevelMapper.fromDTO(dto));
         return result;
     }
 
-    static fromDTO(dto: PlayerLevelDTO): PlayerLevel {
-        const result = new PlayerLevel;
+    static fromDTO(dto: TraineeLevelDTO): TraineeLevel {
+        const result = new TraineeLevel;
         result.startTime = dto.start_time/1000;
         result.endTime = dto.end_time/1000;
         result.id = dto.id;

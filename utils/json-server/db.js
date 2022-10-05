@@ -60,7 +60,7 @@ module.exports = function() {
         {
           "user_ref_id": 21,
           "login": "4@muni.cz",
-          "given_name": "Player 4",
+          "given_name": "Player 4 Long Name",
           "family_name": "",
           "picture": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAACLElEQVR4Xu2bsVHEQBAEUWxkQhgEQBhk8rHx9S6yrrqNqfrGZqZW3bc6Q3B9yD/fv48/s/Ln6/My+9bnUx/2BW79gdfnSwhcP3uDE5KQMwL2CeyVdcb/9tsJgQDXT+D6fN0h8ADaG5yQhJwRsE9gr6wz/l3qkNctvn4C1+frDoEn0n6lJiQhZwTsE9gr64x/lzrk1aUuf6/pDoEn0n6lJiQhZwTsE/h2l/oZ7n77PwH9lRViRiAhjJ+eToiOlBUmhPHT0wnRkbLChDB+ejohOlJWmBDGT08nREfKChPC+OnphOhIWWFCGD89nRAdKStMCOOnpxOiI2WFCWH89HRCdKSsMCGMn55OiI6UFV72R382TumEjJ2BhCRkjMDYOG1IQsYIjI3ThiRkjMDYOG1IQsYIjI3ThiRkjMDYOG1IQsYIjI3ThiRkjMDYOG1IQsYIjI3ThiRkjMDYOPqG2P/oP8brNo79NwkJgcYTAgHa8YTYRGFfQiBAO54QmyjsSwgEaMcTYhOFfQmBAO14QmyisC8hEKAdT4hNFPYlBAK04wmxicK+hECAdjwhNlHYlxAI0I4nxCYK+xICAdrxhNhEYd+8EPh8t7j9jd4GaD+v/k3dHjAhNlHYlxAI0I4nxCYK+xICAdrxhNhEYV9CIEA7nhCbKOxLCARoxxNiE4V9CYEA7XhCbKKwLyEQoB1PiE0U9iUEArTjCbGJwr6EQIB2PCE2UdiXEAjQjr+bkCedJuokxg0xuQAAAABJRU5ErkJggg==",
           "nameWithAcademicTitles": "Bc. Player 4",
@@ -647,9 +647,8 @@ module.exports = function() {
             },
             {
               "id": 20,
-              "state": "FINISHED",
+              "state": "RUNNING",
               "start_time": 1568886140219,
-              "end_time": 1568886733432,
               "hints_taken": [],
               "wrong_answers_number": 0,
               "events": [
@@ -670,11 +669,11 @@ module.exports = function() {
                   "timestamp": 1568886140219
                 },
                 {
-                  "answer_content": "onlyDream",
+                  "answer_content": "onlyDream1",
                   "level": 20,
                   "training_run_id": 21,
                   "actual_score_in_level": 5,
-                  "type": "cz.muni.csirt.kypo.events.trainings.CorrectAnswerSubmitted",
+                  "type": "cz.muni.csirt.kypo.events.trainings.WrongAnswerSubmitted",
                   "training_time": 5529444,
                   "sandbox_id": 7,
                   "training_instance_id": 18,
@@ -682,7 +681,7 @@ module.exports = function() {
                   "user_ref_id": 20,
                   "training_definition_id": 8,
                   "timestamp": 1568886733432
-                },
+                }/*
                 {
                   "level": 20,
                   "training_run_id": 21,
@@ -696,9 +695,9 @@ module.exports = function() {
                   "user_ref_id": 20,
                   "training_definition_id": 8,
                   "timestamp": 1568886733432
-                }
+                }*/
               ]
-            },
+            }/*,
             {
               "id": 21,
               "state": "FINISHED",
@@ -738,12 +737,12 @@ module.exports = function() {
                   "timestamp": 1568886766903
                 }
               ]
-            },
+            }*//*,
             {
               "id": 22,
-              "state": "FINISHED",
+              "state": "RUNNING",
               "start_time": 1568886766906,
-              "end_time": 1568886783721,
+              "end_time": null, //1568886783721,
               "hints_taken": null,
               "wrong_answers_number": 0,
               "events": [
@@ -775,7 +774,7 @@ module.exports = function() {
                   "total_score": 18,
                   "user_ref_id": 20,
                   "training_definition_id": 8,
-                  "timestamp": 1568886783721
+                  "timestamp": 1568887783721
                 },
                 {
                   "level": 22,
@@ -807,7 +806,7 @@ module.exports = function() {
                   "timestamp": 1568886783731
                 }
               ]
-            }
+            }*/
           ]
         },
         {

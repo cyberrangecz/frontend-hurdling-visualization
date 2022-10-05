@@ -1,4 +1,4 @@
-export class Player {
+export class Trainee {
     userRefId: number;
     trainingRunId: number;
     name: string;

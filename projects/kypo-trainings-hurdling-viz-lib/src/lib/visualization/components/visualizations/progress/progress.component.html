@@ -1,0 +1,70 @@
+<div class="overall-time-container">
+    <kypo-viz-hurdling-overview-progress-bar
+            [visualizationData]="visualizationData">
+    </kypo-viz-hurdling-overview-progress-bar>
+</div>
+
+<div class="trainee-grid-container trainee-selection" [style.display]="traineeDetailId ? 'none' : 'block'">
+    <kypo-viz-hurdling-trainee-selection
+            [visualizationData]="visualizationData"
+            [selectedTraineeView]="selectedTraineeView"
+            [filteredTrainees]="filteredTrainees"
+            (filteredTraineesChange)="setFilteredTrainees($event)"
+            (highlightTraineeChange)="setHighlightedTrainee($event)">
+    </kypo-viz-hurdling-trainee-selection>
+</div>
+
+<div class="level-grid-container">
+    <kypo-viz-hurdling-level-list
+            [visualizationData]="visualizationData"
+            (filteredTrainees)="setFilteredTrainees($event)"
+            (traineeSort)="setSort($event)">
+    </kypo-viz-hurdling-level-list>
+</div>
+
+<div *ngIf="traineeDetailId" class="trainee-detail-container">
+    <kypo-trainee-detail
+            [trainee]=getTraineeData(traineeDetailId)
+            [visualizationData]="visualizationData"
+            [trainingInstanceId]="trainingInstanceId"
+            (hideDetail)="onTraineeDetailChange()">
+    </kypo-trainee-detail>
+</div>
+
+<div class="visualization-container" [style.display]="traineeDetailId ? 'none' : 'block'">
+    <div class="progress-header">
+        <kypo-viz-hurdling-column-header
+                class="header trainee-name-header"
+                (onSort)="onSortValueChange('name', $event.sortReverse)"
+                [sortType]="'name'"
+                [selectedSortType]="sortType"
+                [selectedSortReverse]="sortReverse"
+                [label]="'Trainee'">
+        </kypo-viz-hurdling-column-header>
+
+        <span class="header ctf-progress-header-column"
+              id="progress-elapsed-time"
+              matTooltip="Elapsed time">
+                        {{ getTimeString(visualizationData.currentTime - visualizationData.startTime) }}
+        </span>
+
+        <kypo-viz-hurdling-column-header
+                class="header trainee-time-header"
+                matTooltip="Training times of individual trainees (hh:mm:ss)"
+                (onSort)="onSortValueChange('time', $event.sortReverse)"
+                [sortType]="'time'"
+                [selectedSortType]="sortType"
+                [selectedSortReverse]="sortReverse"
+                [label]="'Time'">
+        </kypo-viz-hurdling-column-header>
+    </div>
+    <div class="progress-container"
+         (window:resize)="onResize()"></div>
+</div>
+
+<div class="legend-container">
+    <kypo-viz-hurdling-legend
+            [selectedViewValue]="view"
+            (zoomResetChange)="onZoomReset()">
+    </kypo-viz-hurdling-legend>
+</div>

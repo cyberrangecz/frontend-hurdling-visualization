@@ -1,4 +1,4 @@
 export class PlanDataEntry {
-    playerName: string;
-    playerId: number;
+    traineeName: string;
+    traineeId: number;
 }

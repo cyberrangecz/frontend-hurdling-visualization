@@ -1,12 +1,12 @@
 import { Level } from './level';
-import { Player } from './player';
-import { PlayerProgress } from './player-progress';
+import { Trainee } from './trainee';
+import { TraineeProgress } from './trainee-progress';
 
 export class VisualizationData {
     startTime: number;
     estimatedEndTime: number;
     currentTime: number;
-    players: Player[];
+    trainees: Trainee[];
     levels: Level[];
-    playerProgress: PlayerProgress[];
+    traineeProgress: TraineeProgress[];
 }

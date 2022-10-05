@@ -25,9 +25,10 @@
 								<svg class="ctf-progress-select-icon" height="20" width="20" viewBox="0 0 24 24">
                                     <path [attr.d]="getEventShapePaths().person" />
                                 </svg>
-								<select [(ngModel)]="selectedPlayerView" (change)="onPlayerViewChange()">
+								<select [(ngModel)]="selectedTraineeView" (change)="onTraineeViewChange()">
 									<option [ngValue]="'name'">Name</option>
 									<option [ngValue]="'avatar'">Avatar</option>
+                                    <option [ngValue]="'both'">Avatar + Name</option>
 								</select>
 							</div>
 						</div>
@@ -37,43 +38,17 @@
 		</div>
     </div>
 
-    <ng-container *ngIf="view == 'progress'">
-        <kypo-viz-hurdling-overview-progress-bar
-            [visualizationData]="visualizationData">
-        </kypo-viz-hurdling-overview-progress-bar>
-    </ng-container>
-
-    <div *ngIf="view == 'progress' && !playerDetailId" class="player-grid-container">
-        <kypo-viz-hurdling-player-selection
-            [visualizationData]="visualizationData"
-            [selectedPlayerView]="selectedPlayerView"
-            [filteredPlayers]="filteredPlayers"
-            (filteredPlayersChange)="setFilteredPlayers($event)"
-            (highlightPlayerChange)="setHighlightedPlayer($event)"
-            >
-        </kypo-viz-hurdling-player-selection>
-    </div>
-
-    <div *ngIf="view == 'progress'" class="level-grid-container">
-        <kypo-viz-hurdling-level-list
-            [visualizationData]="visualizationData"
-            (filteredPlayers)="setFilteredPlayers($event)"
-            (playerSort)="setSort($event)">
-        </kypo-viz-hurdling-level-list>
-    </div>
-
-
-    <div *ngIf="playerDetailId" class="player-detail-container">
-        <kypo-player-detail
-        [player]=getPlayerData(playerDetailId)
+    <div *ngIf="traineeDetailId" class="trainee-detail-container">
+        <kypo-trainee-detail
+        [trainee]=getTraineeData(traineeDetailId)
         [visualizationData]="visualizationData"
         [trainingInstanceId]="trainingInstanceId"
-        (hideDetail)="onPlayerDetailChange()">
-        </kypo-player-detail>
+        (hideDetail)="onTraineeDetailChange()">
+        </kypo-trainee-detail>
     </div>
-    
- 
-    <div *ngIf="!playerDetailId" class="visualization-container" [ngClass]="{
+
+
+    <div *ngIf="!traineeDetailId" class="visualization-container" [ngClass]="{
 					progress: view == 'progress',
 					final: view == 'overview'
 					}">
@@ -135,7 +110,7 @@
 
         <div class="ctfh-row ctfh-no-gutters ctf-main-container">
             <div class="ctfh-col-2 final-2-name">
-                <div class="ctf-progress-column ctf-progress-teamcolumn ctf-progress-column-data" id="ctf-progress-teamcolumn" (click)="showPlayerDetail($event)"></div>
+                <div class="ctf-progress-column ctf-progress-teamcolumn ctf-progress-column-data" id="ctf-progress-teamcolumn" (click)="showTraineeDetail($event)"></div>
         </div>
 
             <div *ngIf="view == 'overview'" class="ctfh-col-2 short">
