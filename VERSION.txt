@@ -1,3 +1,4 @@
+14.2.1 Fix detailed trainee view display
 14.2.0 Enhance the progress visualization logic and appearance.
 14.1.0 Remove elastic search service url from configs.
 14.0.1 Rename from kypo2 to kypo.

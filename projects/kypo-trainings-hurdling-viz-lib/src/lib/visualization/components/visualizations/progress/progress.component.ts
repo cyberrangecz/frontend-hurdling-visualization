@@ -1020,8 +1020,8 @@ export class ProgressComponent implements OnChanges, OnInit, AfterViewInit {
     this.addTimeColumn(traineeRuns);
   }
 
-  showTraineeDetail(event) {
-      this.traineeDetailId = event.path[0].attributes['trainee-id'].value;
+  showTraineeDetail(data) {
+      this.traineeDetailId = data.userRefId;
   }
 
   getTraineeData(traineeId: number) {
@@ -1067,7 +1067,7 @@ export class ProgressComponent implements OnChanges, OnInit, AfterViewInit {
         .attr('width', 200)
         .style('text-anchor', 'end')
         .attr('cursor','pointer')
-        .on('click', d => this.showTraineeDetail(d));
+        .on('click', (event, d) => this.showTraineeDetail(d));
   }
 
   private addTraineeAvatar(traineeRuns: TraineeProgress[], traineeInfo: Trainee[]) {
