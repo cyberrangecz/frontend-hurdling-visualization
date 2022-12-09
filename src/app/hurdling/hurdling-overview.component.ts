@@ -14,7 +14,7 @@ export class HurdlingOverviewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.data = undefined;     //disable simulation
-    //this.data = data as any; //enable simulation
+    //this.data = undefined;     //disable simulation
+    this.data = data as any; //enable simulation
   }
 }
