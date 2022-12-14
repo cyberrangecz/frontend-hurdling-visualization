@@ -1,19 +1,62 @@
 # KYPO Trainings Hurdling Visualization
 
-## Prerequisites
+As an instructor, a user can see the ongoing course of the training runs and further filter information on demand. The tool gives a full picture of the trainee’s walkthrough. Upon filtering in the preceding sections, selected trainees are displayed here.
 
-To use the library you need to have installed:
+Rows represent individual trainees. Bars of each row are training levels - gray levels are finished levels, current levels are colored green/yellow/red, according to their delay as opposed to the scheduled amount of time. The stripped bars denote the scheduled time for the ongoing or upcoming levels.
 
-* NPM with access to [KYPO registry](https://projects.ics.muni.cz/projects/kbase/knowledgebase/articles/153)
+## Steps to Build & Develop  
 
-## How to use json-server as mock backend with provided dummy data
-
-1.  Install json-server `npm install -g json-server`.
+1.  Run `npm install`.
+2.  Install json-server `npm install -g json-server`.
 3.  Run the server with provided parameters `json-server -w ./utils/json-server/db.js --routes ./utils/json-server/routes.json --middlewares ./utils/json-server/server.js`.
-4.  Run `npm install`.
-5.  Run the app in local environment and ssl `ng serve --configuration local --ssl` and access it on `https://localhost:4200`.
+4.  Run the app in local environment and ssl `ng serve --configuration local --ssl`
+5.  Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## How to simulate training run with provided dummy data
+## How to Simulate Training Run with Provided Test Data
 
-1. To enable simulation, in hurdling-overview.component.ts, change the `ngOnInit()` function accordingly.
-2. Run the app in local environment and ssl `ng serve --configuration local --ssl` and access it on `https://localhost:4200`.
+1. To enable simulation, in hurdling-overview.component.ts, change the `ngOnInit()` function accordingly (check the comments).
+2. Run `npm install`.
+3. Run the app in local environment and ssl `ng serve --configuration local --ssl` and access it on `https://localhost:4200`.
+
+## Input parameters
+
+  `trainingDefinitionId: number`
+
+  `trainingInstanceId: number`
+
+  `JSONData: VisualizationDataDTO` if we use periodical simulation, we use it with a local JSON data for now
+
+  `view: enum` determines if we will use the progress or the final mode
+
+  `selectedTraineeView: TraineeView` selects option to see trainee names or avatars
+
+  `colorScheme: string[]`
+
+  `eventService: TrainingAnalysisEventService`
+
+  `setDashboardView: boolean` true for dahsboard, false for the view of single visualization
+
+  `externalFilters: []` the filters to determine what events will be visible
+
+  `trainingColors: string[]`
+
+  `traineeColorScheme: string[]`
+
+  `selectedTrainees: Trainee[]` if this array exists, only the given trainees will be provided for visualization
+
+  `isStandalone: boolean` set true if we want to use the visualization in a standalone mode; in the portal, we use false
+
+
+## How to Use as a Library
+
+An example of use:
+
+```typescript
+<kypo-hurdling-visualization
+        [isStandalone]="true"
+        [trainingInstanceId]="10"
+        view="progress"
+        [JSONData]="data">
+</kypo-hurdling-visualization>
+
+```
