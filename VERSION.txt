@@ -1,3 +1,4 @@
+14.2.2 Fix final overview columns responsivity
 14.2.1 Fix detailed trainee view display
 14.2.0 Enhance the progress visualization logic and appearance.
 14.1.0 Remove elastic search service url from configs.

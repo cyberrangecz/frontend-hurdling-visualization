@@ -1,6 +1,6 @@
 export class TrainingDataset {
-    traineeId: number;
-    events: Event[];
-    eventsGroups;
-    totalTime: number;
+  traineeId: number;
+  events: Event[];
+  eventsGroups;
+  totalTime: number;
 }

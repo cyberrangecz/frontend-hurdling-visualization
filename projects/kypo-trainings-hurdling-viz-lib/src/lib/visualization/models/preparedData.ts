@@ -1,6 +1,6 @@
-import { GenericObject } from './generic-object.type';
+import { GenericObject } from "./generic-object.type";
 
 export class PreparedData {
-    trainingDataSet: GenericObject[];
-    planDataSet: GenericObject[];
+  trainingDataSet: GenericObject[];
+  planDataSet: GenericObject[];
 }

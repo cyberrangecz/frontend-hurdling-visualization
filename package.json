@@ -9,6 +9,7 @@
     "lint": "ng lint && npm run prettier-check",
     "e2e": "ng e2e",
     "prettier-check": "prettier --check \"projects/**/*.ts\"",
+    "prettier-fix": "prettier --write \"./projects/**/*.ts\"",
     "build-example-app": "ng build example-app --configuration production",
     "build-library": "ng build kypo-trainings-hurdling-viz-lib --configuration production && cp ./src/styles.css ./dist/kypo-trainings-hurdling-viz-lib",
     "create-package": "cd dist/kypo-trainings-hurdling-viz-lib && npm pack",

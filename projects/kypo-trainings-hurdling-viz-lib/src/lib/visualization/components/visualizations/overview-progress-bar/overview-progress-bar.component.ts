@@ -1,16 +1,15 @@
-import { ProgressData } from '../../../models/progress-data';
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { VisualizationData } from '../../../models/visualization-data';
-import { TraineeProgress } from '../../../models/trainee-progress';
-import { TrainingRunStartedEvent } from '../../../models/training-run-started-event';
+import { ProgressData } from "../../../models/progress-data";
+import { Component, OnInit, Input, OnChanges } from "@angular/core";
+import { VisualizationData } from "../../../models/visualization-data";
+import { TraineeProgress } from "../../../models/trainee-progress";
+import { TrainingRunStartedEvent } from "../../../models/training-run-started-event";
 
 @Component({
-  selector: 'kypo-viz-hurdling-overview-progress-bar',
-  templateUrl: './overview-progress-bar.component.html',
-  styleUrls: ['./overview-progress-bar.component.css']
+  selector: "kypo-viz-hurdling-overview-progress-bar",
+  templateUrl: "./overview-progress-bar.component.html",
+  styleUrls: ["./overview-progress-bar.component.css"],
 })
 export class OverviewProgressBarComponent implements OnInit, OnChanges {
-
   @Input() visualizationData: VisualizationData;
 
   startTime: Date;
@@ -18,12 +17,12 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
   estimatedEndTime: Date;
   scheduledEndTime: Date;
 
-  ngOnInit(): void  {
+  ngOnInit(): void {
     this.setScheduledEndTime();
     this.updateEstimatedEndTime();
   }
 
-  ngOnChanges(): void  {
+  ngOnChanges(): void {
     this.setStartTime();
     this.updateCurrentTime();
     this.updateEstimatedEndTime();
@@ -32,7 +31,7 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
   calculateScheduledPosition(): string {
     const q = this.scheduledEndTime.getTime() - this.startTime.getTime();
     const d = this.estimatedEndTime.getTime() - this.startTime.getTime();
-    return 'calc(' + Math.round((q / d) * 100) + '% - 10px)';
+    return "calc(" + Math.round((q / d) * 100) + "% - 10px)";
   }
 
   calculateProgress(): number {
@@ -42,64 +41,87 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
   }
 
   updateEstimatedEndTime(): void {
-    this.estimatedEndTime = new Date(this.visualizationData.startTime*1000);
-    this.estimatedEndTime.setSeconds(this.estimatedEndTime.getSeconds() + this.getLongestEstimate());
+    this.estimatedEndTime = new Date(this.visualizationData.startTime * 1000);
+    this.estimatedEndTime.setSeconds(
+      this.estimatedEndTime.getSeconds() + this.getLongestEstimate()
+    );
     if (this.estimatedEndTime < this.scheduledEndTime) {
       this.estimatedEndTime = this.scheduledEndTime;
     }
   }
 
-  setScheduledEndTime():void {
-    this.scheduledEndTime = new Date(this.visualizationData.estimatedEndTime*1000);
+  setScheduledEndTime(): void {
+    this.scheduledEndTime = new Date(
+      this.visualizationData.estimatedEndTime * 1000
+    );
   }
 
-  getEstimatedTimeForLevels(): number  {
-    return this.visualizationData.levels.map(level => level.estimatedDuration).reduce((a, b) => a + b, 0);
+  getEstimatedTimeForLevels(): number {
+    return this.visualizationData.levels
+      .map((level) => level.estimatedDuration)
+      .reduce((a, b) => a + b, 0);
   }
 
-  setStartTime(): void  {
-    this.startTime = new Date(this.visualizationData.startTime*1000);
+  setStartTime(): void {
+    this.startTime = new Date(this.visualizationData.startTime * 1000);
   }
 
   getTooltipInfo(): string {
-    return 'Scheduled end time of training \n ' + this.scheduledEndTime.getHours() + ':' + this.scheduledEndTime.getMinutes();
+    return (
+      "Scheduled end time of training \n " +
+      this.scheduledEndTime.getHours() +
+      ":" +
+      this.scheduledEndTime.getMinutes()
+    );
   }
 
   getTimeLeft(): string {
-    const diff = (this.estimatedEndTime.getTime() - this.currentTime.getTime());
+    const diff = this.estimatedEndTime.getTime() - this.currentTime.getTime();
     const diffHrs = Math.floor((diff % 86400000) / 3600000);
     const diffMins = Math.round(((diff % 86400000) % 3600000) / 60000);
-    let res = '';
+    let res = "";
     if (diffHrs > 0)
-      res = diffHrs === 1 ? diffHrs + ' hour ' : diffHrs + ' hours ';
-    res = res.concat(diffMins === 1 ? diffMins + ' minute left' : diffMins + ' minutes left');
+      res = diffHrs === 1 ? diffHrs + " hour " : diffHrs + " hours ";
+    res = res.concat(
+      diffMins === 1 ? diffMins + " minute left" : diffMins + " minutes left"
+    );
     return res;
   }
 
-  updateCurrentTime(): void  {
-    this.currentTime = new Date(this.visualizationData.currentTime*1000);
+  updateCurrentTime(): void {
+    this.currentTime = new Date(this.visualizationData.currentTime * 1000);
   }
 
   getLongestEstimate(): number {
-    return this.visualizationData.traineeProgress.map(team => this.getEstimateForTeam(team)).sort().reverse()[0];
+    return this.visualizationData.traineeProgress
+      .map((team) => this.getEstimateForTeam(team))
+      .sort()
+      .reverse()[0];
   }
 
-  getEstimateForTeam(traineeProgressData: TraineeProgress): number  {
+  getEstimateForTeam(traineeProgressData: TraineeProgress): number {
     let estimatedTimeToFinish = 0;
-    this.visualizationData.levels.forEach(level => {
-      if(!traineeProgressData.levels.find(traineeLevel => traineeLevel.id === level.id)) {
+    this.visualizationData.levels.forEach((level) => {
+      if (
+        !traineeProgressData.levels.find(
+          (traineeLevel) => traineeLevel.id === level.id
+        )
+      ) {
         estimatedTimeToFinish += level.estimatedDuration;
       }
-    })
-    return  this.visualizationData.currentTime - this.visualizationData.startTime + estimatedTimeToFinish*60;
+    });
+    return (
+      this.visualizationData.currentTime -
+      this.visualizationData.startTime +
+      estimatedTimeToFinish * 60
+    );
   }
 
   getStartEventTimestamp(team: TraineeProgress): number {
     return team.levels
       .reduce((accumulator, value) => accumulator.concat(value), [])
-      .map(levels => levels.events)
+      .map((levels) => levels.events)
       .reduce((accumulator, value) => accumulator.concat(value), [])
-      .find(event => event instanceof TrainingRunStartedEvent)
-      .timestamp
+      .find((event) => event instanceof TrainingRunStartedEvent).timestamp;
   }
 }

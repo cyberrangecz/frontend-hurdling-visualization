@@ -1,5 +1,5 @@
 export class TrainingTimeOverviewData {
-    start: number;
-    end: number;
-    levelId: number;
+  start: number;
+  end: number;
+  levelId: number;
 }

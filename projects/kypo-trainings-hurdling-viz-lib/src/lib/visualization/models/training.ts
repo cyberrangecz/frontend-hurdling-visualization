@@ -1,7 +1,7 @@
-import { Level } from './level';
+import { Level } from "./level";
 
 export class Training {
-    id: string;
-    name: string;
-    levels: Level[];
+  id: string;
+  name: string;
+  levels: Level[];
 }

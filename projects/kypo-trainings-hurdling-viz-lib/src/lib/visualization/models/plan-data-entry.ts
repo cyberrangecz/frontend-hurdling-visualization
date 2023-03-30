@@ -1,4 +1,4 @@
 export class PlanDataEntry {
-    traineeName: string;
-    traineeId: number;
+  traineeName: string;
+  traineeId: number;
 }
