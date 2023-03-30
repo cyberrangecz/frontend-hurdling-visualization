@@ -1,4 +1,4 @@
 export class CommandLineEntryDTO {
-    timestamp_str: string;
-    cmd: string;
+  timestamp_str: string;
+  cmd: string;
 }

@@ -1,1 +1,1 @@
-export type NumericObject = { [key: number]: any }
+export type NumericObject = { [key: number]: any };

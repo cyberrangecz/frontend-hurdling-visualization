@@ -1,4 +1,4 @@
 export class CommandLineEntry {
-    timestamp: number;
-    command: string;
+  timestamp: number;
+  command: string;
 }

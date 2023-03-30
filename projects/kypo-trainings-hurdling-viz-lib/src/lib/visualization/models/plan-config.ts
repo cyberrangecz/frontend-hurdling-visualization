@@ -1,7 +1,7 @@
-import { PlanData } from './plan-data';
+import { PlanData } from "./plan-data";
 
 export class PlanConfig {
-	data: PlanData;
-	time: number;
-	estimatedTime: number;
+  data: PlanData;
+  time: number;
+  estimatedTime: number;
 }

@@ -1,1 +1,5 @@
-export class JSONTrainingData { information: any; events: any; trainees: any; }
+export class JSONTrainingData {
+  information: any;
+  events: any;
+  trainees: any;
+}

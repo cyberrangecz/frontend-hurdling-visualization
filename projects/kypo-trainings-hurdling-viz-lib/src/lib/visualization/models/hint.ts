@@ -1,5 +1,5 @@
-export class Hint { 
-    id: number;
-    title: string;
-    content: string;
-  }
+export class Hint {
+  id: number;
+  title: string;
+  content: string;
+}
