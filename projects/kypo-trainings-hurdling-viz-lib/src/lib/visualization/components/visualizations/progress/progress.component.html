@@ -1,5 +1,5 @@
 <mat-accordion>
-    <mat-expansion-panel hideToggle (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <mat-expansion-panel hideToggle expanded (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <button
@@ -10,8 +10,26 @@
                     <mat-icon *ngIf="panelOpenState">expand_less</mat-icon>
                 </button> Settings
             </mat-panel-title>
-        </mat-expansion-panel-header>
-        <p>content</p>
+        </mat-expansion-panel-header >
+        <mat-slide-toggle
+                (change)="restrictView()"
+                [checked]="restrictToVisibleTrainees"
+                matTooltip="In selected runs, this ensures that only the visible trainee timeline portion is displayed.">
+            Restrict to visible runs only
+        </mat-slide-toggle>
+        <br/>
+        <mat-slider min="0" step="1"
+                    [max]="traineeRestrictedXScale.inactive"
+                    [value]="stripUnfinishedTimes"
+                    (valueChange)="stripInactiveTime($event)">
+            <input matSliderThumb>
+        </mat-slider>
+        <mat-form-field>
+        <input matInput
+               [value]="stripUnfinishedTimes.toString()"
+               (change)="stripInactiveTimeInput($event)"
+               type="number"><span matSuffix>&nbsp;seconds</span>
+        </mat-form-field>
     </mat-expansion-panel>
 </mat-accordion>
 

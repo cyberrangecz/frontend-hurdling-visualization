@@ -35,7 +35,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatExpansionModule} from "@angular/material/expansion";
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatInputModule} from '@angular/material/input';
+import {MatSliderModule} from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -62,6 +65,9 @@ import {MatExpansionModule} from "@angular/material/expansion";
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
+    MatSlideToggleModule,
+    MatInputModule,
+    MatSliderModule
   ],
   providers: [
     D3Service,

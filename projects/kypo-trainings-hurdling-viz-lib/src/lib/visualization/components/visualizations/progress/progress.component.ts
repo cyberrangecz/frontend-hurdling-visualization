@@ -50,12 +50,12 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   public sortReverse = false;
   public restrictToVisibleTrainees = true;
   public stripUnfinishedTimes = 0;
+  public traineeRestrictedXScale = {min: Number.MAX_VALUE, max: 0, inactive: 0};
   public panelOpenState = false;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
   private readonly d3: D3;
   private svg;
-  private traineeRestrictedXScale = {min: Number.MAX_VALUE, max: 0, inactive: 0};
   private zoom;
   private brush;
   private zoomTransform: ZoomTransform;
@@ -1217,6 +1217,20 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   showTraineeDetail(data) {
     this.traineeDetailId = data.userRefId;
+  }
+
+  restrictView() {
+    this.restrictToVisibleTrainees = !this.restrictToVisibleTrainees;
+    this.updateProgressChart();
+  }
+
+  stripInactiveTime(value: number) {
+    this.stripUnfinishedTimes = value;
+    this.updateProgressChart();
+  }
+
+  stripInactiveTimeInput(event) {
+    this.stripInactiveTime(event.target.value);
   }
 
   getTraineeData(traineeId: number) {
