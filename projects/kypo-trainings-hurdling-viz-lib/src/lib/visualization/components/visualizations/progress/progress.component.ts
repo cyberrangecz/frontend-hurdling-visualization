@@ -50,6 +50,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   public sortReverse = false;
   public restrictToVisibleTrainees = true;
   public stripUnfinishedTimes = 0;
+  public panelOpenState = false;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
   private readonly d3: D3;
