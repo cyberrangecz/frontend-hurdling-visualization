@@ -4,10 +4,7 @@ import {
   Input,
   OnChanges,
   AfterViewInit,
-  ViewEncapsulation,
-  OnInit,
-  Output,
-  EventEmitter,
+  ViewEncapsulation
 } from '@angular/core';
 import {
   Axis,
@@ -51,10 +48,13 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   public traineeDetailId: number;
   public sortType = 'name';
   public sortReverse = false;
+  public restrictToVisibleTrainees = true;
+  public stripUnfinishedTimes = 0;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
   private readonly d3: D3;
   private svg;
+  private traineeRestrictedXScale = {min: Number.MAX_VALUE, max: 0, inactive: 0};
   private zoom;
   private brush;
   private zoomTransform: ZoomTransform;
@@ -85,7 +85,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   // used by margin convention in d3 (https://bl.ocks.org/mbostock/3019563)
   private margin = { top: 0, right: 140, bottom: 20, left: 230 };
-  private maxXAxisVal;
+  private minXAxisVal: number;
+  private maxXAxisVal: number;
 
   // percentage of height of chart
   private gutter = 0.1;
@@ -140,6 +141,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.filteredRuns = this.updateDisplayedTrainees();
     this.setWidth();
     this.setHeight();
+    this.restrictToVisibleTrainees ? this.restrictXScaleToVisibleRange(this.filteredRuns) : null;
     this.updateXScale();
     this.updateXAxis();
     this.updateContextXScale();
@@ -354,7 +356,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   transformChart(transform: ZoomTransform) {
     // the main progress timeline text
-    const currentTime = this.xScale(this.visualizationData.currentTime);
+    const currentTime = this.xScale(this.restrictToVisibleTrainees ?
+        this.traineeRestrictedXScale.max : this.visualizationData.currentTime);
     const newPosition = currentTime * transform.k + transform.x;
     const moveTimeText =
       newPosition < this.timeIndication
@@ -515,17 +518,51 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   updateXScale() {
-    this.maxXAxisVal = this.visualizationData.currentTime + 60 * 60;
+    //this.maxXAxisVal = this.visualizationData.currentTime + 60 * 60;
+    this.minXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.min : this.visualizationData.startTime;
+    this.maxXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.max : this.visualizationData.currentTime;
+    const maxStripTime = Math.min(this.stripUnfinishedTimes, this.traineeRestrictedXScale.inactive);
     this.xScale = this.d3
       .scaleTime()
-      .domain([this.visualizationData.startTime, this.maxXAxisVal])
+      .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
   }
 
+  restrictXScaleToVisibleRange(traineeRuns: any[]) {
+    const initialStartTime = this.visualizationData.startTime;
+    const initialEndTime = this.visualizationData.currentTime;
+    let inactiveEndInterval= 0;
+    const startTimes = traineeRuns.map(value => value.levels.length > 0 ? value.levels[0].startTime : initialStartTime);
+    const endTimes = traineeRuns.map(value => {
+      const levelLength = value.levels.length;
+      if (levelLength > 0) { // if we have levels, we get info from them
+        if (value.levels[levelLength - 1].endTime) { // if the level has finished, get its end time
+          return value.levels[levelLength - 1].endTime;
+        }
+        //if the level has not finished, try to get info from events, if there are any
+        if (value.levels[levelLength - 1].events.length > 0) { // there are events, get time from the last one
+          const lastTimestamp = value.levels[levelLength - 1].events[value.levels[levelLength - 1].events.length - 1].timestamp;
+          inactiveEndInterval = this.visualizationData.currentTime - lastTimestamp;
+          return lastTimestamp;
+        } else { // there is nothing, get the time of the level start time, increased by selected
+          const lastTimestamp = value.levels[levelLength - 1].startTime;
+          inactiveEndInterval = this.visualizationData.currentTime - lastTimestamp;
+          return this.visualizationData.currentTime;
+        }
+      }
+      return initialEndTime;
+    }).filter(value => value);
+    this.traineeRestrictedXScale.min = Math.min(...startTimes);
+    this.traineeRestrictedXScale.max = Math.max(...endTimes);
+    this.traineeRestrictedXScale.inactive = inactiveEndInterval;
+    console.log(inactiveEndInterval);
+  }
+
   updateContextXScale() {
+    const maxStripTime = Math.min(this.stripUnfinishedTimes, this.traineeRestrictedXScale.inactive);
     this.contextXScale = this.d3
       .scaleTime()
-      .domain([this.visualizationData.startTime, this.maxXAxisVal])
+      .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
   }
 
@@ -578,8 +615,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       .selectAll('.progress-chart-container .progress-row-container')
       .append('line')
       .attr('class', 'timeline')
-      .attr('x1', this.xScale(this.visualizationData.currentTime))
-      .attr('x2', this.xScale(this.visualizationData.currentTime))
+      .attr('x1', this.xScale(this.visualizationData.currentTime)) //TODO
+      .attr('x2', this.xScale(this.visualizationData.currentTime)) // TODO
       .attr('stroke', 'black')
       .attr('stroke-width', 2)
       .attr('y1', 1)
@@ -834,9 +871,11 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       )
       .attr(
         'width',
-        (traineeLevel: TraineeLevel) =>
-          this.xScale(this.visualizationData.currentTime) -
+        (traineeLevel: TraineeLevel) => {
+          const currentTime = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.max: this.visualizationData.currentTime;
+          return this.xScale(currentTime) -
           this.xScale(traineeLevel.startTime)
+        }
       )
       .attr('height', this.yScale.bandwidth())
       .attr('fill', (d) =>
