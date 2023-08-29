@@ -18,18 +18,7 @@
             Restrict to visible runs only
         </mat-slide-toggle>
         <br/>
-        <mat-slider min="0" step="1"
-                    [max]="traineeRestrictedXScale.inactive"
-                    [value]="stripUnfinishedTimes"
-                    (valueChange)="stripInactiveTime($event)">
-            <input matSliderThumb>
-        </mat-slider>
-        <mat-form-field>
-        <input matInput
-               [value]="stripUnfinishedTimes.toString()"
-               (change)="stripInactiveTimeInput($event)"
-               type="number"><span matSuffix>&nbsp;seconds</span>
-        </mat-form-field>
+        <button class="active-zoom-button" mat-button (click)="null" matTooltip="">Zoom into active timeline only</button>
     </mat-expansion-panel>
 </mat-accordion>
 

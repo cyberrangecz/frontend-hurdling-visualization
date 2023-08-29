@@ -2,7 +2,7 @@
     <div class="ctf-progress-legend-left">
         <div class="ctf-progress-legend-left-top">
             <span class="ctf-progress-legend-item">Legend: </span>
-            <span class="ctf-progress-legend-item ctf-progress-legend-limit" *ngIf="selectedViewValue == 'overview'">
+            <span class="ctf-progress-legend-item ctf-progress-legend-limit" *ngIf="selectedViewValue === 'overview'">
                 <svg class="ctf-progress-legend-icon" height="18" width="2" viewBox="0 0 2 18">
                     <rect y="0" x="0" height="18" width="2"></rect>
                 </svg>
@@ -17,21 +17,21 @@
                     </defs>
                     <rect y="0" x="0" height="18" width="35" fill="url('#diagonalHatchGray')"></rect>
                 </svg>
-                {{selectedViewValue == 'progress' ? 'Estimated time' : 'Unfinished level estimate'}}
+                {{selectedViewValue === 'progress' ? 'Estimated time to finish level' : 'Unfinished level estimate'}}
             </span>
 
-            <span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="selectedViewValue == 'progress'">
+            <span class="ctf-progress-legend-item ctf-progress-legend-finished" *ngIf="selectedViewValue === 'progress'">
                 <svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
-                    <rect y="0" x="0" height="18" width="35" fill="#cccccc"></rect>
+                    <rect y="0" x="0" height="18" width="35" [attr.fill]="levelColors.finished"></rect>
                 </svg>
-                Finished level
+                Finished levels (grayscale)
             </span>
 
-            <span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="selectedViewValue == 'progress'">
+            <span class="ctf-progress-legend-item ctf-progress-legend-active" *ngIf="selectedViewValue === 'progress'">
                 <svg class="ctf-progress-legend-icon" height="18" width="35" viewBox="0 0 35 18">
-                    <rect y="0" x="0" height="18" width="35" fill="#848282"></rect>
+                    <rect y="0" x="0" height="18" width="35" [attr.fill]="levelColors.active"></rect>
                 </svg>
-                Active level
+                Active levels ({{activeLevelsDesc[activeLevelColorIndex]}})
             </span>
 
             <span class="ctf-progress-legend-item ctf-progress-legend-active">
@@ -45,7 +45,9 @@
             </span>
 
             <span class="ctf-progress-legend-item ctf-progress-legend-active">
-                <svg class="ctf-progress-legend-icon" width="35" height="20" viewBox="0 0 15 15"><path [attr.d]="pathConfig.solution"/></svg>
+                <svg class="ctf-progress-legend-icon" width="35" height="20" viewBox="0 0 15 15">
+                    <path [attr.d]="pathConfig.solution"/>
+                </svg>
                 Solution displayed
             </span>
 

@@ -34,7 +34,7 @@ export class AppConfig {
 
 export const CTF_PROGRESS_CONFIG: AppConfig = {
   levelsTimePlan: [],
-  levelsColorEstimates: ["#5A9239", "#FDB100", "#EB1505", "gray"],
+  levelsColorEstimates: ["#5A9239", "#FDB100", "#EB1505"],
   defaultEstimatedTime: 5,
   traineeRowHeight: 30,
   trainingColors: [
