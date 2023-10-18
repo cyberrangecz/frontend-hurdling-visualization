@@ -14,13 +14,25 @@
         <mat-slide-toggle
                 (change)="restrictView()"
                 [checked]="restrictToVisibleTrainees"
-                matTooltip="In selected runs, this ensures that only the visible trainee timeline portion is displayed.">
-            Restrict to visible runs only
+                matTooltip="In selected runs, this ensures that only the relevant trainee timeline portion is displayed.">
+            Restrict timeline (show the area with selected runs only)
         </mat-slide-toggle>
+
         <br/>
-        <button class="active-zoom-button" mat-button (click)="zoomIntoActiveTimeline()" matTooltip="TODO">
-            Zoom into active timeline only
-        </button>
+        <mat-form-field>
+
+            <input matInput placeholder="Start time" [value]="traineeRestrictedXScale.min.toString()"/>
+        </mat-form-field>
+
+        <mat-slider min="200" max="500">
+            <input value="300" matSliderStartThumb>
+            <input value="400" matSliderEndThumb>
+        </mat-slider>
+
+        <mat-form-field>
+
+            <input matInput placeholder="End time" [value]="traineeRestrictedXScale.max.toString()"/>
+        </mat-form-field>
     </mat-expansion-panel>
 </mat-accordion>
 

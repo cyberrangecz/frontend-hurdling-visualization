@@ -125,7 +125,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.updateSideColumns();
     this.initHeaders();
     this.initProgressRow();
-    this.updateWhenEmpty(); //
+    this.updateWhenEmpty();
     this.drawFinished();
     this.drawActive();
     this.drawPlanned();
@@ -326,16 +326,6 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       .select('.zoom-listener-rect')
       .style('pointer-events', event.ctrlKey ? 'all' : 'none')
       .style('cursor', event.ctrlKey ? 'grabbing' : 'default');
-  }
-
-  zoomIntoActiveTimeline() {
-    console.log(this.zoomTransform);
-    const tr = this.d3.zoomIdentity.translate(
-        this.xScale(this.traineeRestrictedXScale.min), this.xScale(
-            this.visualizationData.currentTime - this.traineeRestrictedXScale.inactive));
-    console.log(tr);
-    this.transformChart(tr);
-
   }
 
   zoomed(event, reset = false): void {
