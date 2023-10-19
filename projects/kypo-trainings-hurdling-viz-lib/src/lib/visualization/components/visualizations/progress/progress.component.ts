@@ -21,12 +21,12 @@ import { TraineeLevel } from '../../../models/trainee-level';
 import { TraineeProgress } from '../../../models/trainee-progress';
 import { Level } from '../../../models/level';
 import { SimpleChanges } from '@angular/core';
-import {NumberValue, zoomTransform} from 'd3';
-import { Trainee } from '../../../models/trainee';
-import { HintTakenEvent } from '../../../models/hint-taken-event';
-import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
-import { Event } from '../../../models/event';
-import { View } from '../../../models/view.enum';
+import {NumberValue, ZoomBehavior, zoomTransform} from 'd3';
+import {Trainee} from '../../../models/trainee';
+import {HintTakenEvent} from '../../../models/hint-taken-event';
+import {WrongAnswerEvent} from '../../../models/wrong-answer-event';
+import {Event} from '../../../models/event';
+import {View} from '../../../models/view.enum';
 
 @Component({
   selector: 'kypo-viz-progress',
@@ -48,15 +48,17 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   public traineeDetailId: number;
   public sortType = 'name';
   public sortReverse = false;
-  public restrictToVisibleTrainees = true;
+  public restrictToVisibleTrainees = false;
+  public restrictToCustomTimelines = true;
   public stripUnfinishedTimes = 0;
   public traineeRestrictedXScale = {min: Number.MAX_VALUE, max: 0, inactive: 0};
+  public customRestrictedXScale = {min: 0, max: 100, minRestriction: 0, maxRestriction: 0};
   public panelOpenState = false;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
   private readonly d3: D3;
   private svg;
-  private zoom;
+  private zoom: ZoomBehavior<Element, unknown>;
   private brush;
   private zoomTransform: ZoomTransform;
   private brushSelection; // to maintain brush selection after filtering
@@ -80,7 +82,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   private width = 0;
   private height = 200;
 
-  private chartHeight;
+  private chartHeight: number;
   private brushHeight = 100;
   private timeIndication = 125;
 
@@ -522,11 +524,13 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     //this.maxXAxisVal = this.visualizationData.currentTime + 60 * 60;
     this.minXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.min : this.visualizationData.startTime;
     this.maxXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.max : this.visualizationData.currentTime;
-    const maxStripTime = Math.min(this.stripUnfinishedTimes, this.traineeRestrictedXScale.inactive);
+    const maxStripTime = this.restrictToVisibleTrainees ? 0 : Math.min(this.stripUnfinishedTimes, this.traineeRestrictedXScale.inactive);
     this.xScale = this.d3
       .scaleTime()
       .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
+
+    this.customRestrictedXScale.max = this.visualizationData.currentTime - this.visualizationData.startTime;
   }
 
   restrictXScaleToVisibleRange(traineeRuns: any[]) {

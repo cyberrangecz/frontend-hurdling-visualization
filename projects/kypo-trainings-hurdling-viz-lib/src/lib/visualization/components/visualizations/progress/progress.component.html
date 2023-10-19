@@ -15,23 +15,36 @@
                 (change)="restrictView()"
                 [checked]="restrictToVisibleTrainees"
                 matTooltip="In selected runs, this ensures that only the relevant trainee timeline portion is displayed.">
-            Restrict timeline (show the area with selected runs only)
+            Automatically restrict timeline (crop the area with selected runs only)
         </mat-slide-toggle>
-
-        <br/>
-        <mat-form-field>
-
-            <input matInput placeholder="Start time" [value]="traineeRestrictedXScale.min.toString()"/>
+        <hr [style.margin]="'25px 0px'">
+        <mat-slide-toggle
+                (change)="null"
+                [checked]="restrictToCustomTimelines"
+                matTooltip="In selected runs, this ensures that only the relevant trainee timeline portion is displayed.">
+            Manually restrict timeline
+        </mat-slide-toggle>
+        <br/><br/>
+        <mat-form-field [style.width]="'9vw'">
+            <mat-label>{{'Start (' + getTimeString(customRestrictedXScale.min) + ')'}}</mat-label>
+            <input matInput type="number" placeholder="Start time" [value]="customRestrictedXScale.min.toString()"/>
         </mat-form-field>
 
-        <mat-slider min="200" max="500">
-            <input value="300" matSliderStartThumb>
-            <input value="400" matSliderEndThumb>
+
+
+        <mat-slider [min]="customRestrictedXScale.min"
+                    [max]="500"
+                    showTickMarks
+                    discrete
+                    [displayWith]="getTimeString"
+                    [style.width]="'76vw'">
+            <input [value]="customRestrictedXScale.min + customRestrictedXScale.minRestriction" matSliderStartThumb>
+            <input [value]="customRestrictedXScale.max - customRestrictedXScale.maxRestriction" matSliderEndThumb>
         </mat-slider>
 
-        <mat-form-field>
-
-            <input matInput placeholder="End time" [value]="traineeRestrictedXScale.max.toString()"/>
+        <mat-form-field [style.width]="'9vw'">
+            <mat-label>{{'End (' + getTimeString(customRestrictedXScale.max) + ')'}}</mat-label>
+            <input matInput type="number" placeholder="End time" [value]="customRestrictedXScale.max.toString()"/>
         </mat-form-field>
     </mat-expansion-panel>
 </mat-accordion>
