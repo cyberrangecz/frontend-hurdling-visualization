@@ -54,6 +54,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   public traineeRestrictedXScale = {min: Number.MAX_VALUE, max: 0, inactive: 0};
   public customRestrictedXScale = {min: 0, max: 100, minRestriction: 0, maxRestriction: 0};
   public panelOpenState = false;
+  public timelineStepSize = 1000;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
   private readonly d3: D3;
@@ -521,16 +522,26 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   updateXScale() {
-    //this.maxXAxisVal = this.visualizationData.currentTime + 60 * 60;
-    this.minXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.min : this.visualizationData.startTime;
-    this.maxXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.max : this.visualizationData.currentTime;
+    this.customRestrictedXScale.max = this.visualizationData.currentTime - this.visualizationData.startTime;
+    this.timelineStepSize = (this.visualizationData.currentTime - this.visualizationData.startTime) / 1000;
+
+    this.minXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.min :
+                      (this.restrictToCustomTimelines ? (this.visualizationData.startTime + this.customRestrictedXScale.minRestriction) :
+                      this.visualizationData.startTime);
+    this.maxXAxisVal = this.restrictToVisibleTrainees ? this.traineeRestrictedXScale.max :
+                      (this.restrictToCustomTimelines ? (this.visualizationData.currentTime - this.customRestrictedXScale.maxRestriction) :
+                      this.visualizationData.currentTime);
+
     const maxStripTime = this.restrictToVisibleTrainees ? 0 : Math.min(this.stripUnfinishedTimes, this.traineeRestrictedXScale.inactive);
     this.xScale = this.d3
       .scaleTime()
       .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
 
-    this.customRestrictedXScale.max = this.visualizationData.currentTime - this.visualizationData.startTime;
+  }
+
+  test(t) {
+    console.log(t);
   }
 
   restrictXScaleToVisibleRange(traineeRuns: any[]) {
@@ -639,6 +650,11 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
           this.xScale(this.visualizationData.currentTime) +
           'px'
       );
+  }
+
+  updateVisibleTimeline(event: number, type: string) {
+    this.customRestrictedXScale[type+'Restriction'] = event.toFixed();
+    this.updateProgressChart();
   }
 
   initProgressChartContainer(): void {
@@ -1223,8 +1239,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.traineeDetailId = data.userRefId;
   }
 
-  restrictView() {
-    this.restrictToVisibleTrainees = !this.restrictToVisibleTrainees;
+  restrictView(viewType: string) {
+    this[viewType] = !this[viewType];
     this.updateProgressChart();
   }
 
