@@ -36,7 +36,6 @@ yarn-error.log
 testem.log
 /typings
 /documentation
-.npmrc
 
 # System Files
 .DS_Store

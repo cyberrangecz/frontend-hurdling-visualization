@@ -30,11 +30,14 @@
         <div *ngIf="restrictToCustomTimelines">
             <p>Restrict the lower and upped bounds (absolute time in milliseconds) which the timeline shows.</p>
 
-            <mat-form-field [style.width]="'200px'">
+            <mat-form-field [style.width]="'190px'">
                 <mat-label>
                     {{'Start in ms (' + getTimeString(customRestrictedXScale.min + customRestrictedXScale.minRestriction) + ')'}}
                 </mat-label>
                 <input matInput
+                       [min]="0"
+                       (change)="updateVisibleTimeline($event, 'min')"
+                       [max]="customRestrictedXScale.max"
                        type="number"
                        placeholder="Starting timestamp"
                        [value]="(customRestrictedXScale.min + customRestrictedXScale.minRestriction).toString()"/>
@@ -54,14 +57,17 @@
                        (valueChange)="updateVisibleTimeline($event, 'min')">
                 <input [value]="customRestrictedXScale.max - customRestrictedXScale.maxRestriction"
                        matSliderEndThumb
-                       (valueChange)="updateVisibleTimeline(customRestrictedXScale.max - $event, 'max')">
+                       (valueChange)="updateVisibleTimeline($event, 'max')">
             </mat-slider>
 
-            <mat-form-field [style.width]="'200px'">
+            <mat-form-field [style.width]="'190px'">
                 <mat-label>
                     {{'End in ms (' + getTimeString(customRestrictedXScale.max - customRestrictedXScale.maxRestriction) + ')'}}
                 </mat-label>
                 <input matInput
+                       [min]="0"
+                       [max]="customRestrictedXScale.max"
+                       (change)="updateVisibleTimeline($event, 'max')"
                        type="number"
                        placeholder="Ending timestamp"
                        [value]="(customRestrictedXScale.max - customRestrictedXScale.maxRestriction).toString()"/>

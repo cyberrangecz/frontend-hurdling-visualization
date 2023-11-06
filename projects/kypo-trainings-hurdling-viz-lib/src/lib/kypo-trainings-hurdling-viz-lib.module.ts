@@ -1,43 +1,43 @@
-import { OverviewProgressBarComponent } from './visualization/components/visualizations/overview-progress-bar/overview-progress-bar.component';
+import { OverviewProgressBarComponent } from "./visualization/components/visualizations/overview-progress-bar/overview-progress-bar.component";
 import {
   ModuleWithProviders,
   NgModule,
   Optional,
   SkipSelf,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ProgressComponent } from './visualization/components/visualizations/progress/progress.component';
-import { TrainingAnalysisComponent } from './visualization/components/visualizations/training-analysis/training-analysis.component';
-import { MouseWheelDirective } from './visualization/directives/mousewheel.directive';
-import { MouseMoveDirective } from './visualization/directives/mousemove.directive';
-import { ColumnHeaderComponent } from './visualization/components/visualizations/column-header/column-header.component';
-import { SortingService } from './visualization/services/sorting.service';
-import { FilteringService } from './visualization/services/filtering.service';
-import { ConfigService } from './visualization/config/config.service';
-import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
-import { D3Service } from '@muni-kypo-crp/d3-service';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { TraineeSelectionComponent } from './visualization/components/visualizations/trainee-selection/trainee-selection.component';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatButtonModule } from '@angular/material/button';
-import { LevelListComponent } from './visualization/components/visualizations/level-list/level-list.component';
-import { LegendComponent } from './visualization/components/visualizations/legend/legend.component';
-import { HurdlingVisualizationConfig } from './visualization/config/kypo-trainings-hurdling-viz-lib';
-import { VisualizationDataApi } from './visualization/api/visualization-data-api.service';
-import { VisualizationDataDefaultApi } from './visualization/api/visualization-data-default-api.service';
-import { VisualizationsDataService } from './visualization/services/visualizations-data.service';
-import { VisualizationsDataConcreteService } from './visualization/services/visualizations-data-concrete.service';
-import { VisualizationsComponent } from './visualization/components/visualizations/visualizations.component';
-import { TraineeDetailComponent } from './visualization/components/visualizations/trainee-detail/trainee-detail.component';
-import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
-import {MatIconModule} from '@angular/material/icon';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatInputModule} from '@angular/material/input';
-import {MatSliderModule} from '@angular/material/slider';
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { ProgressComponent } from "./visualization/components/visualizations/progress/progress.component";
+import { TrainingAnalysisComponent } from "./visualization/components/visualizations/training-analysis/training-analysis.component";
+import { MouseWheelDirective } from "./visualization/directives/mousewheel.directive";
+import { MouseMoveDirective } from "./visualization/directives/mousemove.directive";
+import { ColumnHeaderComponent } from "./visualization/components/visualizations/column-header/column-header.component";
+import { SortingService } from "./visualization/services/sorting.service";
+import { FilteringService } from "./visualization/services/filtering.service";
+import { ConfigService } from "./visualization/config/config.service";
+import { AppConfig, CTF_PROGRESS_CONFIG } from "./app.config";
+import { D3Service } from "@muni-kypo-crp/d3-service";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { TraineeSelectionComponent } from "./visualization/components/visualizations/trainee-selection/trainee-selection.component";
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatButtonModule } from "@angular/material/button";
+import { LevelListComponent } from "./visualization/components/visualizations/level-list/level-list.component";
+import { LegendComponent } from "./visualization/components/visualizations/legend/legend.component";
+import { HurdlingVisualizationConfig } from "./visualization/config/kypo-trainings-hurdling-viz-lib";
+import { VisualizationDataApi } from "./visualization/api/visualization-data-api.service";
+import { VisualizationDataDefaultApi } from "./visualization/api/visualization-data-default-api.service";
+import { VisualizationsDataService } from "./visualization/services/visualizations-data.service";
+import { VisualizationsDataConcreteService } from "./visualization/services/visualizations-data-concrete.service";
+import { VisualizationsComponent } from "./visualization/components/visualizations/visualizations.component";
+import { TraineeDetailComponent } from "./visualization/components/visualizations/trainee-detail/trainee-detail.component";
+import { MatCardModule } from "@angular/material/card";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatInputModule } from "@angular/material/input";
+import { MatSliderModule } from "@angular/material/slider";
 
 @NgModule({
   declarations: [
@@ -66,7 +66,7 @@ import {MatSliderModule} from '@angular/material/slider';
     MatDividerModule,
     MatSlideToggleModule,
     MatInputModule,
-    MatSliderModule
+    MatSliderModule,
   ],
   providers: [
     D3Service,
@@ -93,7 +93,7 @@ export class KypoTrainingsHurdlingVizLibModule {
   ) {
     if (parentModule) {
       throw new Error(
-        'KypoTrainingsHurdlingVizLibModule is already loaded. Import it in the main module only'
+        "KypoTrainingsHurdlingVizLibModule is already loaded. Import it in the main module only"
       );
     }
   }
