@@ -1,38 +1,21 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from "@angular/core";
-import {
-  BehaviorSubject,
-  catchError,
-  delay,
-  EMPTY,
-  exhaustMap,
-  Observable,
-  of,
-  repeat,
-  timer,
-} from "rxjs";
-import { takeWhile, tap } from "rxjs/operators";
-import { VisualizationDataDTO } from "../../DTOs/visualization-data-dto";
-import { VisualizationDataMapper } from "../../mappers/visualization-data-mapper";
-import { VisualizationData } from "../../models/visualization-data";
-import { VisualizationsDataService } from "../../services/visualizations-data.service";
-import { AppConfig } from "../../../app.config";
-import { View } from "../../models/view.enum";
-import { EventType } from "../../models/enums/event-type.enum";
-import { TraineeView } from "../../models/enums/trainee-view.enum";
-import { TrainingAnalysisEventService } from "../../models/training-analysis-event-service";
-import { Trainee } from "../../models/trainee";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { catchError, delay, EMPTY, exhaustMap, Observable, of, repeat, timer } from 'rxjs';
+import { takeWhile, tap } from 'rxjs/operators';
+import { VisualizationDataDTO } from '../../DTOs/visualization-data-dto';
+import { VisualizationDataMapper } from '../../mappers/visualization-data-mapper';
+import { VisualizationData } from '../../models/visualization-data';
+import { VisualizationsDataService } from '../../services/visualizations-data.service';
+import { AppConfig } from '../../../app.config';
+import { View } from '../../models/view.enum';
+import { EventType } from '../../models/enums/event-type.enum';
+import { TraineeView } from '../../models/enums/trainee-view.enum';
+import { TrainingAnalysisEventService } from '../../models/training-analysis-event-service';
+import { Trainee } from '../../models/trainee';
 
 @Component({
-  selector: "kypo-hurdling-visualization",
-  templateUrl: "./visualizations.component.html",
-  styleUrls: ["./visualizations.component.css"],
+  selector: 'kypo-hurdling-visualization',
+  templateUrl: './visualizations.component.html',
+  styleUrls: ['./visualizations.component.css'],
 })
 export class VisualizationsComponent implements OnInit, OnDestroy {
   @Input() trainingDefinitionId: number;
@@ -50,11 +33,17 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   @Input() isStandalone: boolean;
 
   @Output() highlightedTrainee: EventEmitter<number> = new EventEmitter();
-  @Output() outputSelectedTrainees = new EventEmitter<number[]>();
+  @Output() outputSelectedTrainees: EventEmitter<number[]> = new EventEmitter();
+  @Output() outputMaxTime: EventEmitter<number> = new EventEmitter();
 
   visualizationData$: Observable<VisualizationData>;
 
   private isAlive = true;
+
+  public restrictionType: string;
+  public restriction: {type: string, value: number};
+  public maxTime: number;
+  public stepSize: number;
 
   constructor(
     private visualizationDataService: VisualizationsDataService,
@@ -84,14 +73,14 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.isAlive));
   }
 
-  initSimulation(interval: number = 1000): void {
-    let visualizationData = this.JSONData;
+  initSimulation(interval = 1000): void {
+    const visualizationData = this.JSONData;
     let time = visualizationData.start_time;
 
     timer(0, interval)
       .pipe(takeWhile(() => this.isAlive))
       .subscribe(() => {
-        let tmp = JSON.parse(
+        const tmp = JSON.parse(
           JSON.stringify(this.JSONData)
         ) as VisualizationDataDTO;
         tmp.player_progress.forEach((traineeProgress) =>
@@ -122,7 +111,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
               level.state = null;
               level.end_time = null;
             } else if (!isCompleted) {
-              level.state = "RUNNING";
+              level.state = 'RUNNING';
               level.end_time = null;
             }
             level.wrong_answers_number = level.events.filter(
@@ -144,7 +133,7 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
         // stop simulation when all trainees are finished
         this.isAlive = !(
           tmp.player_progress.every((traineeProgress) =>
-            traineeProgress.levels.every((level) => level.state == "FINISHED")
+            traineeProgress.levels.every((level) => level.state == 'FINISHED')
           ) && tmp.player_progress.length != 0
         );
       });
@@ -197,6 +186,22 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
 
   public getViewEnum() {
     return View;
+  }
+
+  restrictionTypeEvent(type: string): void {
+    this.restrictionType = type;
+  }
+
+  scaleRestrictionEvent(restriction: any): void {
+    this.restriction = restriction;
+  }
+
+  getMaxTime(time: number): void {
+    this.maxTime = time;
+  }
+
+  getStepSize(step: number):void {
+    this.stepSize = step;
   }
 
   ngOnDestroy(): void {

@@ -1,19 +1,6 @@
 import { TraineeView } from '../../../models/enums/trainee-view.enum';
-import {
-  Component,
-  Input,
-  OnChanges,
-  AfterViewInit,
-  ViewEncapsulation,
-} from '@angular/core';
-import {
-  Axis,
-  D3,
-  D3Service,
-  ScaleBand,
-  ScaleTime,
-  ZoomTransform,
-} from '@muni-kypo-crp/d3-service';
+import { Component, Input, OnChanges, AfterViewInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { Axis, D3, D3Service, ScaleBand, ScaleTime, ZoomTransform } from '@muni-kypo-crp/d3-service';
 import { AppConfig } from '../../../../app.config';
 import { ConfigService } from '../../../config/config.service';
 import { VisualizationData } from '../../../models/visualization-data';
@@ -27,6 +14,7 @@ import { HintTakenEvent } from '../../../models/hint-taken-event';
 import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
 import { Event } from '../../../models/event';
 import { View } from '../../../models/view.enum';
+import { getTimeString as formatTime } from '../../../utils/utils';
 
 @Component({
   selector: 'kypo-viz-progress',
@@ -37,12 +25,17 @@ import { View } from '../../../models/view.enum';
 export class ProgressComponent implements OnChanges, AfterViewInit {
   @Input() visualizationData: VisualizationData;
   @Input() selectedTraineeView: TraineeView = TraineeView.Avatar;
-  @Input() externalFilters;
+  @Input() externalFilters: any;
   @Input() setDashboardView = false;
   @Input() trainingInstanceId: number;
   @Input() view = View.Progress;
+  @Input() restrictionType = '';
+  @Input() restriction: any;
 
+  @Output() getMaxTime: EventEmitter<number> = new EventEmitter();
+  @Output() getStepSize: EventEmitter<number> = new EventEmitter();
   //@Output() highlightedTrainee = new EventEmitter<number>();
+
   public filteredTrainees: Trainee[] = []; // the trainees from the trainee selection
   public highlightedTraineeRefId: number;
   public traineeDetailId: number;
@@ -62,7 +55,6 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     minRestriction: 0,
     maxRestriction: 0,
   };
-  public panelOpenState = false;
   public timelineStepSize = 1000;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
@@ -74,7 +66,6 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   private brushSelection; // to maintain brush selection after filtering
   private tooltip;
   private tooltipOffset = 3;
-  private allRows;
   private approxFontWidth = 10;
 
   // transformTimeStamp: we need to remember a transform fire timestamp and check it,
@@ -111,12 +102,18 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   ) {
     this.d3 = d3Service.getD3();
     this.zoomTransform = this.d3.zoomIdentity;
-    this.svg = this.d3.select('body'); //!!!???
+    this.svg = this.d3.select('body');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // if it is first call skip update and init first
-    if (changes['visualizationData'].isFirstChange()) return;
+    if (changes['visualizationData'] && changes['visualizationData'].isFirstChange()) return;
+    if(changes['restrictionType']) {
+      this[this.restrictionType] = !this[this.restrictionType];
+    }
+    if(changes['restriction']) {
+      this.customRestrictedXScale[this.restriction.type + 'Restriction'] = this.restriction.value;
+    }
     this.updateProgressChart();
   }
 
@@ -430,16 +427,15 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   initBrush(): void {
-    const brushY = (this.height - this.brushHeight + 20);
     this.svg
         .append('defs')
         .append('clipPath')
         .attr('id', 'clip-context')
         .append('rect')
         .attr('x', 0)
-        .attr('y', brushY)
+        .attr('y', this.chartHeight)
         .attr('width', this.width)
-        .attr('height', this.brushHeight);
+        .attr('height', this.brushHeight)
 
     this.brush = this.d3
       .brushX()
@@ -462,7 +458,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       .attr('class', 'progress-row-container-context')
       .attr(
         'transform',
-        'translate(0,' + brushY + ')'
+        'translate(0,' + this.chartHeight + ')'
       );
 
     if (this.brush == undefined) return;
@@ -576,6 +572,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
           this.stripUnfinishedTimes,
           this.traineeRestrictedXScale.inactive
         );
+    this.getMaxTime.emit(this.visualizationData.currentTime - this.visualizationData.startTime);
+    this.getStepSize.emit(this.timelineStepSize);
     this.xScale = this.d3
       .scaleTime()
       .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
@@ -622,7 +620,6 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.traineeRestrictedXScale.min = Math.min(...startTimes);
     this.traineeRestrictedXScale.max = Math.max(...endTimes);
     this.traineeRestrictedXScale.inactive = inactiveEndInterval;
-    console.log(inactiveEndInterval);
   }
 
   updateContextXScale() {
@@ -634,6 +631,9 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       .scaleTime()
       .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
+
+    this.svg.select('#clip-context rect')
+        .attr('y', this.chartHeight);
   }
 
   updateYScale(
@@ -706,25 +706,6 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       );
   }
 
-  updateVisibleTimeline(event: any, type: string) {
-    let value: number;
-    if (typeof event == 'object') {
-      value = Number.parseInt(event.target.value);
-    } else value = event;
-
-    switch (type) {
-      case 'min':
-        this.customRestrictedXScale[type + 'Restriction'] = Number.parseInt(value.toFixed());
-        break;
-      case 'max':
-        this.customRestrictedXScale[type + 'Restriction'] = Number.parseInt((this.customRestrictedXScale.max - value).toFixed());
-        break;
-    }
-
-    console.log(this.customRestrictedXScale);
-    this.updateProgressChart();
-  }
-
   initProgressChartContainer(): void {
     this.svg.append('g').attr('class', 'progress-chart-container');
   }
@@ -753,7 +734,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.svg.selectAll('.row-container').remove();
     this.svg.selectAll('.empty-container').remove();
 
-    this.allRows = this.svg
+    this.svg
       .selectAll('.progress-row-container,.progress-row-container-context')
       .selectAll('.row-container')
       .data(this.filteredRuns)
@@ -1305,11 +1286,6 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.traineeDetailId = data.userRefId;
   }
 
-  restrictView(viewType: string) {
-    this[viewType] = !this[viewType];
-    this.updateProgressChart();
-  }
-
   stripInactiveTime(value: number) {
     this.stripUnfinishedTimes = value;
     this.updateProgressChart();
@@ -1434,24 +1410,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   public getTimeString(seconds: number): string {
-    const days: number = Math.floor(seconds / 86400);
-    const hours: number = Math.floor((seconds - days * 86400) / 3600);
-    const minutes: number = Math.floor(
-      (seconds - days * 86400 - hours * 3600) / 60
-    );
-    const daysStr =
-      days > 0 ? days.toString() + (days > 1 ? ' days, ' : ' day, ') : '';
-
-    seconds = Math.floor(seconds - days * 86400 - hours * 3600 - minutes * 60);
-
-    return (
-      daysStr +
-      hours.toString() +
-      ':' +
-      minutes.toString().padStart(2, '0') +
-      ':' +
-      seconds.toString().padStart(2, '0')
-    );
+    return formatTime(seconds);
   }
 
   createZoomListener() {

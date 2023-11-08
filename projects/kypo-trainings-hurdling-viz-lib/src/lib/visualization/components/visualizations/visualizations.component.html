@@ -1,11 +1,21 @@
 <ng-container *ngIf="view === getViewEnum().Progress && visualizationData$ | async ">
+	<kypo-viz-hurdling-settings
+			[maximumTime]="maxTime"
+			[timelineStepSize]="stepSize"
+			(scaleRestrictionEvent)="scaleRestrictionEvent($event)"
+			(restrictionTypeEvent)="restrictionTypeEvent($event)"
+	></kypo-viz-hurdling-settings>
 	<kypo-viz-progress
 			id="viz-progress"
+			[restrictionType]="restrictionType"
+			[restriction]="restriction"
 			[visualizationData]="visualizationData$ | async"
 			[view]="view"
 			[setDashboardView]="setDashboardView"
 			[externalFilters]="externalFilters"
 			[trainingInstanceId]="trainingInstanceId"
+			(getMaxTime)="getMaxTime($event)"
+			(getStepSize)="getStepSize($event)"
 	></kypo-viz-progress>
 </ng-container>
 

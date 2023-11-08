@@ -81,7 +81,7 @@ text.event-number {
     fill: #fff;
 }
 
-.mdc-slider__value-indicator {
+kypo-hurdling-visualization .mdc-slider__value-indicator {
     height: 50px !important;
     min-width: 55px !important;
 }
