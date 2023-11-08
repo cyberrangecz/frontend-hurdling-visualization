@@ -31,6 +31,7 @@ import { VisualizationsDataService } from "./visualization/services/visualizatio
 import { VisualizationsDataConcreteService } from "./visualization/services/visualizations-data-concrete.service";
 import { VisualizationsComponent } from "./visualization/components/visualizations/visualizations.component";
 import { TraineeDetailComponent } from "./visualization/components/visualizations/trainee-detail/trainee-detail.component";
+import { SettingsComponent } from "./visualization/components/settings/settings/settings.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
@@ -52,6 +53,7 @@ import { MatSliderModule } from "@angular/material/slider";
     LegendComponent,
     VisualizationsComponent,
     TraineeDetailComponent,
+    SettingsComponent,
   ],
   imports: [
     CommonModule,

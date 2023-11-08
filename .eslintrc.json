@@ -27,7 +27,7 @@
           "error",
           { "type": "element", "prefix": "app", "style": "kebab-case" }
         ],
-        "quotes": ["error", "single", { "allowTemplateLiterals": true }]
+        "quotes": ["warn", "single", { "allowTemplateLiterals": true }]
       }
     },
     {

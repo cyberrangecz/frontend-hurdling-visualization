@@ -7,7 +7,6 @@ import {
   Output,
 } from "@angular/core";
 import {
-  BehaviorSubject,
   catchError,
   delay,
   EMPTY,
@@ -50,11 +49,18 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   @Input() isStandalone: boolean;
 
   @Output() highlightedTrainee: EventEmitter<number> = new EventEmitter();
-  @Output() outputSelectedTrainees = new EventEmitter<number[]>();
+  @Output() outputSelectedTrainees: EventEmitter<number[]> = new EventEmitter();
+  @Output() outputMaxTime: EventEmitter<number> = new EventEmitter();
 
   visualizationData$: Observable<VisualizationData>;
 
   private isAlive = true;
+
+  public restrictToCustomTimelines;
+  public restrictToVisibleTrainees;
+  public restriction: { type: string; value: number };
+  public maxTime: number;
+  public stepSize: number;
 
   constructor(
     private visualizationDataService: VisualizationsDataService,
@@ -84,14 +90,14 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.isAlive));
   }
 
-  initSimulation(interval: number = 1000): void {
-    let visualizationData = this.JSONData;
+  initSimulation(interval = 1000): void {
+    const visualizationData = this.JSONData;
     let time = visualizationData.start_time;
 
     timer(0, interval)
       .pipe(takeWhile(() => this.isAlive))
       .subscribe(() => {
-        let tmp = JSON.parse(
+        const tmp = JSON.parse(
           JSON.stringify(this.JSONData)
         ) as VisualizationDataDTO;
         tmp.player_progress.forEach((traineeProgress) =>
@@ -197,6 +203,22 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
 
   public getViewEnum() {
     return View;
+  }
+
+  restrictionTypeEvent(value: boolean, type: string): void {
+    this[type] = value;
+  }
+
+  scaleRestrictionEvent(restriction: any): void {
+    this.restriction = restriction;
+  }
+
+  getMaxTime(time: number): void {
+    this.maxTime = time;
+  }
+
+  getStepSize(step: number): void {
+    this.stepSize = step;
   }
 
   ngOnDestroy(): void {
