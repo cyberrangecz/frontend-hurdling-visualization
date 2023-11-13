@@ -7,16 +7,15 @@ Rows represent individual trainees. Bars of each row are training levels - gray 
 ## Steps to Build & Develop  
 
 1.  Run `npm install`.
-2.  Install json-server `npm install -g json-server`.
-3.  Run the server with provided parameters `json-server -w ./utils/json-server/db.js --routes ./utils/json-server/routes.json --middlewares ./utils/json-server/server.js`.
-4.  Run the app in local environment and ssl `ng serve --configuration local --ssl`
-5.  Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+2.  Run the server with provided parameters via `npm run api`.
+3.  Run the app in local environment and ssl via `ng serve --configuration local --ssl`
+4.  Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## How to Simulate Training Run with Provided Test Data
 
 1. To enable simulation, in hurdling-overview.component.ts, change the `ngOnInit()` function accordingly (check the comments).
 2. Run `npm install`.
-3. Run the app in local environment and ssl `ng serve --configuration local --ssl` and access it on `https://localhost:4200`.
+3. Run the app in local environment and ssl `npm start` and access it on `https://localhost:4200`.
 
 ## Input parameters
 

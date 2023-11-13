@@ -31,8 +31,14 @@ import { VisualizationsDataService } from "./visualization/services/visualizatio
 import { VisualizationsDataConcreteService } from "./visualization/services/visualizations-data-concrete.service";
 import { VisualizationsComponent } from "./visualization/components/visualizations/visualizations.component";
 import { TraineeDetailComponent } from "./visualization/components/visualizations/trainee-detail/trainee-detail.component";
+import { SettingsComponent } from "./visualization/components/settings/settings/settings.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatInputModule } from "@angular/material/input";
+import { MatSliderModule } from "@angular/material/slider";
 
 @NgModule({
   declarations: [
@@ -47,16 +53,22 @@ import { MatDividerModule } from "@angular/material/divider";
     LegendComponent,
     VisualizationsComponent,
     TraineeDetailComponent,
+    SettingsComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
+    MatIconModule,
+    MatExpansionModule,
     MatProgressBarModule,
     MatTooltipModule,
     MatGridListModule,
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
+    MatSlideToggleModule,
+    MatInputModule,
+    MatSliderModule,
   ],
   providers: [
     D3Service,

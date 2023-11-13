@@ -1,14 +1,13 @@
-import { TraineeView } from '../../../models/enums/trainee-view.enum';
+import { TraineeView } from "../../../models/enums/trainee-view.enum";
 import {
   Component,
   Input,
   OnChanges,
   AfterViewInit,
   ViewEncapsulation,
-  OnInit,
   Output,
   EventEmitter,
-} from '@angular/core';
+} from "@angular/core";
 import {
   Axis,
   D3,
@@ -16,52 +15,71 @@ import {
   ScaleBand,
   ScaleTime,
   ZoomTransform,
-} from '@muni-kypo-crp/d3-service';
-import { AppConfig } from '../../../../app.config';
-import { ConfigService } from '../../../config/config.service';
-import { VisualizationData } from '../../../models/visualization-data';
-import { TraineeLevel } from '../../../models/trainee-level';
-import { TraineeProgress } from '../../../models/trainee-progress';
-import { Level } from '../../../models/level';
-import { SimpleChanges } from '@angular/core';
-import { NumberValue } from 'd3';
-import { Trainee } from '../../../models/trainee';
-import { HintTakenEvent } from '../../../models/hint-taken-event';
-import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
-import { Event } from '../../../models/event';
-import { View } from '../../../models/view.enum';
+} from "@muni-kypo-crp/d3-service";
+import { AppConfig } from "../../../../app.config";
+import { ConfigService } from "../../../config/config.service";
+import { VisualizationData } from "../../../models/visualization-data";
+import { TraineeLevel } from "../../../models/trainee-level";
+import { TraineeProgress } from "../../../models/trainee-progress";
+import { Level } from "../../../models/level";
+import { SimpleChanges } from "@angular/core";
+import { NumberValue, ZoomBehavior, zoomTransform } from "d3";
+import { Trainee } from "../../../models/trainee";
+import { HintTakenEvent } from "../../../models/hint-taken-event";
+import { WrongAnswerEvent } from "../../../models/wrong-answer-event";
+import { Event } from "../../../models/event";
+import { View } from "../../../models/view.enum";
+import { getTimeString as formatTime } from "../../../utils/utils";
 
 @Component({
-  selector: 'kypo-viz-progress',
-  templateUrl: './progress.component.html',
-  styleUrls: ['./progress.component.css'],
+  selector: "kypo-viz-progress",
+  templateUrl: "./progress.component.html",
+  styleUrls: ["./progress.component.css"],
   encapsulation: ViewEncapsulation.None,
 })
 export class ProgressComponent implements OnChanges, AfterViewInit {
   @Input() visualizationData: VisualizationData;
   @Input() selectedTraineeView: TraineeView = TraineeView.Avatar;
-  @Input() externalFilters;
+  @Input() externalFilters: any;
   @Input() setDashboardView = false;
   @Input() trainingInstanceId: number;
   @Input() view = View.Progress;
+  @Input() restriction: any;
+  @Input() restrictToVisibleTrainees = false;
+  @Input() restrictToCustomTimelines = false;
 
+  @Output() getMaxTime: EventEmitter<number> = new EventEmitter();
+  @Output() getStepSize: EventEmitter<number> = new EventEmitter();
   //@Output() highlightedTrainee = new EventEmitter<number>();
+
   public filteredTrainees: Trainee[] = []; // the trainees from the trainee selection
   public highlightedTraineeRefId: number;
   public traineeDetailId: number;
-  public sortType = 'name';
+  public sortType = "name";
   public sortReverse = false;
+  public stripUnfinishedTimes = 0;
+  public traineeRestrictedXScale = {
+    min: Number.MAX_VALUE,
+    max: 0,
+    inactive: 0,
+  };
+  public customRestrictedXScale = {
+    min: 0,
+    max: 100,
+    minRestriction: 0,
+    maxRestriction: 0,
+  };
+  public timelineStepSize = 1000;
 
   private filteredRuns: TraineeProgress[] = []; // the trainee runs filtered by the trainee selection
   private readonly d3: D3;
   private svg;
-  private zoom;
+  private zoom: ZoomBehavior<Element, unknown>;
   private brush;
   private zoomTransform: ZoomTransform;
   private brushSelection; // to maintain brush selection after filtering
   private tooltip;
   private tooltipOffset = 3;
-  private allRows;
   private approxFontWidth = 10;
 
   // transformTimeStamp: we need to remember a transform fire timestamp and check it,
@@ -79,13 +97,14 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   private width = 0;
   private height = 200;
 
-  private chartHeight;
+  private chartHeight: number;
   private brushHeight = 100;
   private timeIndication = 125;
 
   // used by margin convention in d3 (https://bl.ocks.org/mbostock/3019563)
   private margin = { top: 0, right: 140, bottom: 20, left: 230 };
-  private maxXAxisVal;
+  private minXAxisVal: number;
+  private maxXAxisVal: number;
 
   // percentage of height of chart
   private gutter = 0.1;
@@ -97,12 +116,20 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   ) {
     this.d3 = d3Service.getD3();
     this.zoomTransform = this.d3.zoomIdentity;
-    this.svg = this.d3.select('body'); //!!!???
+    this.svg = this.d3.select("body");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // if it is first call skip update and init first
-    if (changes['visualizationData'].isFirstChange()) return;
+    if (
+      changes["visualizationData"] &&
+      changes["visualizationData"].isFirstChange()
+    )
+      return;
+    if (changes["restriction"]) {
+      this.customRestrictedXScale[this.restriction.type + "Restriction"] =
+        this.restriction.value;
+    }
     this.updateProgressChart();
   }
 
@@ -123,7 +150,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.updateSideColumns();
     this.initHeaders();
     this.initProgressRow();
-    this.updateWhenEmpty(); //
+    this.updateWhenEmpty();
     this.drawFinished();
     this.drawActive();
     this.drawPlanned();
@@ -140,6 +167,9 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.filteredRuns = this.updateDisplayedTrainees();
     this.setWidth();
     this.setHeight();
+    this.restrictToVisibleTrainees
+      ? this.restrictXScaleToVisibleRange(this.filteredRuns)
+      : null;
     this.updateXScale();
     this.updateXAxis();
     this.updateContextXScale();
@@ -159,7 +189,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   sortTrainees() {
-    if (this.sortType == 'name') {
+    if (this.sortType == "name") {
       const sortOrder = JSON.parse(
         JSON.stringify(this.visualizationData.trainees)
       )
@@ -167,10 +197,10 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
           this.sortReverse
             ? b.name
                 .toLowerCase()
-                .localeCompare(a.name.toLowerCase(), 'en', { numeric: true })
+                .localeCompare(a.name.toLowerCase(), "en", { numeric: true })
             : a.name
                 .toLowerCase()
-                .localeCompare(b.name.toLowerCase(), 'en', { numeric: true })
+                .localeCompare(b.name.toLowerCase(), "en", { numeric: true })
         )
         .map((d) => d.userRefId);
 
@@ -178,7 +208,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         (a, b) =>
           sortOrder.indexOf(a.userRefId) - sortOrder.indexOf(b.userRefId)
       );
-    } else if (this.sortType == 'time') {
+    } else if (this.sortType == "time") {
       this.visualizationData.traineeProgress =
         this.visualizationData.traineeProgress.sort((a, b) =>
           this.sortReverse
@@ -190,7 +220,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   getTraineeTime(progress: TraineeProgress) {
     // if the run is finished
-    if (progress.levels[progress.levels.length - 1].state == 'FINISHED')
+    if (progress.levels[progress.levels.length - 1].state == "FINISHED")
       return (
         progress.levels[progress.levels.length - 1].endTime -
         progress.levels[0].startTime
@@ -218,37 +248,37 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     //if (traineeData.length < 1) {
     if (this.filteredRuns.length < 1) {
       this.svg
-        .append('text')
-        .attr('class', 'empty-container')
-        .text('No training runs to show')
-        .attr('y', 50)
-        .attr('x', this.width / 2)
-        .style('text-anchor', 'middle');
+        .append("text")
+        .attr("class", "empty-container")
+        .text("No training runs to show")
+        .attr("y", 50)
+        .attr("x", this.width / 2)
+        .style("text-anchor", "middle");
     }
     this.svg
-      .select('.progress-chart-container .timeline')
-      .style('display', this.filteredRuns.length < 1 ? 'none' : 'block');
+      .select(".progress-chart-container .timeline")
+      .style("display", this.filteredRuns.length < 1 ? "none" : "block");
     this.d3
-      .select('.progress-header')
-      .style('display', this.filteredRuns.length < 1 ? 'none' : 'block');
+      .select(".progress-header")
+      .style("display", this.filteredRuns.length < 1 ? "none" : "block");
     this.svg
-      .select('.context')
-      .style('display', this.filteredRuns.length < 1 ? 'none' : 'block');
+      .select(".context")
+      .style("display", this.filteredRuns.length < 1 ? "none" : "block");
     this.svg
-      .select('.x-axis')
-      .style('display', this.filteredRuns.length < 1 ? 'none' : 'block');
+      .select(".x-axis")
+      .style("display", this.filteredRuns.length < 1 ? "none" : "block");
   }
 
   appendSVG() {
     this.svg = this.d3
-      .selectAll('.progress-container')
-      .append('svg')
-      .attr('width', this.width + this.margin.left + this.margin.right)
-      .attr('height', this.height + this.margin.top + this.margin.bottom)
-      .append('g')
+      .selectAll(".progress-container")
+      .append("svg")
+      .attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
+      .append("g")
       .attr(
-        'transform',
-        'translate(' + this.margin.left + ',' + this.margin.top + ')'
+        "transform",
+        "translate(" + this.margin.left + "," + this.margin.top + ")"
       );
   }
 
@@ -266,28 +296,28 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       ])
       .filter((event) => {
         // prevent page from zooming out when chart is fully zoomed out
-        if (event.type === 'wheel') {
+        if (event.type === "wheel") {
           event.preventDefault();
           return event.ctrlKey;
         }
 
         return true;
       })
-      .on('zoom', (event) => this.zoomed(event, false));
+      .on("zoom", (event) => this.zoomed(event, false));
 
     const zoomListenerRect = this.createZoomListener();
     zoomListenerRect.call(this.zoom);
 
     this.svg
-      .select('.progress-chart-container')
-      .on('mousewheel', (event) => this.zoomOnCtrl(event))
-      .on('mousemove', (event) => this.zoomOnCtrl(event))
-      .on('mousedown', (event) => this.zoomOnCtrl(event))
-      .on('mouseup', () => {
+      .select(".progress-chart-container")
+      .on("mousewheel", (event) => this.zoomOnCtrl(event))
+      .on("mousemove", (event) => this.zoomOnCtrl(event))
+      .on("mousedown", (event) => this.zoomOnCtrl(event))
+      .on("mouseup", () => {
         this.svg
-          .select('.zoom-listener-rect')
-          .style('pointer-events', 'none')
-          .style('cursor', 'default');
+          .select(".zoom-listener-rect")
+          .style("pointer-events", "none")
+          .style("cursor", "default");
       });
   }
 
@@ -299,19 +329,19 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         : this.timeIndication);
 
     this.d3
-      .select('.trainee-name-header')
-      .attr('x', 0)
-      .style('left', this.margin.left - 80 + 'px');
+      .select(".trainee-name-header")
+      .attr("x", 0)
+      .style("left", this.margin.left - 80 + "px");
 
     this.d3
-      .select('#progress-elapsed-time')
-      .style('left', this.margin.left + currentTimePos + 'px');
+      .select("#progress-elapsed-time")
+      .style("left", this.margin.left + currentTimePos + "px");
 
     this.d3
-      .select('.trainee-time-header')
+      .select(".trainee-time-header")
       .style(
-        'left',
-        this.margin.left + this.width - this.margin.right - 40 + 'px'
+        "left",
+        this.margin.left + this.width - this.margin.right - 40 + "px"
       );
   }
 
@@ -320,9 +350,9 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       event.preventDefault();
     }
     this.svg
-      .select('.zoom-listener-rect')
-      .style('pointer-events', event.ctrlKey ? 'all' : 'none')
-      .style('cursor', event.ctrlKey ? 'grabbing' : 'default');
+      .select(".zoom-listener-rect")
+      .style("pointer-events", event.ctrlKey ? "all" : "none")
+      .style("cursor", event.ctrlKey ? "grabbing" : "default");
   }
 
   zoomed(event, reset = false): void {
@@ -341,8 +371,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     ) {
       this.transformTimeStamp = event.sourceEvent.timeStamp;
       this.d3
-        .selectAll('.context')
-        .select('.brush')
+        .selectAll(".context")
+        .select(".brush")
         .call(
           this.brush.move,
           this.xScale
@@ -354,7 +384,11 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   transformChart(transform: ZoomTransform) {
     // the main progress timeline text
-    const currentTime = this.xScale(this.visualizationData.currentTime);
+    const currentTime = this.xScale(
+      this.restrictToVisibleTrainees
+        ? this.traineeRestrictedXScale.max
+        : this.visualizationData.currentTime
+    );
     const newPosition = currentTime * transform.k + transform.x;
     const moveTimeText =
       newPosition < this.timeIndication
@@ -362,78 +396,92 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         : this.timeIndication;
 
     this.d3
-      .select('.progress-container svg')
-      .attr('width', this.width + this.margin.left + this.margin.right);
-    this.svg.select('#clip rect').attr('width', this.width);
+      .select(".progress-container svg")
+      .attr("width", this.width + this.margin.left + this.margin.right);
+
+    this.svg.select("#clip rect").attr("width", this.width);
+    this.svg.select(".context").attr("width", this.width);
+    this.svg.select("#clip-context rect").attr("width", this.width);
 
     this.d3
-      .select('#progress-elapsed-time')
-      .style('left', this.margin.left + newPosition - moveTimeText + 'px')
-      .style('opacity', () => {
+      .select("#progress-elapsed-time")
+      .style("left", this.margin.left + newPosition - moveTimeText + "px")
+      .style("opacity", () => {
         return newPosition > this.xScale(this.maxXAxisVal) ||
           newPosition < this.xScale(this.visualizationData.startTime)
-          ? '0'
-          : '1';
+          ? "0"
+          : "1";
       });
 
     this.svg
-      .select('.progress-chart-container .timeline')
-      .attr('stroke-width', 2 / transform.k);
+      .select(".progress-chart-container .timeline")
+      .attr("stroke-width", 2 / transform.k);
 
     // all progress rows
     this.svg
-      .selectAll('.progress-row-container')
+      .selectAll(".progress-row-container")
       .attr(
-        'transform',
-        'translate(' + transform.x + ',0) scale(' + transform.k + ',1)'
+        "transform",
+        "translate(" + transform.x + ",0) scale(" + transform.k + ",1)"
       );
 
     // the events need to be fully redrawn, since they form groups by proximity
     this.svg
-      .select('.progress-row-events')
-      .attr('transform', 'translate(' + transform.x + ',0) scale(' + 1 + ',1)');
+      .select(".progress-row-events")
+      .attr("transform", "translate(" + transform.x + ",0) scale(" + 1 + ",1)");
     this.createEvents(transform.k);
 
     // the hatched patterns need to stay put, not stretch
     this.svg
-      .selectAll('defs')
-      .selectAll('pattern')
-      .attr('transform', 'scale(' + 1 + ')')
-      .attr('width', 7 / transform.k)
-      .attr('patternTransform', 'rotate(' + 45 / transform.k + ')');
+      .selectAll("defs")
+      .selectAll("pattern")
+      .attr("transform", "scale(" + 1 + ")")
+      .attr("width", 7 / transform.k)
+      .attr("patternTransform", "rotate(" + 45 / transform.k + ")");
     this.svg
-      .selectAll('defs')
-      .selectAll('pattern')
-      .selectAll('rect')
-      .attr('width', 3 / transform.k);
+      .selectAll("defs")
+      .selectAll("pattern")
+      .selectAll("rect")
+      .attr("width", 3 / transform.k);
   }
 
   initBrush(): void {
+    this.svg
+      .append("defs")
+      .append("clipPath")
+      .attr("id", "clip-context")
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", this.chartHeight)
+      .attr("width", this.width)
+      .attr("height", this.brushHeight);
+
     this.brush = this.d3
       .brushX()
       .extent([
         [0, this.height - this.brushHeight],
         [this.width, this.height],
       ])
-      .on('brush', (event) => this.brushed(event));
+      .on("brush", (event) => this.brushed(event));
 
     const context = this.svg
-      .selectAll('.progress-chart-container')
-      .append('g')
-      .attr('class', 'context');
+      .selectAll(".progress-chart-container")
+      .append("g")
+      .attr("class", "context");
 
-    context
-      .append('g')
-      .attr('class', 'progress-row-container-context')
-      .attr(
-        'transform',
-        'translate(0,' + (this.height - this.brushHeight + 20) + ')'
-      );
+    const contextClip = context
+      .append("g")
+      .attr("clip-path", "url(#clip-context)");
+
+    contextClip
+      .append("g")
+      .attr("class", "progress-row-container-context")
+      .attr("transform", "translate(0," + this.chartHeight + ")");
 
     if (this.brush == undefined) return;
     context
-      .append('g')
-      .attr('class', 'brush')
+      .append("g")
+      .attr("class", "brush")
       .call(this.brush)
       .call(this.brush.move, this.xScale.range());
   }
@@ -447,10 +495,10 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         ? this.timeIndication * 0.55
         : this.timeIndication;
     this.d3
-      .select('#progress-elapsed-time')
-      .style('left', this.margin.left + newPosition - moveTimeText + 'px');
+      .select("#progress-elapsed-time")
+      .style("left", this.margin.left + newPosition - moveTimeText + "px");
 
-    if (event.sourceEvent && event.sourceEvent.type === 'zoom') {
+    if (event.sourceEvent && event.sourceEvent.type === "zoom") {
       return;
     } // ignore zoom-by-brush (causes stack overflow)
     const selection = event.selection || this.contextXScale;
@@ -460,23 +508,23 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       .scale(this.width / (selection[1] - selection[0]))
       .translate(-selection[0], 0);
 
-    this.svg.select('g.axis--x').call(this.xAxis);
-    this.svg.select('.zoom-listener-rect').call(this.zoom.transform, transform);
+    this.svg.select("g.axis--x").call(this.xAxis);
+    this.svg.select(".zoom-listener-rect").call(this.zoom.transform, transform);
 
     //fit the bars into the brush window subBars: first identify the rows
     const subBars = this.d3
-      .selectAll('.context .row-container')
+      .selectAll(".context .row-container")
       .data(this.visualizationData.traineeProgress.filter((d) => d.displayRun))
-      .attr('run-id', (d) => {
+      .attr("run-id", (d) => {
         return d.trainingRunId;
       });
     // then map the row data on each rect using the run-id
-    subBars.attr('height', this.brushYScale.bandwidth()).each((d, i, nodes) => {
+    subBars.attr("height", this.brushYScale.bandwidth()).each((d, i, nodes) => {
       this.d3
         .select(nodes[i])
-        .selectAll('rect')
-        .attr('height', this.brushYScale.bandwidth())
-        .attr('y', this.brushYScale(d.trainingRunId));
+        .selectAll("rect")
+        .attr("height", this.brushYScale.bandwidth())
+        .attr("y", this.brushYScale(d.trainingRunId));
     });
   }
 
@@ -498,7 +546,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       20; // 20 = additional margin after time
 
     this.width =
-      (this.d3.select('.progress-container').node() as HTMLElement)
+      (this.d3.select(".progress-container").node() as HTMLElement)
         .offsetWidth -
       this.margin.left -
       this.margin.right;
@@ -515,18 +563,95 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   updateXScale() {
-    this.maxXAxisVal = this.visualizationData.currentTime + 60 * 60;
+    this.customRestrictedXScale.min = 0;
+    this.customRestrictedXScale.max =
+      this.visualizationData.currentTime - this.visualizationData.startTime;
+    this.timelineStepSize =
+      (this.visualizationData.currentTime - this.visualizationData.startTime) /
+      200;
+
+    this.minXAxisVal = this.restrictToVisibleTrainees
+      ? this.traineeRestrictedXScale.min
+      : this.restrictToCustomTimelines
+      ? this.visualizationData.startTime +
+        this.customRestrictedXScale.minRestriction
+      : this.visualizationData.startTime;
+    this.maxXAxisVal = this.restrictToVisibleTrainees
+      ? this.traineeRestrictedXScale.max
+      : this.restrictToCustomTimelines
+      ? this.visualizationData.currentTime -
+        this.customRestrictedXScale.maxRestriction
+      : this.visualizationData.currentTime;
+
+    const maxStripTime = this.restrictToVisibleTrainees
+      ? 0
+      : Math.min(
+          this.stripUnfinishedTimes,
+          this.traineeRestrictedXScale.inactive
+        );
+    this.getMaxTime.emit(
+      this.visualizationData.currentTime - this.visualizationData.startTime
+    );
+    this.getStepSize.emit(this.timelineStepSize);
     this.xScale = this.d3
       .scaleTime()
-      .domain([this.visualizationData.startTime, this.maxXAxisVal])
+      .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
   }
 
+  restrictXScaleToVisibleRange(traineeRuns: any[]) {
+    const initialStartTime = this.visualizationData.startTime;
+    const initialEndTime = this.visualizationData.currentTime;
+    let inactiveEndInterval = 0;
+    const startTimes = traineeRuns.map((value) =>
+      value.levels.length > 0 ? value.levels[0].startTime : initialStartTime
+    );
+    const endTimes = traineeRuns
+      .map((value) => {
+        const levelLength = value.levels.length;
+        if (levelLength > 0) {
+          // if we have levels, we get info from them
+          if (value.levels[levelLength - 1].endTime) {
+            // if the level has finished, get its end time
+            return value.levels[levelLength - 1].endTime;
+          }
+          //if the level has not finished, try to get info from events, if there are any
+          if (value.levels[levelLength - 1].events.length > 0) {
+            // there are events, get time from the last one
+            const lastTimestamp =
+              value.levels[levelLength - 1].events[
+                value.levels[levelLength - 1].events.length - 1
+              ].timestamp;
+            inactiveEndInterval =
+              this.visualizationData.currentTime - lastTimestamp;
+            return lastTimestamp;
+          } else {
+            // there is nothing, get the time of the level start time, increased by selected
+            const lastTimestamp = value.levels[levelLength - 1].startTime;
+            inactiveEndInterval =
+              this.visualizationData.currentTime - lastTimestamp;
+            return this.visualizationData.currentTime;
+          }
+        }
+        return initialEndTime;
+      })
+      .filter((value) => value);
+    this.traineeRestrictedXScale.min = Math.min(...startTimes);
+    this.traineeRestrictedXScale.max = Math.max(...endTimes);
+    this.traineeRestrictedXScale.inactive = inactiveEndInterval;
+  }
+
   updateContextXScale() {
+    const maxStripTime = Math.min(
+      this.stripUnfinishedTimes,
+      this.traineeRestrictedXScale.inactive
+    );
     this.contextXScale = this.d3
       .scaleTime()
-      .domain([this.visualizationData.startTime, this.maxXAxisVal])
+      .domain([this.minXAxisVal, this.maxXAxisVal - maxStripTime])
       .range([0, this.width]);
+
+    this.svg.select("#clip-context rect").attr("y", this.chartHeight);
   }
 
   updateYScale(
@@ -558,91 +683,91 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       );
 
     this.xAxisElem = this.svg
-      .selectAll('.progress-chart-container')
-      .append('g')
-      .attr('class', 'x-axis')
-      .attr('transform', 'translate(0,' + this.chartHeight + ')')
+      .selectAll(".progress-chart-container")
+      .append("g")
+      .attr("class", "x-axis")
+      .attr("transform", "translate(0," + this.chartHeight + ")")
       .call(this.xAxis);
   }
 
   updateXAxis() {
     this.xAxisElem = this.svg
-      .selectAll('.x-axis')
-      .attr('transform', 'translate(0,' + this.chartHeight + ')');
+      .selectAll(".x-axis")
+      .attr("transform", "translate(0," + this.chartHeight + ")");
   }
 
   drawTimeline() {
-    this.svg.selectAll('.progress-chart-container .timeline').remove();
+    this.svg.selectAll(".progress-chart-container .timeline").remove();
 
     this.svg
-      .selectAll('.progress-chart-container .progress-row-container')
-      .append('line')
-      .attr('class', 'timeline')
-      .attr('x1', this.xScale(this.visualizationData.currentTime))
-      .attr('x2', this.xScale(this.visualizationData.currentTime))
-      .attr('stroke', 'black')
-      .attr('stroke-width', 2)
-      .attr('y1', 1)
+      .selectAll(".progress-chart-container .progress-row-container")
+      .append("line")
+      .attr("class", "timeline")
+      .attr("x1", this.xScale(this.visualizationData.currentTime))
+      .attr("x2", this.xScale(this.visualizationData.currentTime))
+      .attr("stroke", "black")
+      .attr("stroke-width", 2)
+      .attr("y1", 1)
       .attr(
-        'y2',
+        "y2",
         this.yScale.bandwidth() * this.filteredRuns.length * (1 + this.gutter) +
           1
       );
 
     this.d3
-      .select('#progress-elapsed-time')
+      .select("#progress-elapsed-time")
       .style(
-        'left',
+        "left",
         this.margin.left +
           this.xScale(this.visualizationData.currentTime) +
-          'px'
+          "px"
       );
   }
 
   initProgressChartContainer(): void {
-    this.svg.append('g').attr('class', 'progress-chart-container');
+    this.svg.append("g").attr("class", "progress-chart-container");
   }
 
   initProgressRowsContainer(): void {
     this.svg
-      .append('defs')
-      .append('clipPath')
-      .attr('id', 'clip')
-      .append('rect')
-      .attr('x', 0)
-      .attr('width', this.width)
-      .attr('height', this.chartHeight);
+      .append("defs")
+      .append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("x", 0)
+      .attr("width", this.width)
+      .attr("height", this.chartHeight);
 
     const clip = this.svg
-      .selectAll('.progress-chart-container')
-      .append('g')
-      .attr('clip-path', 'url(#clip)');
+      .selectAll(".progress-chart-container")
+      .append("g")
+      .attr("clip-path", "url(#clip)");
 
-    clip.append('g').attr('class', 'progress-row-container');
+    clip.append("g").attr("class", "progress-row-container");
 
-    clip.append('g').attr('class', 'progress-row-events');
+    clip.append("g").attr("class", "progress-row-events");
   }
 
   initProgressRow(): void {
-    this.svg.selectAll('.row-container').remove();
-    this.svg.selectAll('.empty-container').remove();
+    this.svg.selectAll(".row-container").remove();
+    this.svg.selectAll(".empty-container").remove();
 
-    this.allRows = this.svg
-      .selectAll('.progress-row-container,.progress-row-container-context')
-      .selectAll('.row-container')
+    this.svg
+      .selectAll(".progress-row-container,.progress-row-container-context")
+      .selectAll(".row-container")
       .data(this.filteredRuns)
       .enter()
-      .append('g')
-      .attr('class', (traineeProgress: TraineeProgress) => {
-        return 'run-' + traineeProgress.trainingRunId + ' row-container';
+      .append("g")
+      .attr("class", (traineeProgress: TraineeProgress) => {
+        return "run-" + traineeProgress.trainingRunId + " row-container";
       })
       .classed(
-        'highlighted',
+        "highlighted",
         (d: TraineeProgress) => this.highlightedTraineeRefId == d.userRefId
       )
-      .on('mouseover', (event, d) => {
-        this.d3.select(event.currentTarget).classed('highlighted', true);
-        const levelId = +this.d3.select(event.target).attr('level-id');
+      .on("mouseover", (event, d) => {
+        this.d3.select(event.currentTarget).classed("highlighted", true);
+        const levelId = +this.d3.select(event.target).attr("level-id");
         const trainee = this.visualizationData.trainees.filter(
           (trainee) => trainee.userRefId == d.userRefId
         )[0];
@@ -651,18 +776,18 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         )[0];
         if (level == undefined) return; // we won't show tooltips for estimates
 
-        this.tooltip.transition().duration(200).style('opacity', 0.9);
+        this.tooltip.transition().duration(200).style("opacity", 0.9);
 
         // get the bounding box of a level to put the tooltip at its beginning
         const runBox = document
-          .getElementById('level-' + levelId + '-run-' + d.trainingRunId)
+          .getElementById("level-" + levelId + "-run-" + d.trainingRunId)
           .getBoundingClientRect();
         // furthermore, in the case of zoom, we need to place the tooltip into the visible chart area
         const progressBox = document
-          .querySelector('.progress-chart-container .zoom-listener-rect')
+          .querySelector(".progress-chart-container .zoom-listener-rect")
           .getBoundingClientRect();
         const vizBox = document
-          .getElementById('viz-progress')
+          .getElementById("viz-progress")
           .getBoundingClientRect();
         const x =
           runBox.x < progressBox.x
@@ -677,15 +802,15 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         this.tooltip
           .html((): string => {
             return (
-              'level <i>' + level.title + '</i> of trainee ' + trainee.name
+              "level <i>" + level.title + "</i> of trainee " + trainee.name
             );
           })
-          .style('left', x + 'px')
-          .style('top', y + 'px');
+          .style("left", x + "px")
+          .style("top", y + "px");
       })
-      .on('mouseout', (event) => {
-        this.d3.select(event.currentTarget).classed('highlighted', false);
-        this.tooltip.transition().delay(100).duration(0).style('opacity', 0);
+      .on("mouseout", (event) => {
+        this.d3.select(event.currentTarget).classed("highlighted", false);
+        this.tooltip.transition().delay(100).duration(0).style("opacity", 0);
       })
       .exit()
       .remove();
@@ -693,8 +818,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   drawFinished() {
     const finished = this.svg
-      .selectAll('.row-container')
-      .selectAll('.finished-trainee-segments')
+      .selectAll(".row-container")
+      .selectAll(".finished-trainee-segments")
       .data(
         (traineeProgress: TraineeProgress) =>
           traineeProgress.displayRun && traineeProgress.levels
@@ -702,31 +827,31 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
     finished
       .enter()
-      .filter((traineeLevel: TraineeLevel) => traineeLevel.state == 'FINISHED')
-      .append('rect')
-      .attr('level-id', (d) => d.id)
-      .attr('id', (_, i, j) => {
+      .filter((traineeLevel: TraineeLevel) => traineeLevel.state == "FINISHED")
+      .append("rect")
+      .attr("level-id", (d) => d.id)
+      .attr("id", (_, i, j) => {
         const runId = (this.d3.select(j[i].parentNode).data() as any)[0]
           .trainingRunId;
-        return 'level-' + _.id + '-run-' + runId;
+        return "level-" + _.id + "-run-" + runId;
       })
-      .attr('x', (traineeLevel: TraineeLevel) =>
+      .attr("x", (traineeLevel: TraineeLevel) =>
         this.xScale(traineeLevel.startTime)
       )
-      .attr('y', (_, i, j) =>
+      .attr("y", (_, i, j) =>
         this.yScale(
           (this.d3.select(j[i].parentNode).data() as any)[0].trainingRunId
         )
       )
       .attr(
-        'width',
+        "width",
         (traineeLevel: TraineeLevel) =>
           this.xScale(traineeLevel.endTime) -
           this.xScale(traineeLevel.startTime)
       )
-      .attr('height', this.yScale.bandwidth())
-      .attr('fill', (d, i: string): string => this.appConfig.trainingColors[+i])
-      .attr('class', 'finished-trainee-segments');
+      .attr("height", this.yScale.bandwidth())
+      .attr("fill", (d, i: string): string => this.appConfig.trainingColors[+i])
+      .attr("class", "finished-trainee-segments");
 
     finished.exit().remove();
   }
@@ -738,32 +863,32 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   drawActiveEstimation(): void {
     const activeEstimations = this.svg
-      .selectAll('.row-container')
-      .selectAll('.active-estimated-trainee-segments')
+      .selectAll(".row-container")
+      .selectAll(".active-estimated-trainee-segments")
       .data((traineeProgress: TraineeProgress) =>
         traineeProgress.levels.filter(
-          (traineeLevel: TraineeLevel) => traineeLevel.state == 'RUNNING'
+          (traineeLevel: TraineeLevel) => traineeLevel.state == "RUNNING"
         )
       );
 
     activeEstimations
       .enter()
-      .append('rect')
-      .attr('level-id', (d) => d.id)
-      .attr('id', (_, i, j) => {
+      .append("rect")
+      .attr("level-id", (d) => d.id)
+      .attr("id", (_, i, j) => {
         const runId = (this.d3.select(j[i].parentNode).data() as any)[0]
           .trainingRunId;
-        return 'level-' + _.id + '-run-' + runId;
+        return "level-" + _.id + "-run-" + runId;
       })
-      .attr('x', (traineeLevel: TraineeLevel) =>
+      .attr("x", (traineeLevel: TraineeLevel) =>
         this.xScale(traineeLevel.startTime)
       )
-      .attr('y', (_, i, j) =>
+      .attr("y", (_, i, j) =>
         this.yScale(
           (this.d3.select(j[i].parentNode).data() as any)[0].trainingRunId
         )
       )
-      .attr('width', (traineeLevel: TraineeLevel) => {
+      .attr("width", (traineeLevel: TraineeLevel) => {
         return (
           this.xScale(
             this.getLevelById(traineeLevel.id).estimatedDuration * 60 +
@@ -772,12 +897,12 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         );
       })
       .attr(
-        'fill',
+        "fill",
         (traineeLevel: TraineeLevel) =>
-          'url(#diagonalHatch-' + this.getActiveLevelColor(traineeLevel) + ')'
+          "url(#diagonalHatch-" + this.getActiveLevelColor(traineeLevel) + ")"
       )
-      .attr('height', this.yScale.bandwidth())
-      .attr('class', 'active-estimated-trainee-segments');
+      .attr("height", this.yScale.bandwidth())
+      .attr("class", "active-estimated-trainee-segments");
 
     activeEstimations.exit().remove();
   }
@@ -785,64 +910,64 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   createStatePatterns() {
     const states = this.appConfig.levelsColorEstimates;
     this.svg
-      .selectAll('defs')
-      .selectAll('pattern')
+      .selectAll("defs")
+      .selectAll("pattern")
       .data(states)
       .enter()
-      .append('pattern')
-      .attr('id', (d: string): string => 'diagonalHatch-' + d)
-      .attr('patternUnits', 'userSpaceOnUse')
-      .attr('width', '7')
-      .attr('height', '4')
-      .attr('patternTransform', 'rotate(45)')
+      .append("pattern")
+      .attr("id", (d: string): string => "diagonalHatch-" + d)
+      .attr("patternUnits", "userSpaceOnUse")
+      .attr("width", "7")
+      .attr("height", "4")
+      .attr("patternTransform", "rotate(45)")
 
-      .append('rect')
-      .attr('width', '3')
-      .attr('height', '4')
-      .attr('transform', 'translate(0,0)')
-      .attr('fill', (d) => d)
-      .style('opacity', 0.6);
+      .append("rect")
+      .attr("width", "3")
+      .attr("height", "4")
+      .attr("transform", "translate(0,0)")
+      .attr("fill", (d) => d)
+      .style("opacity", 0.6);
   }
 
   drawActiveElapsed(): void {
     const activeElapsed = this.svg
-      .selectAll('.row-container')
-      .selectAll('.active-elapsed-trainee-segments')
+      .selectAll(".row-container")
+      .selectAll(".active-elapsed-trainee-segments")
       .data(
         (traineeProgress: TraineeProgress) =>
           traineeProgress.displayRun &&
           traineeProgress.levels.filter(
-            (traineeLevel: TraineeLevel) => traineeLevel.state == 'RUNNING'
+            (traineeLevel: TraineeLevel) => traineeLevel.state == "RUNNING"
           )
       );
     activeElapsed
       .enter()
-      .append('rect')
-      .attr('level-id', (d) => d.id)
-      .attr('id', (_, i, j) => {
+      .append("rect")
+      .attr("level-id", (d) => d.id)
+      .attr("id", (_, i, j) => {
         const runId = (this.d3.select(j[i].parentNode).data() as any)[0]
           .trainingRunId;
-        return 'level-' + _.id + '-run-' + runId;
+        return "level-" + _.id + "-run-" + runId;
       })
-      .attr('x', (traineeLevel: TraineeLevel) =>
+      .attr("x", (traineeLevel: TraineeLevel) =>
         this.xScale(traineeLevel.startTime)
       )
-      .attr('y', (_, i, j) =>
+      .attr("y", (_, i, j) =>
         this.yScale(
           (this.d3.select(j[i].parentNode).data() as any)[0].trainingRunId
         )
       )
-      .attr(
-        'width',
-        (traineeLevel: TraineeLevel) =>
-          this.xScale(this.visualizationData.currentTime) -
-          this.xScale(traineeLevel.startTime)
-      )
-      .attr('height', this.yScale.bandwidth())
-      .attr('fill', (d) =>
+      .attr("width", (traineeLevel: TraineeLevel) => {
+        const currentTime = this.restrictToVisibleTrainees
+          ? this.traineeRestrictedXScale.max
+          : this.visualizationData.currentTime;
+        return this.xScale(currentTime) - this.xScale(traineeLevel.startTime);
+      })
+      .attr("height", this.yScale.bandwidth())
+      .attr("fill", (d) =>
         this.d3.hsl(this.getActiveLevelColor(d)).brighter(1.2).toString()
       )
-      .attr('class', 'active-elapsed-trainee-segments');
+      .attr("class", "active-elapsed-trainee-segments");
 
     activeElapsed.exit().remove();
   }
@@ -862,8 +987,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   drawPlanned() {
     const conf = this.appConfig;
     const planned = this.svg
-      .selectAll('.row-container')
-      .selectAll('.planned-trainee-segments')
+      .selectAll(".row-container")
+      .selectAll(".planned-trainee-segments")
       .data((traineeProgress: TraineeProgress) =>
         this.visualizationData.levels.filter(
           (level) => !this.hasStarted(level.id, traineeProgress.trainingRunId)
@@ -872,8 +997,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
       .enter();
 
     planned
-      .append('rect')
-      .attr('x', (level: Level, i, j) =>
+      .append("rect")
+      .attr("x", (level: Level, i, j) =>
         this.xScale(
           this.visualizationData.currentTime +
             this.getPositionForPendingLevel(
@@ -882,13 +1007,13 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
             )
         )
       )
-      .attr('y', (_, i, j) =>
+      .attr("y", (_, i, j) =>
         this.yScale(
           (this.d3.select(j[i].parentNode).data() as any)[0].trainingRunId
         )
       )
       .attr(
-        'width',
+        "width",
         (level: Level) =>
           this.xScale(
             // info level doesn't have estimated duration, so in case of info level we provide one
@@ -899,9 +1024,9 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
               this.visualizationData.startTime
           ) - this.xScale(this.visualizationData.startTime)
       )
-      .attr('fill', 'url(#diagonalHatch-' + conf.levelsColorEstimates[3] + ')')
-      .attr('height', this.yScale.bandwidth())
-      .attr('class', 'planned-trainee-segments');
+      .attr("fill", "url(#diagonalHatch-" + conf.levelsColorEstimates[3] + ")")
+      .attr("height", this.yScale.bandwidth())
+      .attr("class", "planned-trainee-segments");
 
     planned.exit().remove();
   }
@@ -913,11 +1038,11 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
   setHighlightedTrainee(trainee: Trainee) {
     const rows = this.svg.selectAll(
-      '.progress-row-container,.progress-row-container-context'
+      ".progress-row-container,.progress-row-container-context"
     );
 
     if (!trainee) {
-      rows.selectAll('.row-container').classed('highlighted', false);
+      rows.selectAll(".row-container").classed("highlighted", false);
       return;
     }
 
@@ -928,8 +1053,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
 
     if (!training) return;
     rows
-      .select('.run-' + training.trainingRunId + '.row-container')
-      .classed('highlighted', true);
+      .select(".run-" + training.trainingRunId + ".row-container")
+      .classed("highlighted", true);
   }
 
   getLevelById(levelId: number): Level {
@@ -1011,158 +1136,158 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   createEvents(transformScale = 1) {
     const runsWithEvents = this.groupEvents(transformScale);
     const eventProps = this.appConfig.eventProps;
-    this.svg.selectAll('.row-events').remove();
+    this.svg.selectAll(".row-events").remove();
 
     const eventLayers: any = this.svg
-      .select('.progress-row-events')
-      .selectAll('g.row-events')
+      .select(".progress-row-events")
+      .selectAll("g.row-events")
       .data(runsWithEvents)
       .enter()
-      .append('g')
-      .attr('class', 'row-events')
+      .append("g")
+      .attr("class", "row-events")
       .style(
-        'transform',
+        "transform",
         (d) =>
-          'translate(' +
+          "translate(" +
           this.xScale(this.visualizationData.startTime) +
-          'px, ' +
+          "px, " +
           this.yScale(d.trainingRunId) +
-          'px)'
+          "px)"
       )
-      .on('mouseover', (d) => {
+      .on("mouseover", (d) => {
         // preserve the team highlight
-        this.svg.select('.run-' + d.trainingRunId).classed('highlighted', true);
+        this.svg.select(".run-" + d.trainingRunId).classed("highlighted", true);
       })
-      .on('mouseout', (d) => {
+      .on("mouseout", (d) => {
         // cancel the team highlight
         this.svg
-          .select('.run-' + d.trainingRunId)
-          .classed('highlighted', false);
+          .select(".run-" + d.trainingRunId)
+          .classed("highlighted", false);
       });
 
     eventLayers
-      .selectAll('path.event')
+      .selectAll("path.event")
       .data((d) => d.eventGroups.flat())
       .enter()
-      .append('path')
-      .attr('class', 'event')
-      .attr('id', (d) => 'event-' + d[0].trainingTime)
-      .style('display', (group) => this.setEventGroupVisibility(group))
-      .attr('d', (group) => this.resolveEventGroupIcon(eventProps, group))
-      .attr('fill', (d, i, nodes) => {
+      .append("path")
+      .attr("class", "event")
+      .attr("id", (d) => "event-" + d[0].trainingTime)
+      .style("display", (group) => this.setEventGroupVisibility(group))
+      .attr("d", (group) => this.resolveEventGroupIcon(eventProps, group))
+      .attr("fill", (d, i, nodes) => {
         const teamStruct = this.d3.select(nodes[i].parentNode).datum();
-        const levelInfo = teamStruct['levels'].filter(
+        const levelInfo = teamStruct["levels"].filter(
           (level) => level.id == d[0].levelId
         )[0];
-        if (d[0].levelState == 'FINISHED') {
+        if (d[0].levelState == "FINISHED") {
           return this.appConfig.levelsColorEstimates[3];
         } else {
           return this.getActiveLevelColor(levelInfo);
         }
       })
-      .attr('stroke', '#eee')
-      .attr('transform', (group): string => {
+      .attr("stroke", "#eee")
+      .attr("transform", (group): string => {
         let y = this.yScale.bandwidth() * 0.5 - eventProps.eventIconSize / 2;
         y -= group.length > 1 ? 1.5 : 0;
         let x = group[0].position - eventProps.eventIconSize / 2;
         x -= group.length > 1 ? 1 : 0;
         const scale = group.length > 1 ? 1.15 : 1; // a group with multiple events is a bit enlarged
-        return 'translate(' + x + ',' + y + ') scale(' + scale + ')';
+        return "translate(" + x + "," + y + ") scale(" + scale + ")";
       })
-      .on('mouseover', (event, d) => {
-        this.tooltip.transition().duration(200).style('opacity', 0.9);
+      .on("mouseover", (event, d) => {
+        this.tooltip.transition().duration(200).style("opacity", 0.9);
         //console.log(d);
-        const id = this.d3.select(event.target).attr('id');
+        const id = this.d3.select(event.target).attr("id");
         const runBox = document.getElementById(id).getBoundingClientRect();
         const vizBox = document
-          .getElementById('viz-progress')
+          .getElementById("viz-progress")
           .getBoundingClientRect();
         const x = runBox.x + window.scrollX - vizBox.x;
         const y =
           runBox.y + window.scrollY - this.yScale.bandwidth() - vizBox.x;
         this.tooltip
           .html((): string => {
-            let text = '';
+            let text = "";
             d.forEach((event) => {
               const item = [];
               item.push(
                 '<span class="progress-tooltip-item">',
                 '<svg width="14" height="14" viewBox="0 0 16 16">',
                 '<path d="' + eventProps.eventShapes[event.type] + '"/>',
-                '</svg>',
+                "</svg>",
                 this.resolveEventTooltip(event),
-                '</span>'
+                "</span>"
               );
-              text += item.join('');
+              text += item.join("");
             });
             return text;
           })
-          .style('left', x + 'px')
-          .style('top', y + 'px');
+          .style("left", x + "px")
+          .style("top", y + "px");
       })
-      .on('mouseout', () => {
-        this.tooltip.transition().duration(0).style('opacity', 0);
+      .on("mouseout", () => {
+        this.tooltip.transition().duration(0).style("opacity", 0);
       });
 
     eventLayers
-      .selectAll('text.event-number')
+      .selectAll("text.event-number")
       .data((d) => d.eventGroups.flat())
       .enter()
-      .append('text')
+      .append("text")
       .filter((group) => group.length > 1)
-      .style('display', (group) => this.setEventGroupVisibility(group))
-      .attr('class', 'event-number')
+      .style("display", (group) => this.setEventGroupVisibility(group))
+      .attr("class", "event-number")
       .attr(
-        'y',
+        "y",
         () => this.yScale.bandwidth() - eventProps.eventIconSize / 2 - 1
       )
-      .attr('x', (group) => group[0].position + 0.5)
+      .attr("x", (group) => group[0].position + 0.5)
       .text((group): string => group.length.toString());
   }
 
   resolveEventGroupIcon(eventProps, group) {
     const allEqual = (group) => group.every((val) => val === group[0]);
 
-    if (allEqual && group.length > 1 && group[0].type == 'hint')
-      return eventProps.eventShapes['group'];
-    return eventProps.eventShapes[allEqual ? group[0].type : 'group'];
+    if (allEqual && group.length > 1 && group[0].type == "hint")
+      return eventProps.eventShapes["group"];
+    return eventProps.eventShapes[allEqual ? group[0].type : "group"];
   }
 
   resolveEventTooltip(event: Event) {
     switch (event.type) {
-      case 'hint':
+      case "hint":
         return (
-          'Hint <i>' +
+          "Hint <i>" +
           (event as unknown as HintTakenEvent).hintTitle +
-          '</i> taken'
+          "</i> taken"
         );
-      case 'wrong':
+      case "wrong":
         return (
-          'Wrong answer <i>' +
+          "Wrong answer <i>" +
           (event as unknown as WrongAnswerEvent).answerContent +
-          '</i> submitted'
+          "</i> submitted"
         );
-      case 'solution':
-        return 'Solution displayed';
+      case "solution":
+        return "Solution displayed";
     }
-    return '';
+    return "";
   }
 
   /*
   TODO: Old stuff, this will not function properly now when the events group regardless their type
    */
   private setEventGroupVisibility(group) {
-    if (this.externalFilters === undefined) return 'block';
-    if (group[0][0].type === 'hint') {
-      return this.externalFilters.hintFilter.checked ? 'block' : 'none';
+    if (this.externalFilters === undefined) return "block";
+    if (group[0][0].type === "hint") {
+      return this.externalFilters.hintFilter.checked ? "block" : "none";
     }
-    if (group[0][0].type === 'wrong') {
-      return this.externalFilters.wrongAnswerFilter.checked ? 'block' : 'none';
+    if (group[0][0].type === "wrong") {
+      return this.externalFilters.wrongAnswerFilter.checked ? "block" : "none";
     }
-    if (group[0][0].type === 'skip') {
-      return this.externalFilters.skipFilter.checked ? 'block' : 'none';
+    if (group[0][0].type === "skip") {
+      return this.externalFilters.skipFilter.checked ? "block" : "none";
     }
-    return 'block';
+    return "block";
   }
 
   updateSideColumns() {
@@ -1179,6 +1304,15 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     this.traineeDetailId = data.userRefId;
   }
 
+  stripInactiveTime(value: number) {
+    this.stripUnfinishedTimes = value;
+    this.updateProgressChart();
+  }
+
+  stripInactiveTimeInput(event) {
+    this.stripInactiveTime(event.target.value);
+  }
+
   getTraineeData(traineeId: number) {
     return this.visualizationData.trainees.find(
       (trainee) => trainee.userRefId == traineeId
@@ -1190,7 +1324,7 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   setSort(level: Level) {
-    console.log('sort deprecated');
+    console.log("sort deprecated");
   }
 
   onSortValueChange(
@@ -1208,31 +1342,31 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     traineeInfo: Trainee[]
   ) {
     this.svg
-      .select('.progress-chart-container')
-      .select('.trainee-names')
+      .select(".progress-chart-container")
+      .select(".trainee-names")
       .remove();
 
     this.svg
-      .select('.progress-chart-container')
-      .append('g')
-      .attr('class', 'trainee-names')
-      .selectAll('text.data-trainee')
+      .select(".progress-chart-container")
+      .append("g")
+      .attr("class", "trainee-names")
+      .selectAll("text.data-trainee")
       .data(traineeRuns)
       .enter()
-      .append('text')
-      .attr('trainee-id', (d) => d.userRefId)
+      .append("text")
+      .attr("trainee-id", (d) => d.userRefId)
       .text(
         (d) => traineeInfo.filter((p) => p.userRefId == d.userRefId)[0].name
       )
       .attr(
-        'y',
+        "y",
         (d) => this.yScale(d.trainingRunId) + this.yScale.bandwidth() * 0.7
       )
-      .attr('x', -40)
-      .attr('width', 200)
-      .style('text-anchor', 'end')
-      .attr('cursor', 'pointer')
-      .on('click', (event, d) => this.showTraineeDetail(d));
+      .attr("x", -40)
+      .attr("width", 200)
+      .style("text-anchor", "end")
+      .attr("cursor", "pointer")
+      .on("click", (event, d) => this.showTraineeDetail(d));
   }
 
   private addTraineeAvatar(
@@ -1240,99 +1374,82 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
     traineeInfo: Trainee[]
   ) {
     this.svg
-      .select('.progress-chart-container')
-      .select('.trainee-avatars')
+      .select(".progress-chart-container")
+      .select(".trainee-avatars")
       .remove();
 
     this.svg
-      .select('.progress-chart-container')
-      .append('g')
-      .attr('class', 'trainee-avatars')
-      .selectAll('text.data-trainee')
+      .select(".progress-chart-container")
+      .append("g")
+      .attr("class", "trainee-avatars")
+      .selectAll("text.data-trainee")
       .data(traineeRuns)
       .enter()
-      .append('image')
-      .attr('trainee-id', (d) => d.userRefId)
+      .append("image")
+      .attr("trainee-id", (d) => d.userRefId)
       .attr(
-        'xlink:href',
+        "xlink:href",
         (d) =>
-          'data:image/png;base64,' +
+          "data:image/png;base64," +
           traineeInfo.filter((p) => p.userRefId == d.userRefId)[0].picture
       )
-      .attr('width', 15)
-      .attr('height', 15)
+      .attr("width", 15)
+      .attr("height", 15)
       .attr(
-        'y',
+        "y",
         (d) => this.yScale(d.trainingRunId) + this.yScale.bandwidth() * 0.2
       )
-      .attr('x', -25)
-      .attr('cursor', 'pointer');
+      .attr("x", -25)
+      .attr("cursor", "pointer");
   }
 
   private addTimeColumn(traineeRuns: TraineeProgress[]) {
     this.svg
-      .select('.progress-chart-container')
-      .select('.trainee-times')
+      .select(".progress-chart-container")
+      .select(".trainee-times")
       .remove();
 
     this.svg
-      .select('.progress-chart-container')
-      .append('g')
-      .attr('class', 'trainee-times')
-      .selectAll('text.time-trainee')
+      .select(".progress-chart-container")
+      .append("g")
+      .attr("class", "trainee-times")
+      .selectAll("text.time-trainee")
       .data(traineeRuns)
       .enter()
-      .append('text')
-      .attr('trainee-id', (d) => d.userRefId)
+      .append("text")
+      .attr("trainee-id", (d) => d.userRefId)
       .text((d) => this.getTimeString(this.getTraineeTime(d)))
-      .attr('width', 100)
+      .attr("width", 100)
       .attr(
-        'y',
+        "y",
         (d) => this.yScale(d.trainingRunId) + this.yScale.bandwidth() * 0.7
       )
-      .attr('x', this.width + 10);
+      .attr("x", this.width + 10);
   }
 
   public getTimeString(seconds: number): string {
-    const days: number = Math.floor(seconds / 86400);
-    const hours: number = Math.floor((seconds - days * 86400) / 3600);
-    const minutes: number = Math.floor(
-      (seconds - days * 86400 - hours * 3600) / 60
-    );
-    const daysStr =
-      days > 0 ? days.toString() + (days > 1 ? ' days, ' : ' day, ') : '';
-
-    seconds = Math.floor(seconds - days * 86400 - hours * 3600 - minutes * 60);
-
-    return (
-      daysStr +
-      hours.toString() +
-      ':' +
-      minutes.toString().padStart(2, '0') +
-      ':' +
-      seconds.toString().padStart(2, '0')
-    );
+    return formatTime(seconds);
   }
 
   createZoomListener() {
     return this.svg
-      .selectAll('.progress-chart-container')
-      .append('rect')
-      .attr('class', 'zoom-listener-rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', this.width)
-      .attr('height', this.chartHeight)
-      .style('pointer-events', 'none')
-      .style('opacity', 0);
+      .selectAll(".progress-chart-container")
+      .append("rect")
+      .attr("class", "zoom-listener-rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", this.width)
+      .attr("height", this.chartHeight)
+      .style("pointer-events", "none")
+      .style("opacity", 0);
   }
 
   updateZoomListenerAndBrush() {
     //move the main view container with the trainee rows
     this.svg
-      .selectAll('.zoom-listener-rect')
-      .attr('width', this.width)
-      .attr('height', this.chartHeight);
+      .selectAll(".zoom-listener-rect")
+      .attr("width", this.width)
+      .attr("height", this.chartHeight);
 
     //move the zoom and brush small window
     this.brush = this.d3
@@ -1341,27 +1458,27 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
         [0, this.height - this.brushHeight],
         [this.width, this.height],
       ])
-      .on('brush', (event) => this.brushed(event));
+      .on("brush", (event) => this.brushed(event));
 
     this.svg
-      .select('.progress-row-container-context')
+      .select(".progress-row-container-context")
       .attr(
-        'transform',
-        'translate(0,' + (this.height - this.brushHeight + 20) + ')'
+        "transform",
+        "translate(0," + (this.height - this.brushHeight + 20) + ")"
       ); //20 = x axis height
 
     this.svg
-      .select('.brush')
+      .select(".brush")
       .call(this.brush)
       .call(this.brush.move, this.brushSelection);
   }
 
   createTooltip() {
     this.tooltip = this.d3
-      .select('.progress-container')
-      .append('div')
-      .attr('class', 'progress-tooltip')
-      .style('opacity', 0);
+      .select(".progress-container")
+      .append("div")
+      .attr("class", "progress-tooltip")
+      .style("opacity", 0);
   }
 
   onZoomReset() {
