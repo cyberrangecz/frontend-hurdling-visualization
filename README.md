@@ -8,8 +8,8 @@ Rows represent individual trainees. Bars of each row are training levels - gray 
 
 1.  Run `npm install`.
 2.  Run the server with provided parameters via `npm run api`.
-3.  Run the app in local environment and ssl via `ng serve --configuration local --ssl`
-4.  Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+3.  Run the app in local environment and ssl via `npm run start`
+4.  Navigate to `https://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## How to Simulate Training Run with Provided Test Data
 
