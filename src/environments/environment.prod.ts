@@ -2,39 +2,43 @@
 // `ng build --configuration production` replaces `environment.ts` with `environment.local.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-const HOME_URL = 'https://localhost:4200'
+const BASE_URL = 'https://172.19.0.22';
+const HOME_URL = 'https://localhost:4200';
 
 export const environment = {
   production: true,
-  trainingServiceUrl: 'https://172.19.0.22/kypo-rest-training/api/v1/',
+  trainingServiceUrl: BASE_URL + '/kypo-rest-training/api/v1/',
   // URL of the SPA to redirect the user after silent refresh
   silentRefreshRedirectUri: HOME_URL,
   // URL of the SPA to redirect the user to after login
   redirectUri: HOME_URL,
   // The SPA's id. The SPA is registered with this id at the config-server
-  scope: 'openid profile email',
+  scope: 'openid email profile offline_access',
   sessionChecksEnabled: false,
   authConfig: {
     guardMainPageRedirect: 'visualization',
     guardLoginPageRedirect: 'login',
     interceptorAllowedUrls: [
-      'https://172.19.0.22'
+      'https://localhost',
+      BASE_URL
     ],
     authorizationStrategyConfig: {
-      authorizationUrl: 'https://172.19.0.22/kypo-rest-user-and-group/api/v1/users/info'
+      authorizationUrl: BASE_URL + '/kypo-rest-user-and-group/api/v1/users/info'
     },
     providers: [
       {
-        label: 'Login with MUNI',
+        label: 'Login with local issuer',
         textColor: 'white',
         backgroundColor: '#002776',
         oidcConfig: {
-          issuer: 'https://172.19.0.22:8443/csirtmu-dummy-issuer-server/',
-          clientId: '0be13eb3-0855-4f89-9681-6c39360d4211',
+          requireHttps: true,
+          issuer: BASE_URL + '/keycloak/realms/KYPO',
+          clientId: 'KYPO-Client',
           redirectUri: HOME_URL,
           scope: 'openid email profile',
-          logoutUrl: 'https://172.19.0.22/csirtmu-dummy-issuer-server/endsession',
-          postLogoutRedirectUri: HOME_URL,
+          logoutUrl: BASE_URL + '/keycloak/realms/KYPO/protocol/openid-connect/logout',
+          silentRefreshRedirectUri: BASE_URL + '/silent-refresh.html',
+          postLogoutRedirectUri: HOME_URL + '/logout-confirmed',
           clearHashAfterLogin: true
         },
       },

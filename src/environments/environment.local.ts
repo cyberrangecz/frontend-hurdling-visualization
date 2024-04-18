@@ -2,40 +2,44 @@
 // `ng build --configuration production` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-const HOME_URL = 'https://localhost:4200'
+const AUTH_URL = 'https://172.19.0.22';
+const BASE_URL = 'http://localhost:3000'; // change value to AUTH_URL for data form local demo
+const HOME_URL = 'https://localhost:4200';
 
 export const environment = {
-  production: true,
-  trainingServiceUrl: 'http://localhost:3000/kypo-rest-training/api/v1/',
-  elasticSearchServiceUrl: 'https://172.19.0.22/kypo-elasticsearch-service/api/v1/',
+  production: false,
+  trainingServiceUrl: BASE_URL + '/kypo-rest-training/api/v1/',
   // URL of the SPA to redirect the user after silent refresh
   silentRefreshRedirectUri: HOME_URL,
   // URL of the SPA to redirect the user to after login
   redirectUri: HOME_URL,
   // The SPA's id. The SPA is registered with this id at the config-server
-  scope: 'openid profile email',
+  scope: 'openid email profile offline_access',
   sessionChecksEnabled: false,
   authConfig: {
     guardMainPageRedirect: 'visualization',
     guardLoginPageRedirect: 'login',
     interceptorAllowedUrls: [
-      'https://172.19.0.22'
+      'https://localhost',
+      AUTH_URL
     ],
     authorizationStrategyConfig: {
-      authorizationUrl: 'https://172.19.0.22/kypo-rest-user-and-group/api/v1/users/info'
+      authorizationUrl: AUTH_URL + '/kypo-rest-user-and-group/api/v1/users/info'
     },
     providers: [
       {
-        label: 'Login with MUNI',
+        label: 'Login with local issuer',
         textColor: 'white',
         backgroundColor: '#002776',
         oidcConfig: {
-          issuer: 'https://172.19.0.22:8443/csirtmu-dummy-issuer-server/',
-          clientId: '0be13eb3-0855-4f89-9681-6c39360d4211',
+          requireHttps: true,
+          issuer: AUTH_URL + '/keycloak/realms/KYPO',
+          clientId: 'KYPO-client',
           redirectUri: HOME_URL,
           scope: 'openid email profile',
-          logoutUrl: 'https://172.19.0.22/csirtmu-dummy-issuer-server/endsession',
-          postLogoutRedirectUri: HOME_URL,
+          logoutUrl: AUTH_URL + '/keycloak/realms/KYPO/protocol/openid-connect/logout',
+          silentRefreshRedirectUri: AUTH_URL + '/silent-refresh.html',
+          postLogoutRedirectUri: HOME_URL + '/logout-confirmed',
           clearHashAfterLogin: true
         },
       },
