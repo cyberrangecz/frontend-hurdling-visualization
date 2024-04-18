@@ -1,3 +1,4 @@
+16.0.0 Update to Angular 16 and update local issuer to keycloak.
 15.0.0 Update to Angular 15 and provide settings to adjust visible timeline during training
 14.2.2 Fix final overview columns responsivity
 14.2.1 Fix detailed trainee view display
