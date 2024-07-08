@@ -78,8 +78,9 @@ export class LevelListComponent {
   }
 
   getLevelTooltip(level: Level) {
-    if (level.answer) return level.title + "\nCorrect answer: " + level.answer;
-    return level.title;
+    if (level.answer)
+      return this.formatLevelType(level) + "\nCorrect answer: " + level.answer;
+    return this.formatLevelType(level);
   }
 
   filterTrainees(trainees: Trainee[], level: Level): void {
@@ -87,7 +88,7 @@ export class LevelListComponent {
     if (level) this.traineeSort.emit(level);
   }
 
-  parseLevelName(level: Level) {
+  formatLevelType(level: Level) {
     let name =
       level.levelType.charAt(0).toUpperCase() +
       level.levelType.slice(1) +
