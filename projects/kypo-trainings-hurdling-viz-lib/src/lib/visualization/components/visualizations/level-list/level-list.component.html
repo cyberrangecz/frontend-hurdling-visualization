@@ -7,7 +7,7 @@
 			[matTooltip]="getLevelTooltip(level)"
 			[matTooltipClass]="'line-broken-tooltip'">
 			<div>
-				{{ parseLevelName(level) }}
+				{{ level.title }}
 			</div>
 			<div *ngIf="isFinished(level.id)">
 				{{ visualizationData.traineeProgress.length }} / {{ visualizationData.traineeProgress.length }}
