@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { ViewEncapsulation } from "@angular/core";
-import { CTF_PROGRESS_CONFIG } from "../../../../app.config";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
+import { CTF_PROGRESS_CONFIG } from '../../../../app.config';
 
 @Component({
-  selector: "kypo-viz-hurdling-column-header",
-  templateUrl: "./column-header.component.html",
-  styleUrls: ["./column-header.component.css"],
+  selector: 'kypo-viz-hurdling-column-header',
+  templateUrl: './column-header.component.html',
+  styleUrls: ['./column-header.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ColumnHeaderComponent implements OnInit {
+export class ColumnHeaderComponent {
   public assetsRoot: string = CTF_PROGRESS_CONFIG.assetsRoot;
 
   @Input() sortType: string;
@@ -17,14 +17,12 @@ export class ColumnHeaderComponent implements OnInit {
   @Input() selectedSortReverse: boolean;
   @Input() level: any;
 
-  @Output() onSort = new EventEmitter();
+  @Output() sortEmitter = new EventEmitter();
 
   constructor() {}
 
-  ngOnInit() {}
-
   sort() {
     const event: any = { sortReverse: !this.selectedSortReverse };
-    this.onSort.emit(event);
+    this.sortEmitter.emit(event);
   }
 }

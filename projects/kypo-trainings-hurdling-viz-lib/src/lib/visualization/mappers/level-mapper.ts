@@ -1,7 +1,7 @@
-import { LevelDTO } from "../DTOs/level-dto";
-import { Level } from "../models/level";
-import { LevelTypeEnum } from "../enums/level-type.enum";
-import { HintMapper } from "./hint-mapper";
+import { LevelDTO } from '../DTOs/level-dto';
+import { Level } from '../models/level';
+import { LevelTypeEnum } from '../enums/level-type.enum';
+import { HintMapper } from './hint-mapper';
 
 export class LevelMapper {
   static fromDTOs(dtos: LevelDTO[]): Level[] {
@@ -27,13 +27,13 @@ export class LevelMapper {
 
   private static levelTypeResolver(levelTypeDTO): LevelTypeEnum {
     switch (levelTypeDTO) {
-      case "INFO_LEVEL":
+      case 'INFO_LEVEL':
         return LevelTypeEnum.Info;
-      case "ASSESSMENT_LEVEL":
+      case 'ASSESSMENT_LEVEL':
         return LevelTypeEnum.Assessment;
-      case "TRAINING_LEVEL":
+      case 'TRAINING_LEVEL':
         return LevelTypeEnum.Training;
-      case "ACCESS_LEVEL":
+      case 'ACCESS_LEVEL':
         return LevelTypeEnum.Access;
     }
   }

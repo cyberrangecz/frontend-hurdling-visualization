@@ -1,4 +1,6 @@
-16.0.1 Change timeline to show level titles instead of level order.
+18.0.0 Update to Angular 18.
+16.0.2 Update sentinel auth version.
+16.0.1 Change timeline to show level titles.
 16.0.0 Update to Angular 16 and update local issuer to keycloak.
 15.0.0 Update to Angular 15 and provide settings to adjust visible timeline during training
 14.2.2 Fix final overview columns responsivity

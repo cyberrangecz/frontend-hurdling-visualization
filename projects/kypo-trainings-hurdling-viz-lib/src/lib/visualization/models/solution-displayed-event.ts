@@ -1,12 +1,12 @@
-import { Event } from "./event";
+import { Event } from './event';
 
 export class SolutionDisplayedEvent extends Event {
   constructor() {
     super();
-    this.type = "solution";
+    this.type = 'solution';
   }
 
   getContent() {
-    return "Solution displayed";
+    return 'Solution displayed';
   }
 }

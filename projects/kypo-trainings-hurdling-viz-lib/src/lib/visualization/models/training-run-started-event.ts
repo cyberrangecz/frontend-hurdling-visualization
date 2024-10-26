@@ -1,4 +1,4 @@
-import { Event } from "./event";
+import { Event } from './event';
 
 export class TrainingRunStartedEvent extends Event {
   constructor() {
@@ -6,6 +6,6 @@ export class TrainingRunStartedEvent extends Event {
   }
 
   getContent() {
-    return "";
+    return '';
   }
 }

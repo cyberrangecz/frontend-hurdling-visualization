@@ -33,7 +33,11 @@
 					</div>
 					<div (click)="checkIfActive(trainee) ? toggleTrainee(trainee) : false"
 						 class="participant-name"
-						 [ngClass]="{ 'not-active': !checkIfActive(trainee), pointer: checkIfActive(trainee), 'unselected-name': !checkIfSelected(trainee)}">
+						 [ngClass]="{
+						 'not-active': !checkIfActive(trainee),
+						 pointer: checkIfActive(trainee),
+						 'unselected-name': !checkIfSelected(trainee)
+						 }">
 						{{trainee.name}}
 					</div>
 					<div (click)="fadeCurrentWarnings(trainee)"

@@ -1,34 +1,25 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  Output,
-  EventEmitter,
-  AfterViewInit,
-  OnInit,
-  OnDestroy,
-} from "@angular/core";
-import { D3, D3Service } from "@muni-kypo-crp/d3-service";
-import { take } from "rxjs/operators";
-import { AppConfig } from "../../../../app.config";
-import { LevelTypeEnum } from "../../../enums/level-type.enum";
-import { CommandLineEntry } from "../../../models/command-line-entry";
-import { TrainingTimeOverviewData } from "../../../models/training-time-overview-data";
-import { Hint } from "../../../models/hint";
-import { HintTakenEvent } from "../../../models/hint-taken-event";
-import { Level } from "../../../models/level";
-import { LevelTimelineData } from "../../../models/level-timeline-data";
-import { Trainee } from "../../../models/trainee";
-import { TraineeLevel } from "../../../models/trainee-level";
-import { VisualizationData } from "../../../models/visualization-data";
-import { WrongAnswerData } from "../../../models/wrong-answer-data";
-import { WrongAnswerEvent } from "../../../models/wrong-answer-event";
-import { VisualizationsDataService } from "../../../services/visualizations-data.service";
+import { Component, Input, OnChanges, Output, EventEmitter, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
+import { D3, D3Service } from '@muni-kypo-crp/d3-service';
+import { take } from 'rxjs/operators';
+import { AppConfig } from '../../../../app.config';
+import { LevelTypeEnum } from '../../../enums/level-type.enum';
+import { CommandLineEntry } from '../../../models/command-line-entry';
+import { TrainingTimeOverviewData } from '../../../models/training-time-overview-data';
+import { Hint } from '../../../models/hint';
+import { HintTakenEvent } from '../../../models/hint-taken-event';
+import { Level } from '../../../models/level';
+import { LevelTimelineData } from '../../../models/level-timeline-data';
+import { Trainee } from '../../../models/trainee';
+import { TraineeLevel } from '../../../models/trainee-level';
+import { VisualizationData } from '../../../models/visualization-data';
+import { WrongAnswerData } from '../../../models/wrong-answer-data';
+import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
+import { VisualizationsDataService } from '../../../services/visualizations-data.service';
 
 @Component({
-  selector: "kypo-trainee-detail",
-  templateUrl: "./trainee-detail.component.html",
-  styleUrls: ["./trainee-detail.component.css"],
+  selector: 'kypo-trainee-detail',
+  templateUrl: './trainee-detail.component.html',
+  styleUrls: ['./trainee-detail.component.css'],
 })
 export class TraineeDetailComponent implements OnChanges, AfterViewInit {
   @Input() trainee: Trainee;
@@ -44,7 +35,7 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
   constructor(
     d3Service: D3Service,
     private appConfig: AppConfig,
-    private visualizationDataService: VisualizationsDataService
+    private visualizationDataService: VisualizationsDataService,
   ) {
     this.d3 = d3Service.getD3();
   }
@@ -62,65 +53,51 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
   }
 
   getCurrentLevel(): Level {
-    return this.visualizationData.levels.find(
-      (level) => level.id == this.getCurrentTraineeLevel()?.id
-    );
+    return this.visualizationData.levels.find((level) => level.id == this.getCurrentTraineeLevel()?.id);
   }
 
   getCurrentTraineeLevel(): TraineeLevel {
     return this.visualizationData.traineeProgress
       .find((p) => p.userRefId == this.trainee.userRefId)
-      .levels.find((level) => level.state != "FINISHED");
+      .levels.find((level) => level.state != 'FINISHED');
   }
 
   getHints(): Hint[] {
-    return this.getCurrentLevel().hints.sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
+    return this.getCurrentLevel().hints.sort((a, b) => a.title.localeCompare(b.title));
   }
 
   getHintsUsed(): number {
-    return this.getCurrentTraineeLevel().hintsTaken?.length
-      ? this.getCurrentTraineeLevel().hintsTaken.length
-      : 0;
+    return this.getCurrentTraineeLevel().hintsTaken?.length ? this.getCurrentTraineeLevel().hintsTaken.length : 0;
   }
 
   hintUsed(hint: Hint): boolean {
-    return this.getCurrentTraineeLevel().hintsTaken?.find((h) => h == hint.id)
-      ? true
-      : false;
+    return this.getCurrentTraineeLevel().hintsTaken?.find((h) => h == hint.id) ? true : false;
   }
 
   getLevelsTimePlan(): number[] {
     return this.visualizationData.levels.map((level: Level) =>
-      level.estimatedDuration > 0 ? level.estimatedDuration * 60 : 60
+      level.estimatedDuration > 0 ? level.estimatedDuration * 60 : 60,
     );
   }
 
   getLevelColor(levelId: number): string {
     const currentLevel = this.getCurrentLevel();
     if (currentLevel.id != levelId) {
-      return "lightgray";
+      return 'lightgray';
     }
-    const minutesInLevel =
-      (this.visualizationData.currentTime -
-        this.getCurrentTraineeLevel().startTime) /
-      60;
+    const minutesInLevel = (this.visualizationData.currentTime - this.getCurrentTraineeLevel().startTime) / 60;
     if (minutesInLevel < currentLevel.estimatedDuration) {
-      return "green";
+      return 'green';
     }
 
-    if (
-      minutesInLevel > currentLevel.estimatedDuration &&
-      minutesInLevel < currentLevel.estimatedDuration * 1.5
-    ) {
-      return "orange";
+    if (minutesInLevel > currentLevel.estimatedDuration && minutesInLevel < currentLevel.estimatedDuration * 1.5) {
+      return 'orange';
     }
 
     if (minutesInLevel > currentLevel.estimatedDuration) {
-      return "red";
+      return 'red';
     }
-    return "lightgray";
+    return 'lightgray';
   }
 
   getWrongAnswers(): WrongAnswerData[] {
@@ -128,31 +105,19 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
     this.getCurrentTraineeLevel()
       .events.filter((event) => event instanceof WrongAnswerEvent)
       .forEach((event) => {
-        const index = wrongAnswerData.findIndex(
-          (data) => data.value == (event as WrongAnswerEvent).answerContent
-        );
+        const index = wrongAnswerData.findIndex((data) => data.value == (event as WrongAnswerEvent).answerContent);
         if (index != -1) {
           wrongAnswerData[index].timesUsed++;
-          const wrongAnswerLastTime = Math.ceil(
-            (this.visualizationData.currentTime - event.timestamp) / 60
-          );
+          const wrongAnswerLastTime = Math.ceil((this.visualizationData.currentTime - event.timestamp) / 60);
           wrongAnswerData[index].lastUsed =
-            wrongAnswerLastTime == 1
-              ? wrongAnswerLastTime + " minute ago"
-              : wrongAnswerLastTime + " minutes ago";
+            wrongAnswerLastTime == 1 ? wrongAnswerLastTime + ' minute ago' : wrongAnswerLastTime + ' minutes ago';
         } else {
           const wrongAnswerDataEntry = new WrongAnswerData();
-          wrongAnswerDataEntry.value = (
-            event as WrongAnswerEvent
-          ).answerContent;
+          wrongAnswerDataEntry.value = (event as WrongAnswerEvent).answerContent;
           wrongAnswerDataEntry.timesUsed = 1;
-          const wrongAnswerLastTime = Math.ceil(
-            (this.visualizationData.currentTime - event.timestamp) / 60
-          );
+          const wrongAnswerLastTime = Math.ceil((this.visualizationData.currentTime - event.timestamp) / 60);
           wrongAnswerDataEntry.lastUsed =
-            wrongAnswerLastTime == 1
-              ? wrongAnswerLastTime + " minute ago"
-              : wrongAnswerLastTime + " minutes ago";
+            wrongAnswerLastTime == 1 ? wrongAnswerLastTime + ' minute ago' : wrongAnswerLastTime + ' minutes ago';
           wrongAnswerData.push(wrongAnswerDataEntry);
         }
       });
@@ -163,12 +128,8 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
     const hintTakenTime = this.getCurrentTraineeLevel()
       .events.filter((event) => event instanceof HintTakenEvent)
       .find((event: HintTakenEvent) => event.hintId == hint.id).timestamp;
-    const hintTakenMinutes = Math.ceil(
-      (this.visualizationData.currentTime - hintTakenTime) / 60
-    );
-    return hintTakenMinutes == 1
-      ? hintTakenMinutes + " minute ago"
-      : hintTakenMinutes + " minutes ago";
+    const hintTakenMinutes = Math.ceil((this.visualizationData.currentTime - hintTakenTime) / 60);
+    return hintTakenMinutes == 1 ? hintTakenMinutes + ' minute ago' : hintTakenMinutes + ' minutes ago';
   }
 
   getLowerLevelData(levelId: number): string {
@@ -176,31 +137,20 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
     if (currentLevel.id == levelId) {
       return `in ${currentLevel.order + 1}. level, ${currentLevel.title}`;
     }
-    return "";
+    return '';
   }
 
   getUpperLevelData(levelId: number): string {
     const currentLevel = this.getCurrentLevel();
     if (currentLevel.id == levelId) {
-      let res = this.timeDifference(
-        this.visualizationData.currentTime,
-        this.getCurrentTraineeLevel().startTime
-      );
-      const minutesInLevel =
-        (this.visualizationData.currentTime -
-          this.getCurrentTraineeLevel().startTime) /
-        60;
-      if (
-        Math.floor(minutesInLevel) > currentLevel.estimatedDuration &&
-        currentLevel.estimatedDuration != 0
-      ) {
-        res += ` (~ ${Math.floor(
-          minutesInLevel - currentLevel.estimatedDuration
-        )} minutes behind)`;
+      let res = this.timeDifference(this.visualizationData.currentTime, this.getCurrentTraineeLevel().startTime);
+      const minutesInLevel = (this.visualizationData.currentTime - this.getCurrentTraineeLevel().startTime) / 60;
+      if (Math.floor(minutesInLevel) > currentLevel.estimatedDuration && currentLevel.estimatedDuration != 0) {
+        res += ` (~ ${Math.floor(minutesInLevel - currentLevel.estimatedDuration)} minutes behind)`;
       }
       return res;
     }
-    return "";
+    return '';
   }
 
   timeDifference(timestamp1: number, timestamp2: number): string {
@@ -214,9 +164,7 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
 
     const secondsDifference = Math.floor(difference);
 
-    return `${this.pad(hoursDifference)}:${this.pad(
-      minutesDifference
-    )}:${this.pad(secondsDifference)}`;
+    return `${this.pad(hoursDifference)}:${this.pad(minutesDifference)}:${this.pad(secondsDifference)}`;
   }
 
   pad(num: number): string {
@@ -224,7 +172,7 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
   }
 
   createTrainingTimeOverview(): void {
-    this.d3.select(".training-time-overview").html("");
+    this.d3.select('.training-time-overview').html('');
 
     if (!this.getCurrentLevel()) {
       return;
@@ -240,17 +188,17 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
       return data;
     });
 
-    const width = "100%";
+    const width = '100%';
     const height = 10;
 
     const chart = this.d3
-      .select(".training-time-overview")
-      .append("svg")
-      .attr("class", "chart")
-      .attr("width", width)
-      .attr("height", 5 * height);
+      .select('.training-time-overview')
+      .append('svg')
+      .attr('class', 'chart')
+      .attr('width', width)
+      .attr('height', 5 * height);
 
-    const el = document.getElementsByClassName("level-timeline");
+    const el = document.getElementsByClassName('level-timeline');
     const rect = el[0] ? el[0].getBoundingClientRect() : { width: 0 };
 
     const scale = this.d3
@@ -258,66 +206,59 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
       .domain([0, sum])
       .range([0, rect?.width - rect?.width * 0.5]);
 
-    const bar = chart.selectAll("rect").data(data).enter().append("g");
+    const bar = chart.selectAll('rect').data(data).enter().append('g');
 
     // create level bars
     bar
-      .append("rect")
-      .attr("height", height * 0.7)
-      .attr("width", (d): number => {
+      .append('rect')
+      .attr('height', height * 0.7)
+      .attr('width', (d): number => {
         return scale(d.end) - scale(d.start) - 1;
       })
-      .attr("x", (d): number => scale(d.start))
-      .attr("y", 20)
-      .attr("rx", 3)
-      .attr("ry", 3)
-      .attr("fill", (d) => this.getLevelColor(d.levelId));
+      .attr('x', (d): number => scale(d.start))
+      .attr('y', 20)
+      .attr('rx', 3)
+      .attr('ry', 3)
+      .attr('fill', (d) => this.getLevelColor(d.levelId));
 
     //append upper text
     bar
-      .append("text")
-      .attr("x", (d): number => scale(d.start))
-      .attr("y", 15)
-      .attr("height", 10)
+      .append('text')
+      .attr('x', (d): number => scale(d.start))
+      .attr('y', 15)
+      .attr('height', 10)
       .text((d) => {
         return this.getUpperLevelData(d.levelId);
       });
 
     //append lower text
     bar
-      .append("text")
-      .attr("x", (d): number => scale(d.start))
-      .attr("y", 45)
-      .attr("height", 10)
+      .append('text')
+      .attr('x', (d): number => scale(d.start))
+      .attr('y', 45)
+      .attr('height', 10)
       .text((d) => {
         return this.getLowerLevelData(d.levelId);
       });
   }
 
   createLevelTimeline(): void {
-    this.d3.select(".level-timeline").html("");
+    this.d3.select('.level-timeline').html('');
 
     if (!this.getCurrentLevel()) {
       return;
     }
 
-    const offset =
-      (this.visualizationData.currentTime -
-        this.getCurrentTraineeLevel().startTime) *
-      0.05;
+    const offset = (this.visualizationData.currentTime - this.getCurrentTraineeLevel().startTime) * 0.05;
     const startTime = this.getCurrentTraineeLevel().startTime;
     const currentTime = this.visualizationData.currentTime;
 
-    const width = "100%";
+    const width = '100%';
     const height = 100;
 
-    const levelTimeline = this.d3
-      .select(".level-timeline")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+    const levelTimeline = this.d3.select('.level-timeline').append('svg').attr('width', width).attr('height', height);
 
-    const el = document.getElementsByClassName("level-timeline");
+    const el = document.getElementsByClassName('level-timeline');
     const rect = el[0] ? el[0].getBoundingClientRect() : { width: 0 };
 
     // Create scale
@@ -329,88 +270,51 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
     // Add scales to axis
     const x_axis = this.d3
       .axisBottom(scale)
-      .tickFormat((d) =>
-        this.timeDifference(d.valueOf(), this.visualizationData.startTime)
-      );
+      .tickFormat((d) => this.timeDifference(d.valueOf(), this.visualizationData.startTime));
 
     //Append timeline
     levelTimeline
-      .append("g")
-      .attr("transform", "translate(0, " + height / 2 + ")")
+      .append('g')
+      .attr('transform', 'translate(0, ' + height / 2 + ')')
       .call(x_axis);
 
-    const events = levelTimeline
-      .append("g")
-      .selectAll("path.event")
-      .data(this.getTimelineData())
-      .enter()
-      .append("g");
+    const events = levelTimeline.append('g').selectAll('path.event').data(this.getTimelineData()).enter().append('g');
 
     // used for alternating position of event labels
     let position = 0;
 
     //append events
     events
-      .append("path")
-      .attr("class", "event")
-      .attr("d", (d) => d.icon)
-      .attr(
-        "transform",
-        (d) =>
-          "translate(" +
-          scale(d.timestamp) +
-          "," +
-          height / 2.4 +
-          ") scale(" +
-          1 +
-          ")"
-      )
-      .attr("fill", "lightgrey");
+      .append('path')
+      .attr('class', 'event')
+      .attr('d', (d) => d.icon)
+      .attr('transform', (d) => 'translate(' + scale(d.timestamp) + ',' + height / 2.4 + ') scale(' + 1 + ')')
+      .attr('fill', 'lightgrey');
 
     //append events line
     events
-      .append("line")
-      .attr(
-        "transform",
-        (d) =>
-          "translate(" +
-          (scale(d.timestamp) + 8) +
-          "," +
-          height / 2.4 +
-          ") scale(" +
-          1 +
-          ")"
-      )
-      .attr("y1", (_, i) => {
+      .append('line')
+      .attr('transform', (d) => 'translate(' + (scale(d.timestamp) + 8) + ',' + height / 2.4 + ') scale(' + 1 + ')')
+      .attr('y1', (_, i) => {
         return i % 2 ? 16 : 0;
       })
-      .attr("y2", (_, i) => {
+      .attr('y2', (_, i) => {
         return i % 2 ? 23 : -7;
       })
-      .attr("width", 1)
-      .attr("stroke-width", 1)
-      .attr("stroke", "black");
+      .attr('width', 1)
+      .attr('stroke-width', 1)
+      .attr('stroke', 'black');
 
     //append events text
     events
-      .append("text")
-      .attr(
-        "transform",
-        (d) =>
-          "translate(" +
-          (scale(d.timestamp) + 8) +
-          "," +
-          height / 2.4 +
-          ") scale(" +
-          1 +
-          ")"
-      )
-      .attr("y", () => {
+      .append('text')
+      .attr('transform', (d) => 'translate(' + (scale(d.timestamp) + 8) + ',' + height / 2.4 + ') scale(' + 1 + ')')
+      .attr('y', () => {
         position++;
         return position % 2 ? -10 : 40;
       })
-      .style("text-anchor", "middle")
-      .style("fill", (d) => d.color)
+      .style('text-anchor', 'middle')
+      .style('fill', (d) => d.color)
       .text((d) => {
         return d.value;
       });
@@ -422,30 +326,25 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
     }
 
     const traineeTrainingRunId = this.visualizationData.traineeProgress.find(
-      (trainee) => trainee.userRefId == this.trainee.userRefId
+      (trainee) => trainee.userRefId == this.trainee.userRefId,
     ).trainingRunId;
 
     this.visualizationDataService
       .getCommandLineData(this.trainingInstanceId, traineeTrainingRunId)
       .pipe(take(1))
       .subscribe((commands: CommandLineEntry[]) => {
-        this.d3.select(".command-timeline").html("");
+        this.d3.select('.command-timeline').html('');
 
-        const offset =
-          (this.visualizationData.currentTime -
-            this.getCurrentTraineeLevel().startTime) *
-          0.05;
+        const offset = (this.visualizationData.currentTime - this.getCurrentTraineeLevel().startTime) * 0.05;
         const startTime = this.getCurrentTraineeLevel().startTime;
         const currentTime = this.visualizationData.currentTime;
 
-        const commandsForLevel = commands.filter(
-          (command) => command.timestamp >= startTime - offset
-        );
+        const commandsForLevel = commands.filter((command) => command.timestamp >= startTime - offset);
 
-        const width = "100%";
+        const width = '100%';
         const height = 100;
 
-        const el = document.getElementsByClassName("command-timeline");
+        const el = document.getElementsByClassName('command-timeline');
         const rect = el[0] ? el[0].getBoundingClientRect() : { width: 0 };
 
         let sumTime = startTime;
@@ -455,9 +354,7 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
         const period = 30; // commands are groupped every 30 seconds
         while (sumTime <= currentTime) {
           const commandsUsed = commandsForLevel.filter(
-            (command) =>
-              command.timestamp >= sumTime &&
-              command.timestamp <= sumTime + period
+            (command) => command.timestamp >= sumTime && command.timestamp <= sumTime + period,
           ).length;
           data.push({ timestamp: sumTime, commandsUsed: commandsUsed });
           data.push({
@@ -469,10 +366,10 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
 
         // append chart to its position
         const commandTimeline = this.d3
-          .select(".command-timeline")
-          .append("svg")
-          .attr("width", width)
-          .attr("height", height);
+          .select('.command-timeline')
+          .append('svg')
+          .attr('width', width)
+          .attr('height', height);
 
         // Add X axis
         const x = this.d3
@@ -481,8 +378,8 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
           .range([0, rect.width - 1]);
 
         commandTimeline
-          .append("g")
-          .attr("transform", "translate(0," + height + ")")
+          .append('g')
+          .attr('transform', 'translate(0,' + height + ')')
           .call(this.d3.axisBottom(x));
 
         // Add Y axis
@@ -497,19 +394,19 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
           .range([height, 0]);
 
         commandTimeline
-          .append("g")
+          .append('g')
           .call(this.d3.axisLeft(y))
-          .call((g) => g.select(".domain").remove());
+          .call((g) => g.select('.domain').remove());
 
         // Add the area to the chart
         commandTimeline
-          .append("path")
+          .append('path')
           .datum(data)
-          .attr("fill", "#cce5df")
-          .attr("stroke", "#69b3a2")
-          .attr("stroke-width", 1.5)
+          .attr('fill', '#cce5df')
+          .attr('stroke', '#69b3a2')
+          .attr('stroke-width', 1.5)
           .attr(
-            "d",
+            'd',
             this.d3
               .area()
               .x((d: any) => {
@@ -518,7 +415,7 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
               .y0(y(0))
               .y1((d: any) => {
                 return y(d.commandsUsed);
-              }) as any
+              }) as any,
           );
       });
   }
@@ -527,26 +424,21 @@ export class TraineeDetailComponent implements OnChanges, AfterViewInit {
     const data = [];
     const currentLevel = this.getCurrentLevel();
     const levelStarted = new LevelTimelineData();
-    levelStarted.icon = this.appConfig.eventProps.eventShapes["hint"];
-    levelStarted.value = "Started Level " + (currentLevel.order + 1);
+    levelStarted.icon = this.appConfig.eventProps.eventShapes['hint'];
+    levelStarted.value = 'Started Level ' + (currentLevel.order + 1);
     levelStarted.timestamp = this.getCurrentTraineeLevel().startTime;
-    levelStarted.color = "black";
+    levelStarted.color = 'black';
     data.push(levelStarted);
     this.getCurrentTraineeLevel()
-      .events.filter(
-        (event) =>
-          event instanceof HintTakenEvent || event instanceof WrongAnswerEvent
-      )
+      .events.filter((event) => event instanceof HintTakenEvent || event instanceof WrongAnswerEvent)
       .forEach((event) => {
         const eventTimelineData = new LevelTimelineData();
-        eventTimelineData.icon =
-          this.appConfig.eventProps.eventShapes[event.type];
+        eventTimelineData.icon = this.appConfig.eventProps.eventShapes[event.type];
         eventTimelineData.value =
           event instanceof HintTakenEvent
             ? (event as HintTakenEvent).hintTitle
             : (event as WrongAnswerEvent).answerContent;
-        eventTimelineData.color =
-          event instanceof HintTakenEvent ? "black" : "red";
+        eventTimelineData.color = event instanceof HintTakenEvent ? 'black' : 'red';
         eventTimelineData.timestamp = event.timestamp;
         data.push(eventTimelineData);
       });

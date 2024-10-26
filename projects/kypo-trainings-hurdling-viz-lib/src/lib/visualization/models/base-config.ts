@@ -1,5 +1,5 @@
-import { PlanData } from "./plan-data";
-import { Padding } from "./padding";
+import { PlanData } from './plan-data';
+import { Padding } from './padding';
 
 export class BaseConfig {
   data: PlanData;

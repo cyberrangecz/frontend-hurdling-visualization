@@ -46,7 +46,7 @@
             <div *ngIf="hasData" class="ctfh-col-2 final-2-name">
                 <div class="ctf-progress-column ctf-progress-teamcolumn">
                     <kypo-viz-hurdling-column-header
-                        (onSort)="onSortValueChange('name', $event.sortReverse)"
+                        (sortEmitter)="onSortValueChange('name', $event.sortReverse)"
                         [sortType]="'name'"
                         [selectedSortType]="sortType"
                         [selectedSortReverse]="sortReverse"
@@ -61,7 +61,7 @@
                 <div class="ctf-progress-header-levels">
                     <kypo-viz-hurdling-column-header
                             *ngFor="let level of levelSortOptions"
-                            (onSort)="onSortValueChange('level', $event.sortReverse, level.index)"
+                            (sortEmitter)="onSortValueChange('level', $event.sortReverse, level.index)"
                             [sortType]="'level' + level.index"
                             [selectedSortType]="sortType + sortLevel"
                             [selectedSortReverse]="sortReverse"
@@ -75,7 +75,7 @@
                 <div class="ctfh-col-2" [ngClass]="{ 'final-2': view === 'overview' && column === 'time' }">
                     <div class="{{'ctf-progress-column ctf-progress-' + column + 'column'}}">
                         <kypo-viz-hurdling-column-header
-                            (onSort)="onSortValueChange(column, $event.sortReverse)"
+                            (sortEmitter)="onSortValueChange(column, $event.sortReverse)"
                             [sortType]="column"
                             [selectedSortType]="sortType"
                             [selectedSortReverse]="sortReverse"

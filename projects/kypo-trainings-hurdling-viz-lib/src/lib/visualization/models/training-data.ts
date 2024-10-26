@@ -1,5 +1,5 @@
-import { User } from "@sentinel/auth";
-import { GenericObject } from "./generic-object.type";
+import { User } from '@sentinel/auth';
+import { GenericObject } from './generic-object.type';
 
 export class TrainingData {
   time: number;

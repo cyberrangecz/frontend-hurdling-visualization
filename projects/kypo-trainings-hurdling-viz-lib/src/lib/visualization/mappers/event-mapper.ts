@@ -1,17 +1,15 @@
-import { EventDTO } from "../DTOs/event-dto";
-import { EventType } from "../models/enums/event-type.enum";
-import { Event } from "../models/event";
-import { HintTakenEvent } from "../models/hint-taken-event";
-import { SolutionDisplayedEvent } from "../models/solution-displayed-event";
-import { TrainingRunEndedEvent } from "../models/training-run-ended-event";
-import { TrainingRunStartedEvent } from "../models/training-run-started-event";
-import { WrongAnswerEvent } from "../models/wrong-answer-event";
+import { EventDTO } from '../DTOs/event-dto';
+import { EventType } from '../models/enums/event-type.enum';
+import { Event } from '../models/event';
+import { HintTakenEvent } from '../models/hint-taken-event';
+import { SolutionDisplayedEvent } from '../models/solution-displayed-event';
+import { TrainingRunEndedEvent } from '../models/training-run-ended-event';
+import { TrainingRunStartedEvent } from '../models/training-run-started-event';
+import { WrongAnswerEvent } from '../models/wrong-answer-event';
 
 export class EventMapper {
   static fromDTOs(dtos: EventDTO[]): Event[] {
-    const result = dtos
-      .map((dto) => EventMapper.fromDTO(dto))
-      .filter((event) => event);
+    const result = dtos.map((dto) => EventMapper.fromDTO(dto)).filter((event) => event);
     return result;
   }
 

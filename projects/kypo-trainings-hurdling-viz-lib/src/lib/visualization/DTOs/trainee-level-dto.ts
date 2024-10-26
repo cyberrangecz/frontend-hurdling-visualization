@@ -1,5 +1,5 @@
-import { EventDTO } from "./event-dto";
-import { HintDTO } from "./hint-dto";
+import { EventDTO } from './event-dto';
+import { HintDTO } from './hint-dto';
 
 export class TraineeLevelDTO {
   id: number; //level id, not trainee

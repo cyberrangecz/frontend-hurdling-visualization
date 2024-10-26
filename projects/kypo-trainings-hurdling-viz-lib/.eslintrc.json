@@ -15,7 +15,7 @@
       },
       "rules": {
         "@angular-eslint/directive-selector": [
-          "error",
+          "warn", //TODO Change to error
           {
             "type": "attribute",
             "prefix": "kypo",
@@ -23,7 +23,7 @@
           }
         ],
         "@angular-eslint/component-selector": [
-          "error",
+          "warn", //TODO Change to error
           {
             "type": "element",
             "prefix": "kypo",

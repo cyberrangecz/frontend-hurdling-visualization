@@ -1,5 +1,5 @@
-import { HintDTO } from "../DTOs/hint-dto";
-import { Hint } from "../models/hint";
+import { HintDTO } from '../DTOs/hint-dto';
+import { Hint } from '../models/hint';
 
 export class HintMapper {
   static fromDTOs(dtos: HintDTO[]): Hint[] {

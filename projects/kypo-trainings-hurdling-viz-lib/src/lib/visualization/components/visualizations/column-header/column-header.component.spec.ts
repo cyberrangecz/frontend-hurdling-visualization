@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { ColumnHeaderComponent } from "./column-header.component";
+import { ColumnHeaderComponent } from './column-header.component';
 
-describe("ColumnHeaderComponent", () => {
+describe('ColumnHeaderComponent', () => {
   let component: ColumnHeaderComponent;
   let fixture: ComponentFixture<ColumnHeaderComponent>;
 
@@ -18,7 +18,7 @@ describe("ColumnHeaderComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

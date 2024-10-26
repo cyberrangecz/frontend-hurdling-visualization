@@ -1,5 +1,5 @@
 export enum TraineeView {
-  Name = "name",
-  Avatar = "avatar",
-  Both = "both",
+  Name = 'name',
+  Avatar = 'avatar',
+  Both = 'both',
 }

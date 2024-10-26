@@ -1,6 +1,6 @@
-import { TraineeProgressDTO } from "../DTOs/trainee-progress-dto";
-import { TraineeProgress } from "../models/trainee-progress";
-import { TraineeLevelMapper } from "./trainee-level-mapper";
+import { TraineeProgressDTO } from '../DTOs/trainee-progress-dto';
+import { TraineeProgress } from '../models/trainee-progress';
+import { TraineeLevelMapper } from './trainee-level-mapper';
 
 export class TraineeProgressMapper {
   static fromDTOs(dtos: TraineeProgressDTO[]): TraineeProgress[] {

@@ -1,8 +1,8 @@
-import { TraineeLevelDTO } from "../DTOs/trainee-level-dto";
-import { TraineeLevel } from "../models/trainee-level";
-import { EventMapper } from "./event-mapper";
-import { HintMapper } from "./hint-mapper";
-import { ScoreMapper } from "./score-mapper";
+import { TraineeLevelDTO } from '../DTOs/trainee-level-dto';
+import { TraineeLevel } from '../models/trainee-level';
+import { EventMapper } from './event-mapper';
+import { HintMapper } from './hint-mapper';
+import { ScoreMapper } from './score-mapper';
 
 export class TraineeLevelMapper {
   static fromDTOs(dtos: TraineeLevelDTO[]): TraineeLevel[] {

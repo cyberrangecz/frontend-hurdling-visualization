@@ -1,5 +1,5 @@
-import { LevelTypeEnum } from "../enums/level-type.enum";
-import { Hint } from "./hint";
+import { LevelTypeEnum } from '../enums/level-type.enum';
+import { Hint } from './hint';
 
 export class Level {
   id: number;

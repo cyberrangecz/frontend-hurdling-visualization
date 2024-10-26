@@ -1,4 +1,4 @@
-import { Event } from "./event";
+import { Event } from './event';
 
 export class HintTakenEvent extends Event {
   hintId: number;
@@ -6,10 +6,10 @@ export class HintTakenEvent extends Event {
 
   constructor() {
     super();
-    this.type = "hint";
+    this.type = 'hint';
   }
 
   getContent() {
-    return "Hint <i>" + this.hintTitle + "</i> taken";
+    return 'Hint <i>' + this.hintTitle + '</i> taken';
   }
 }

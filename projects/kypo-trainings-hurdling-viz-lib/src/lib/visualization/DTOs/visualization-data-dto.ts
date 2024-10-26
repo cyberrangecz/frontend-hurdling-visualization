@@ -1,6 +1,6 @@
-import { LevelDTO } from "./level-dto";
-import { TraineeDTO } from "./trainee-dto";
-import { TraineeProgressDTO } from "./trainee-progress-dto";
+import { LevelDTO } from './level-dto';
+import { TraineeDTO } from './trainee-dto';
+import { TraineeProgressDTO } from './trainee-progress-dto';
 
 export class VisualizationDataDTO {
   start_time: number;

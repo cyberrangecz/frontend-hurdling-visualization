@@ -1,16 +1,13 @@
-import { Injectable } from "@angular/core";
-import { GenericObject } from "../models/generic-object.type";
+import { Injectable } from '@angular/core';
+import { GenericObject } from '../models/generic-object.type';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class FilteringService {
   constructor() {}
 
-  filter(
-    trainingDataSet: GenericObject[],
-    selectedFilterValue
-  ): GenericObject[] {
+  filter(trainingDataSet: GenericObject[], selectedFilterValue): GenericObject[] {
     let filteredTrainingDataSet: GenericObject[];
 
     switch (selectedFilterValue) {
@@ -28,14 +25,11 @@ export class FilteringService {
     return filteredTrainingDataSet;
   }
 
-  filterByFinished(
-    trainingDataSet: GenericObject[],
-    byFinished: boolean
-  ): GenericObject[] {
+  filterByFinished(trainingDataSet: GenericObject[], byFinished: boolean): GenericObject[] {
     let filtered: GenericObject[] = [];
-    if (typeof trainingDataSet !== "undefined") {
+    if (typeof trainingDataSet !== 'undefined') {
       filtered = trainingDataSet.filter(function (d: GenericObject): boolean {
-        return (d.currentState === "FINISHED") === byFinished;
+        return (d.currentState === 'FINISHED') === byFinished;
       });
     }
 

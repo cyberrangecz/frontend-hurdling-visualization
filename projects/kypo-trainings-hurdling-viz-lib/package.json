@@ -1,15 +1,15 @@
 {
-  "name": "@muni-kypo-crp/hurdling-visualization",
-  "version": "16.0.0",
-  "peerDependencies": {
-    "@angular/common": "^16.2.12",
-    "@angular/core": "^16.2.12",
-    "@angular/material": "^16.2.14",
-    "@muni-kypo-crp/d3-service": "~16.0.0",
-    "d3": "^7.9.0",
-    "@types/d3": "^7.4.3"
-  },
-  "dependencies": {
-    "tslib": "^2.6.2"
-  }
+    "name": "@muni-kypo-crp/hurdling-visualization",
+    "version": "16.0.2",
+    "peerDependencies": {
+        "@angular/common": "^18.2.7",
+        "@angular/core": "^18.2.7",
+        "@angular/material": "^18.2.7",
+        "@muni-kypo-crp/d3-service": "^18.0.0",
+        "d3": "^7.9.0",
+        "@types/d3": "^7.4.3"
+    },
+    "dependencies": {
+        "tslib": "^2.7.0"
+    }
 }
