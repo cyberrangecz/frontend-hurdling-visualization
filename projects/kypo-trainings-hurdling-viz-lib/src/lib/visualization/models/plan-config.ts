@@ -1,4 +1,4 @@
-import { PlanData } from "./plan-data";
+import { PlanData } from './plan-data';
 
 export class PlanConfig {
   data: PlanData;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import data from '../../../utils/json/mock.json';
+// import data from '../../../utils/json/mock.json';
 
 @Component({
   selector: 'app-hurdling-overview',

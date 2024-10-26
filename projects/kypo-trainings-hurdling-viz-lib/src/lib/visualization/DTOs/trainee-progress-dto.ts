@@ -1,4 +1,4 @@
-import { TraineeLevelDTO } from "./trainee-level-dto";
+import { TraineeLevelDTO } from './trainee-level-dto';
 
 export class TraineeProgressDTO {
   user_ref_id: number;

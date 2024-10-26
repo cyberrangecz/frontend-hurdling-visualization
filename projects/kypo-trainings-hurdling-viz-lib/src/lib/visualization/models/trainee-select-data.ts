@@ -1,4 +1,4 @@
-import { Trainee } from "./trainee";
+import { Trainee } from './trainee';
 
 export class TraineeSelectData {
   trainee: Trainee;

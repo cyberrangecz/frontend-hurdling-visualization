@@ -13,9 +13,9 @@
 				{{ visualizationData.traineeProgress.length }} / {{ visualizationData.traineeProgress.length }}
 			</div>
 			<div *ngIf="!isFinished(level.id)"
-				(click)="getTraineesForLevel(level.id).length != 0 ? filterTrainees(getTraineesForLevel(level.id), level) : ''"
+				(click)="getTraineesForLevel(level.id).length !== 0 ? filterTrainees(getTraineesForLevel(level.id), level) : ''"
 				 [ngClass]="{
-				 	clickable: getTraineesForLevel(level.id).length != 0,
+				 	clickable: getTraineesForLevel(level.id).length !== 0,
 				  	faded: getTraineesForLevel(level.id).length === 0
 				 }">
 				{{ getTraineesForLevel(level.id).length }} playing
@@ -24,13 +24,13 @@
 
 		<div class="level" matTooltip="Training finished">
 			<div>Training finished</div>
-			<div (click)="getFinishedTrainees().length != 0 ? filterTrainees(getFinishedTrainees(), null) : ''"
+			<div (click)="getFinishedTrainees().length !== 0 ? filterTrainees(getFinishedTrainees(), null) : ''"
 				[ngClass]="{
-					clickable: getFinishedTrainees().length != 0,
+					clickable: getFinishedTrainees().length !== 0,
 					faded: getFinishedTrainees().length === 0
 				}">
 				{{ getFinishedTrainees().length }}
-				{{getFinishedTrainees().length != 1 ? "trainees" : "trainee"}}
+				{{getFinishedTrainees().length !== 1 ? "trainees" : "trainee"}}
 			</div>
 		</div>
 	</div>

@@ -1,17 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from "@angular/core";
-import { getTimeString } from "../../../utils/utils";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { getTimeString } from '../../../utils/utils';
 
 @Component({
-  selector: "kypo-viz-hurdling-settings",
-  templateUrl: "./settings.component.html",
-  styleUrls: ["./settings.component.css"],
+  selector: 'kypo-viz-hurdling-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.css'],
 })
 export class SettingsComponent implements OnChanges {
   @Input() maximumTime = 100;
@@ -44,7 +37,7 @@ export class SettingsComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes["maximumTime"]) {
+    if (changes['maximumTime']) {
       this.customRestrictedXScale.max = this.maximumTime;
     }
   }
@@ -56,20 +49,18 @@ export class SettingsComponent implements OnChanges {
       value: 0,
     };
 
-    if (typeof event == "object") {
+    if (typeof event == 'object') {
       value = Number.parseInt(event.target.value);
     }
     switch (type) {
-      case "min":
+      case 'min':
         restriction.value = Number.parseInt(value.toFixed());
         break;
-      case "max":
-        restriction.value = Number.parseInt(
-          (this.customRestrictedXScale.max - value).toFixed()
-        );
+      case 'max':
+        restriction.value = Number.parseInt((this.customRestrictedXScale.max - value).toFixed());
         break;
     }
-    this.customRestrictedXScale[type + "Restriction"] = restriction.value;
+    this.customRestrictedXScale[type + 'Restriction'] = restriction.value;
     this.scaleRestrictionEvent.emit(restriction);
   }
 }

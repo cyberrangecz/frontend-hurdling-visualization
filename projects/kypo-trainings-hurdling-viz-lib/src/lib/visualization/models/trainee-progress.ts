@@ -1,4 +1,4 @@
-import { TraineeLevel } from "./trainee-level";
+import { TraineeLevel } from './trainee-level';
 
 export class TraineeProgress {
   userRefId: number;

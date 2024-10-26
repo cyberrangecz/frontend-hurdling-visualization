@@ -1,16 +1,8 @@
-import { mergeMap, map, takeUntil } from "rxjs/operators";
-import {
-  Component,
-  Directive,
-  HostListener,
-  EventEmitter,
-  ElementRef,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { mergeMap, map, takeUntil } from 'rxjs/operators';
+import { Component, Directive, HostListener, EventEmitter, ElementRef, OnInit, Output } from '@angular/core';
 
-@Directive({ selector: "[mouseMove]" })
-export class MouseMoveDirective {
+@Directive({ selector: '[mouseMove]' })
+export class MouseMoveDirective implements OnInit {
   drag;
   @Output() mouseUp = new EventEmitter();
   @Output() mouseDown = new EventEmitter();
@@ -18,33 +10,31 @@ export class MouseMoveDirective {
 
   @Output() mouseDrag = new EventEmitter();
 
-  @HostListener("document:mouseup", ["$event"])
+  @HostListener('document:mouseup', ['$event'])
   onMouseUp(event) {
-    let pos: any = {
-      top:
-        event.clientY - this.element.nativeElement.getBoundingClientRect().top,
-      left:
-        event.clientX - this.element.nativeElement.getBoundingClientRect().left,
+    const pos: any = {
+      top: event.clientY - this.element.nativeElement.getBoundingClientRect().top,
+      left: event.clientX - this.element.nativeElement.getBoundingClientRect().left,
     };
     this.mouseUp.emit(pos);
   }
 
-  @HostListener("mousedown", ["$event"])
+  @HostListener('mousedown', ['$event'])
   onMouseDown(event) {
     this.mouseDown.emit(event);
     return false;
   }
 
-  @HostListener("document:mousemove", ["$event"])
+  @HostListener('document:mousemove', ['$event'])
   onMouseMove(event) {
     this.mouseMove.emit(event);
   }
 
   constructor(public element: ElementRef) {
-    this.element.nativeElement.style.position = "relative";
-    this.element.nativeElement.style.cursor = "pointer";
+    this.element.nativeElement.style.position = 'relative';
+    this.element.nativeElement.style.cursor = 'pointer';
 
-    let el = this.element;
+    const el = this.element;
 
     this.drag = this.mouseDown.pipe(
       map(function (event: MouseEvent): any {
@@ -57,19 +47,13 @@ export class MouseMoveDirective {
         this.mouseMove.pipe(
           map(function (pos: MouseEvent): any {
             return {
-              top:
-                pos.clientY -
-                el.nativeElement.getBoundingClientRect().top -
-                offset.top,
-              left:
-                pos.clientX -
-                el.nativeElement.getBoundingClientRect().left -
-                offset.left,
+              top: pos.clientY - el.nativeElement.getBoundingClientRect().top - offset.top,
+              left: pos.clientX - el.nativeElement.getBoundingClientRect().left - offset.left,
             };
           }),
-          takeUntil(this.mouseUp)
-        )
-      )
+          takeUntil(this.mouseUp),
+        ),
+      ),
     );
   }
 
@@ -77,7 +61,7 @@ export class MouseMoveDirective {
     this.drag.subscribe(
       function (pos: any) {
         this.mouseDrag.emit(pos);
-      }.bind(this)
+      }.bind(this),
     );
   }
 }

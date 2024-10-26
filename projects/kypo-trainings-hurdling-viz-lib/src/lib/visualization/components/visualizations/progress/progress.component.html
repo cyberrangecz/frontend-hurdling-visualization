@@ -35,7 +35,7 @@
     <div class="progress-header">
         <kypo-viz-hurdling-column-header
                 class="header trainee-name-header"
-                (onSort)="onSortValueChange('name', $event.sortReverse)"
+                (sortEmitter)="onSortValueChange('name', $event.sortReverse)"
                 [sortType]="'name'"
                 [selectedSortType]="sortType"
                 [selectedSortReverse]="sortReverse"
@@ -51,7 +51,7 @@
         <kypo-viz-hurdling-column-header
                 class="header trainee-time-header"
                 matTooltip="Training times of individual trainees (hh:mm:ss)"
-                (onSort)="onSortValueChange('time', $event.sortReverse)"
+                (sortEmitter)="onSortValueChange('time', $event.sortReverse)"
                 [sortType]="'time'"
                 [selectedSortType]="sortType"
                 [selectedSortReverse]="sortReverse"

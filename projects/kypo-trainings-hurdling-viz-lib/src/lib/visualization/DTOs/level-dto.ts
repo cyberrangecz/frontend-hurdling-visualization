@@ -1,4 +1,4 @@
-import { HintDTO } from "./hint-dto";
+import { HintDTO } from './hint-dto';
 
 export class LevelDTO {
   id: number;
