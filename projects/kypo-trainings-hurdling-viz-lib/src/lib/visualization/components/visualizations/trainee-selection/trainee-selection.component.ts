@@ -1,12 +1,13 @@
-import { Component, Input, OnInit, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CTF_PROGRESS_CONFIG } from '../../../../app.config';
-import { D3Service } from '@muni-kypo-crp/d3-service';
+import { D3Service } from '@cyberrangecz-platform/d3-service';
 import { VisualizationData } from '../../../models/visualization-data';
 import { Trainee } from '../../../models/trainee';
 import { TraineeView } from '../../../models/enums/trainee-view.enum';
 import { Level } from '../../../models/level';
 import { TraineeLevel } from '../../../models/trainee-level';
 import { TraineeSelectData } from '../../../models/trainee-select-data';
+
 @Component({
   selector: 'kypo-viz-hurdling-trainee-selection',
   templateUrl: './trainee-selection.component.html',

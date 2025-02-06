@@ -1,16 +1,16 @@
 <div class="progress-bar">
-	<div class="header">
-		<span>Time allocation</span>
-		<span *ngIf="this.getLongestEstimate()" class="estimated-end-time" matTooltip="Estimated end time">
-			{{estimatedEndTime | date: "HH:mm"}}
+    <div class="header">
+        <span>Time allocation</span>
+        <span *ngIf="this.getLongestEstimate()" class="estimated-end-time" matTooltip="Estimated end time">
+			{{ estimatedEndTime | date: "HH:mm" }}
 		</span>
-	</div>
-	<mat-progress-bar
-		[value]="calculateProgress()">
-	</mat-progress-bar>
-	<div
-		class="arrow-up"
-		[ngStyle]="{ 'margin-left': calculateScheduledPosition() }"
-		[matTooltip]="getTooltipInfo()"></div>
-	<div class="time-left" matTooltip="Remaining time">{{ getTimeLeft() }}</div>
+    </div>
+    <mat-progress-bar
+            [value]="calculateProgress()">
+    </mat-progress-bar>
+    <div
+            class="arrow-up"
+            [ngStyle]="{ 'margin-left': calculateScheduledPosition() }"
+            [matTooltip]="getTooltipInfo()"></div>
+    <div class="time-left" matTooltip="Remaining time">{{ getTimeLeft() }}</div>
 </div>

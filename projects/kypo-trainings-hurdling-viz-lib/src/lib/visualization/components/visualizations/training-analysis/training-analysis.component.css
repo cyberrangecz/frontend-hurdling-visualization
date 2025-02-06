@@ -105,11 +105,11 @@ text {
     opacity: 0.8 !important;
 }
 
-.visualization-container.final  .ctf-training-progress .training-segment-finished {
+.visualization-container.final .ctf-training-progress .training-segment-finished {
     opacity: 0.9 !important;
 }
 
-.visualization-container.final  .training-layer .preserved,
+.visualization-container.final .training-layer .preserved,
 .ctf-progress .training-layer .preserved {
     opacity: 1 !important;
 }

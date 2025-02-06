@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { GenericObject } from '../models/generic-object.type';
 import { Order } from '../models/order.enum';
-import { D3, D3Service } from '@muni-kypo-crp/d3-service';
+import { D3, D3Service } from '@cyberrangecz-platform/d3-service';
 
 @Injectable()
 export class SortingService {
   private d3: D3;
   private view;
   private levels;
+
   constructor(d3service: D3Service) {
     this.d3 = d3service.getD3();
   }

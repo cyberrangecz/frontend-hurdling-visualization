@@ -1,15 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
-import { TraineeDTO } from '../DTOs/trainee-dto';
 import { VisualizationDataDTO } from '../DTOs/visualization-data-dto';
 import { CommandLineMapper } from '../mappers/command-line-mapper';
-import { TraineeMapper } from '../mappers/trainee-mapper';
 import { VisualizationDataMapper } from '../mappers/visualization-data-mapper';
 import { CommandLineEntry } from '../models/command-line-entry';
-import { Trainee } from '../models/trainee';
 import { VisualizationData } from '../models/visualization-data';
 import { VisualizationDataApi } from './visualization-data-api.service';
 

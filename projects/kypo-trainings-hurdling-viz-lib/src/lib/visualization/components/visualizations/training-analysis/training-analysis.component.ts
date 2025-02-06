@@ -9,7 +9,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import { Axis, D3, D3Service, ScaleBand, ScaleLinear } from '@muni-kypo-crp/d3-service';
+import { Axis, D3, D3Service, ScaleBand, ScaleLinear } from '@cyberrangecz-platform/d3-service';
 import { DataEntry } from '../../../models/data-entry';
 import { TrainingConfig } from '../../../models/training-config';
 import { PlanConfig } from '../../../models/plan-config';
@@ -993,12 +993,12 @@ export class TrainingAnalysisComponent implements OnChanges, OnDestroy, AfterVie
           currentState: string = data['currentState'];
         return 0;
         /*if (currentState === 'FINISHED') return 0;
-        if (
-          currentState === levelKey ||
-          levelIndex >= parseInt(currentState.split('level')[1])
-        )
-          return 1;
-        return 0;*/
+                if (
+                  currentState === levelKey ||
+                  levelIndex >= parseInt(currentState.split('level')[1])
+                )
+                  return 1;
+                return 0;*/
       })
       .attr('x', (d: any, i: number, nodes): number => {
         const level: GenericObject = <GenericObject>d3.select(nodes[i].parentNode).datum(),

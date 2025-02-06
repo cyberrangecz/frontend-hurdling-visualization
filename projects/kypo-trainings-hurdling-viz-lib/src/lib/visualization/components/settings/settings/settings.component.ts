@@ -26,6 +26,7 @@ export class SettingsComponent implements OnChanges {
   formatTime(seconds: number) {
     return getTimeString(seconds);
   }
+
   restrictTrainees() {
     this.restrictToVisibleTrainees = !this.restrictToVisibleTrainees;
     this.restrictByTrainees.emit(this.restrictToVisibleTrainees);

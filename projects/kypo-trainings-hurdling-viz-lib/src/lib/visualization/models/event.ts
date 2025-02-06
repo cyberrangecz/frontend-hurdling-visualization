@@ -6,6 +6,8 @@ export abstract class Event {
   levelNumber: number;
   traineeId: number;
   traineeName: string;
+
   protected constructor() {}
+
   abstract getContent(): string;
 }

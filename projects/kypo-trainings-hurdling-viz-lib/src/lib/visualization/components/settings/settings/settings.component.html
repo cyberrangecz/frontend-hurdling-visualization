@@ -8,9 +8,10 @@
                         mat-icon-button>
                     <mat-icon *ngIf="!panelOpenState">menu</mat-icon>
                     <mat-icon *ngIf="panelOpenState">expand_less</mat-icon>
-                </button> Settings
+                </button>
+                Settings
             </mat-panel-title>
-        </mat-expansion-panel-header >
+        </mat-expansion-panel-header>
         <mat-slide-toggle
                 (change)="restrictTrainees()"
                 [disabled]="restrictToCustomTimelines"
@@ -32,7 +33,7 @@
 
             <mat-form-field [style.width]="'190px'">
                 <mat-label>
-                    {{'Start in ms (' + formatTime(customRestrictedXScale.min + customRestrictedXScale.minRestriction) + ')'}}
+                    {{ 'Start in ms (' + formatTime(customRestrictedXScale.min + customRestrictedXScale.minRestriction) + ')' }}
                 </mat-label>
                 <input matInput
                        [min]="0"
@@ -62,7 +63,7 @@
 
             <mat-form-field [style.width]="'190px'">
                 <mat-label>
-                    {{'End in ms (' + formatTime(customRestrictedXScale.max - customRestrictedXScale.maxRestriction) + ')'}}
+                    {{ 'End in ms (' + formatTime(customRestrictedXScale.max - customRestrictedXScale.maxRestriction) + ')' }}
                 </mat-label>
                 <input matInput
                        [min]="0"

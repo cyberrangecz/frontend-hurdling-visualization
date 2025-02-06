@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+
 // import data from '../../../utils/json/mock.json';
 
 @Component({
-  selector: 'app-hurdling-overview',
-  templateUrl: './hurdling-overview.component.html',
-  styleUrls: ['./hurdling-overview.component.css']
+    selector: 'app-hurdling-overview',
+    templateUrl: './hurdling-overview.component.html',
+    styleUrls: ['./hurdling-overview.component.css']
 })
 export class HurdlingOverviewComponent implements OnInit {
-  data:JSON;
+    data: JSON;
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit() {
-    this.data = undefined;     //disable simulation
-    //this.data = data as any; //enable simulation
-  }
+    ngOnInit() {
+        this.data = undefined;     //disable simulation
+        //this.data = data as any; //enable simulation
+    }
 }

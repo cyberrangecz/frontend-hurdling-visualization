@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ViewEncapsulation, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { Level } from '../../../models/level';
-import { User } from '@sentinel/auth';
 import { Trainee } from '../../../models/trainee';
 import { VisualizationData } from '../../../models/visualization-data';
 

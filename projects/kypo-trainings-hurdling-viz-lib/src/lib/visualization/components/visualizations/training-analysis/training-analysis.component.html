@@ -1,15 +1,15 @@
 <!-- main filters -->
 <div class="ctf-progress-wrapper">
-	<div class="container-fluid">
-		<div class="row ctf-progress-head-wrapper col-12">
+    <div class="container-fluid">
+        <div class="row ctf-progress-head-wrapper col-12">
             <div class="ctf-progress-options">
                 <div class="ctf-progress-select-wrapper" *ngIf="!errorMessage">
                     <div class="ctf-progress-select">
                         <svg class="ctf-progress-select-icon" width="20" height="20" viewBox="0 0 24 24">
-                            <path [attr.d]="getEventShapePaths().filter" />
+                            <path [attr.d]="getEventShapePaths().filter"/>
                         </svg>
                         <select [(ngModel)]="selectedFilterValue" (change)="onFilterValueChange()">
-                            <option *ngFor="let o of filterOptions" [ngValue]="o.id">{{o.name}}</option>
+                            <option *ngFor="let o of filterOptions" [ngValue]="o.id">{{ o.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -17,7 +17,7 @@
                 <div class="ctf-progress-select-wrapper" *ngIf="!errorMessage && !setDashboardView">
                     <div class="ctf-progress-select">
                         <svg class="ctf-progress-select-icon" height="20" width="20" viewBox="0 0 24 24">
-                            <path [attr.d]="getEventShapePaths().person" />
+                            <path [attr.d]="getEventShapePaths().person"/>
                         </svg>
                         <select [(ngModel)]="selectedTraineeView" (change)="onTraineeViewChange()">
                             <option [ngValue]="'name'">Name</option>
@@ -33,10 +33,10 @@
     <!-- detailed individual view? -->
     <div *ngIf="traineeDetailId" class="trainee-detail-container">
         <kypo-trainee-detail
-        [trainee]=getTraineeData(traineeDetailId)
-        [visualizationData]="visualizationData"
-        [trainingInstanceId]="trainingInstanceId"
-        (hideDetail)="onTraineeDetailChange()">
+                [trainee]=getTraineeData(traineeDetailId)
+                [visualizationData]="visualizationData"
+                [trainingInstanceId]="trainingInstanceId"
+                (hideDetail)="onTraineeDetailChange()">
         </kypo-trainee-detail>
     </div>
 
@@ -46,11 +46,11 @@
             <div *ngIf="hasData" class="ctfh-col-2 final-2-name">
                 <div class="ctf-progress-column ctf-progress-teamcolumn">
                     <kypo-viz-hurdling-column-header
-                        (sortEmitter)="onSortValueChange('name', $event.sortReverse)"
-                        [sortType]="'name'"
-                        [selectedSortType]="sortType"
-                        [selectedSortReverse]="sortReverse"
-                        [label]="'Trainee'">
+                            (sortEmitter)="onSortValueChange('name', $event.sortReverse)"
+                            [sortType]="'name'"
+                            [selectedSortType]="sortType"
+                            [selectedSortReverse]="sortReverse"
+                            [label]="'Trainee'">
                     </kypo-viz-hurdling-column-header>
                 </div>
             </div>
@@ -71,15 +71,15 @@
                 </div>
             </div>
 
-            <ng-container *ngFor="let column of columns" >
+            <ng-container *ngFor="let column of columns">
                 <div class="ctfh-col-2" [ngClass]="{ 'final-2': view === 'overview' && column === 'time' }">
                     <div class="{{'ctf-progress-column ctf-progress-' + column + 'column'}}">
                         <kypo-viz-hurdling-column-header
-                            (sortEmitter)="onSortValueChange(column, $event.sortReverse)"
-                            [sortType]="column"
-                            [selectedSortType]="sortType"
-                            [selectedSortReverse]="sortReverse"
-                            [label]="column.charAt(0).toUpperCase() + column.slice(1)">
+                                (sortEmitter)="onSortValueChange(column, $event.sortReverse)"
+                                [sortType]="column"
+                                [selectedSortType]="sortType"
+                                [selectedSortReverse]="sortReverse"
+                                [label]="column.charAt(0).toUpperCase() + column.slice(1)">
                         </kypo-viz-hurdling-column-header>
                     </div>
                 </div>
@@ -125,9 +125,9 @@
         </div>
         <div class="legend-container">
             <kypo-viz-hurdling-legend
-                [selectedViewValue]="view"
-                (zoomResetChange)="onZoomReset()">
-             </kypo-viz-hurdling-legend>
+                    [selectedViewValue]="view"
+                    (zoomResetChange)="onZoomReset()">
+            </kypo-viz-hurdling-legend>
         </div>
     </div>
 
@@ -135,9 +135,9 @@
         <div class="ctfh-row ctfh-no-gutters ctfh-col-sm-8 ctfh-offset-sm-2">
             <p class="ctf-progress-error">
                 <svg class="ctf-progress-error-icon" width="20" height="20" viewBox="0 0 24 24">
-                    <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
+                    <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
                 </svg>
-                {{errorMessage}}
+                {{ errorMessage }}
             </p>
         </div>
     </div>

@@ -119,11 +119,11 @@ export class VisualizationsComponent implements OnInit, OnDestroy {
   }
 
   /*
-  initUpdateSubscription() {
-        timer(0, this.appConfig.loadDataInterval)
-            .pipe(takeWhile(() => this.isAlive))
-            .subscribe(() => this.loadData())
-  }*/
+    initUpdateSubscription() {
+          timer(0, this.appConfig.loadDataInterval)
+              .pipe(takeWhile(() => this.isAlive))
+              .subscribe(() => this.loadData())
+    }*/
 
   initUpdateSubscription() {
     let retryAttempt = 1;

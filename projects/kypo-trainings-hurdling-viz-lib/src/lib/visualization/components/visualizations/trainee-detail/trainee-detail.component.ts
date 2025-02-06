@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, Output, EventEmitter, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
-import { D3, D3Service } from '@muni-kypo-crp/d3-service';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { D3, D3Service } from '@cyberrangecz-platform/d3-service';
 import { take } from 'rxjs/operators';
 import { AppConfig } from '../../../../app.config';
 import { LevelTypeEnum } from '../../../enums/level-type.enum';

@@ -1,14 +1,22 @@
 import { TraineeView } from '../../../models/enums/trainee-view.enum';
-import { Component, Input, OnChanges, AfterViewInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
-import { Axis, D3, D3Service, ScaleBand, ScaleTime, ZoomTransform } from '@muni-kypo-crp/d3-service';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+import { Axis, D3, D3Service, ScaleBand, ScaleTime, ZoomTransform } from '@cyberrangecz-platform/d3-service';
 import { AppConfig } from '../../../../app.config';
 import { ConfigService } from '../../../config/config.service';
 import { VisualizationData } from '../../../models/visualization-data';
 import { TraineeLevel } from '../../../models/trainee-level';
 import { TraineeProgress } from '../../../models/trainee-progress';
 import { Level } from '../../../models/level';
-import { SimpleChanges } from '@angular/core';
-import { NumberValue, ZoomBehavior, zoomTransform } from 'd3';
+import { NumberValue, ZoomBehavior } from 'd3';
 import { Trainee } from '../../../models/trainee';
 import { HintTakenEvent } from '../../../models/hint-taken-event';
 import { WrongAnswerEvent } from '../../../models/wrong-answer-event';
@@ -1028,8 +1036,8 @@ export class ProgressComponent implements OnChanges, AfterViewInit {
   }
 
   /*
-  TODO: Old stuff, this will not function properly now when the events group regardless their type
-   */
+    TODO: Old stuff, this will not function properly now when the events group regardless their type
+     */
   private setEventGroupVisibility(group) {
     if (this.externalFilters === undefined) return 'block';
     if (group[0][0].type === 'hint') {

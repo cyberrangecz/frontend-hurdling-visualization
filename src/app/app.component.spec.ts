@@ -13,32 +13,32 @@ import { MouseMoveDirective } from './visualization/directives/mousemove.directi
 import { ColumnHeaderComponent } from './visualization/components/column-header/column-header.component';
 
 describe('AppComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        TrainingAnalysisCompoent,
-        MouseWheelDirective,
-        MouseMoveDirective,
-        ColumnHeaderComponent
-      ],
-      imports: [
-        FormsModule,
-        HttpClientModule,
-        PapaParseModule
-      ],
-      providers: [
-        D3Service,
-        LoadDataService,
-        LoadCsvDataService,
-        { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG }
-      ]
-    }).compileComponents();
-  }));
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            declarations: [
+                AppComponent,
+                TrainingAnalysisCompoent,
+                MouseWheelDirective,
+                MouseMoveDirective,
+                ColumnHeaderComponent
+            ],
+            imports: [
+                FormsModule,
+                HttpClientModule,
+                PapaParseModule
+            ],
+            providers: [
+                D3Service,
+                LoadDataService,
+                LoadCsvDataService,
+                { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG }
+            ]
+        }).compileComponents();
+    }));
 
-  it('should create the app', waitForAsync(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    it('should create the app', waitForAsync(() => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.debugElement.componentInstance;
+        expect(app).toBeTruthy();
+    }));
 });

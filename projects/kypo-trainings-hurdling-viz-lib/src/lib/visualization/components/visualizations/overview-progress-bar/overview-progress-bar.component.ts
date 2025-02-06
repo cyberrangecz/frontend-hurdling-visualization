@@ -1,5 +1,4 @@
-import { ProgressData } from '../../../models/progress-data';
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { VisualizationData } from '../../../models/visualization-data';
 import { TraineeProgress } from '../../../models/trainee-progress';
 import { TrainingRunStartedEvent } from '../../../models/training-run-started-event';

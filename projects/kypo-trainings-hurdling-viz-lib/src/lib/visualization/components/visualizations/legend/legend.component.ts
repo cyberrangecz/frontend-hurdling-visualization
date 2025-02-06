@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AppConfig } from '../../../../app.config';
 import { View } from '../../../models/view.enum';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
-import { D3, D3Service } from '@muni-kypo-crp/d3-service';
+import { D3, D3Service } from '@cyberrangecz-platform/d3-service';
 
 @Component({
   selector: 'kypo-viz-hurdling-legend',

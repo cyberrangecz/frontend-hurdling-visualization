@@ -11,7 +11,7 @@ import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
 import { ConfigService } from './visualization/config/config.service';
 import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
-import { D3Service } from '@muni-kypo-crp/d3-service';
+import { D3Service } from '@cyberrangecz-platform/d3-service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TraineeSelectionComponent } from './visualization/components/visualizations/trainee-selection/trainee-selection.component';

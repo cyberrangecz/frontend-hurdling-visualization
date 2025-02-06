@@ -1,32 +1,32 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "downlevelIteration": true,
-    "importHelpers": true,
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "module": "esnext",
-    "baseUrl": "./",
-    "paths": {
-      "kypo-trainings-hurdling-viz-lib": [
-        "dist/kypo-trainings-hurdling-viz-lib"
-      ],
-      "kypo-trainings-hurdling-viz-lib/*": [
-        "dist/kypo-trainings-hurdling-viz-lib/*"
-      ]
-    },
-    "useDefineForClassFields": false
-  }
+    "compileOnSave": false,
+    "compilerOptions": {
+        "downlevelIteration": true,
+        "importHelpers": true,
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "ES2022",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": [
+            "es2018",
+            "dom"
+        ],
+        "module": "esnext",
+        "baseUrl": "./",
+        "paths": {
+            "kypo-trainings-hurdling-viz-lib": [
+                "dist/kypo-trainings-hurdling-viz-lib"
+            ],
+            "kypo-trainings-hurdling-viz-lib/*": [
+                "dist/kypo-trainings-hurdling-viz-lib/*"
+            ]
+        },
+        "useDefineForClassFields": false
+    }
 }
