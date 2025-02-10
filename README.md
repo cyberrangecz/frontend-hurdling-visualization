@@ -1,4 +1,4 @@
-# KYPO Trainings Hurdling Visualization
+# CyberRangeᶜᶻ Platform Trainings Hurdling Visualization
 
 As an instructor, a user can see the ongoing course of the training runs and further filter information on demand. The
 tool gives a full picture of the trainee’s walkthrough. Upon filtering in the preceding sections, selected trainees are
@@ -55,11 +55,11 @@ bars denote the scheduled time for the ongoing or upcoming levels.
 An example of use:
 
 ```typescript
-<kypo-hurdling-visualization
+<crczp-hurdling-visualization
         [isStandalone]="true"
         [trainingInstanceId]="10"
         view="progress"
         [JSONData]="data">
-</kypo-hurdling-visualization>
+</crczp-hurdling-visualization>
 
 ```

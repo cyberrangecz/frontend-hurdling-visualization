@@ -8,7 +8,7 @@ const HOME_URL = 'https://localhost:4200';
 
 export const environment = {
     production: false,
-    trainingServiceUrl: BASE_URL + '/kypo-rest-training/api/v1/',
+    trainingServiceUrl: BASE_URL + '/training/api/v1/',
     // URL of the SPA to redirect the user after silent refresh
     silentRefreshRedirectUri: HOME_URL,
     // URL of the SPA to redirect the user to after login
@@ -24,7 +24,7 @@ export const environment = {
             AUTH_URL
         ],
         authorizationStrategyConfig: {
-            authorizationUrl: AUTH_URL + '/kypo-rest-user-and-group/api/v1/users/info'
+            authorizationUrl: AUTH_URL + '/user-and-group/api/v1/users/info'
         },
         providers: [
             {

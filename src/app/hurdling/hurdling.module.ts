@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HurdlingOverviewComponent } from './hurdling-overview.component';
 import { HurdlingRoutingModule } from './hurdling-routing.module';
 import { CustomConfig } from '../custom-config';
-import { KypoTrainingsHurdlingVizLibModule } from '../../../projects/kypo-trainings-hurdling-viz-lib/src/public_api';
+import { TrainingsHurdlingVisualizationsModule } from '../../../projects/trainings-hurdling-viz-lib/src/public_api';
 
 @NgModule({
     declarations: [
@@ -12,7 +12,7 @@ import { KypoTrainingsHurdlingVizLibModule } from '../../../projects/kypo-traini
     imports: [
         CommonModule,
         HurdlingRoutingModule,
-        KypoTrainingsHurdlingVizLibModule.forRoot(CustomConfig)
+        TrainingsHurdlingVisualizationsModule.forRoot(CustomConfig)
     ],
     exports: [
         HurdlingOverviewComponent

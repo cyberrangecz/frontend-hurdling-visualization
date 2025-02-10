@@ -132,38 +132,38 @@
                 }
             }
         },
-        "kypo-trainings-hurdling-viz-lib": {
-            "root": "projects/kypo-trainings-hurdling-viz-lib",
-            "sourceRoot": "projects/kypo-trainings-hurdling-viz-lib/src",
+        "trainings-hurdling-viz-lib": {
+            "root": "projects/trainings-hurdling-viz-lib",
+            "sourceRoot": "projects/trainings-hurdling-viz-lib/src",
             "projectType": "library",
-            "prefix": "kypo-viz-hurdling",
+            "prefix": "viz-hurdling",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "tsConfig": "projects/kypo-trainings-hurdling-viz-lib/tsconfig.lib.json",
-                        "project": "projects/kypo-trainings-hurdling-viz-lib/ng-package.json"
+                        "tsConfig": "projects/trainings-hurdling-viz-lib/tsconfig.lib.json",
+                        "project": "projects/trainings-hurdling-viz-lib/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/kypo-trainings-hurdling-viz-lib/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/trainings-hurdling-viz-lib/tsconfig.lib.prod.json"
                         }
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "projects/kypo-trainings-hurdling-viz-lib/src/test.ts",
-                        "tsConfig": "projects/kypo-trainings-hurdling-viz-lib/tsconfig.spec.json",
-                        "karmaConfig": "projects/kypo-trainings-hurdling-viz-lib/karma.conf.js"
+                        "main": "projects/trainings-hurdling-viz-lib/src/test.ts",
+                        "tsConfig": "projects/trainings-hurdling-viz-lib/tsconfig.spec.json",
+                        "karmaConfig": "projects/trainings-hurdling-viz-lib/karma.conf.js"
                     }
                 },
                 "lint": {
                     "builder": "@angular-eslint/builder:lint",
                     "options": {
                         "lintFilePatterns": [
-                            "projects/kypo-trainings-hurdling-viz-lib/**/*.ts",
-                            "projects/kypo-trainings-hurdling-viz-lib/**/*.component.html"
+                            "projects/trainings-hurdling-viz-lib/**/*.ts",
+                            "projects/trainings-hurdling-viz-lib/**/*.component.html"
                         ]
                     }
                 }
