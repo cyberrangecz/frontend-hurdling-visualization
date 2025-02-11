@@ -10,10 +10,11 @@ bars denote the scheduled time for the ongoing or upcoming levels.
 
 ## Steps to Build & Develop
 
-1. Run `npm install`.
-2. Run the server with provided parameters via `npm run api`.
-3. Run the app in local environment and ssl via `npm run start`
-4. Navigate to `https://localhost:4200/`. The app will automatically reload if you change any of the source files.
+1. Pull and run the [Training service](https://github.com/cyberrangecz/backend-training) or deploy the whole [deployment](https://github.com/cyberrangecz/devops-helm)
+2. Configure the [environment.local.ts](src/environments/environment.local.ts) file, pointing to the services.
+3. Run `npm install`.
+4. Run the app in local environment and ssl via `npm run start`
+5. Navigate to `https://localhost:4200/`. The app will automatically reload if you change any of the source files. The app will use a self-signed certificate, so you will need to accept it in the browser.
 
 ## How to Simulate Training Run with Provided Test Data
 
@@ -54,12 +55,11 @@ bars denote the scheduled time for the ongoing or upcoming levels.
 
 An example of use:
 
-```typescript
+```html
 <crczp-hurdling-visualization
         [isStandalone]="true"
         [trainingInstanceId]="10"
         view="progress"
         [JSONData]="data">
 </crczp-hurdling-visualization>
-
 ```
