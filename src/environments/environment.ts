@@ -6,7 +6,7 @@
 // OIDC url
 const OIDC_URL = 'https://172.19.0.22';
 // backend url
-const API_URL = 'https://172.19.0.22';
+const API_URL = 'http://localhost:3000';
 // frontend home url
 const HOME_URL = 'https://localhost:4200';
 
@@ -19,7 +19,7 @@ export const environment = {
         guardLoginPageRedirect: 'login',
         interceptorAllowedUrls: [API_URL, OIDC_URL],
         authorizationStrategyConfig: {
-            authorizationUrl: API_URL + '/user-and-group/api/v1/users/info'
+            authorizationUrl: OIDC_URL + '/user-and-group/api/v1/users/info'
         },
         providers: [
             {

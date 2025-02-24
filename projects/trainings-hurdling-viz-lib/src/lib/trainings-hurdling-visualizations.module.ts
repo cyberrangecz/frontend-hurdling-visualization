@@ -11,7 +11,7 @@ import { SortingService } from './visualization/services/sorting.service';
 import { FilteringService } from './visualization/services/filtering.service';
 import { ConfigService } from './visualization/config/config.service';
 import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
-import { D3Service } from '@cyberrangecz-platform/d3-service';
+import { D3Service } from '@crczp/d3-service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TraineeSelectionComponent } from './visualization/components/visualizations/trainee-selection/trainee-selection.component';
@@ -36,60 +36,62 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
-  declarations: [
-    ProgressComponent,
-    TrainingAnalysisComponent,
-    TraineeSelectionComponent,
-    MouseWheelDirective,
-    MouseMoveDirective,
-    ColumnHeaderComponent,
-    OverviewProgressBarComponent,
-    LevelListComponent,
-    LegendComponent,
-    VisualizationsComponent,
-    TraineeDetailComponent,
-    SettingsComponent,
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatIconModule,
-    MatExpansionModule,
-    MatProgressBarModule,
-    MatTooltipModule,
-    MatGridListModule,
-    MatButtonModule,
-    MatCardModule,
-    MatDividerModule,
-    MatSlideToggleModule,
-    MatInputModule,
-    MatSliderModule,
-  ],
-  providers: [
-    D3Service,
-    SortingService,
-    FilteringService,
-    ConfigService,
-    { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
-    { provide: VisualizationDataApi, useClass: VisualizationDataDefaultApi },
-    {
-      provide: VisualizationsDataService,
-      useClass: VisualizationsDataConcreteService,
-    },
-  ],
-  exports: [ProgressComponent, TrainingAnalysisComponent, VisualizationsComponent, TraineeSelectionComponent],
+    declarations: [
+        ProgressComponent,
+        TrainingAnalysisComponent,
+        TraineeSelectionComponent,
+        MouseWheelDirective,
+        MouseMoveDirective,
+        ColumnHeaderComponent,
+        OverviewProgressBarComponent,
+        LevelListComponent,
+        LegendComponent,
+        VisualizationsComponent,
+        TraineeDetailComponent,
+        SettingsComponent,
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatIconModule,
+        MatExpansionModule,
+        MatProgressBarModule,
+        MatTooltipModule,
+        MatGridListModule,
+        MatButtonModule,
+        MatCardModule,
+        MatDividerModule,
+        MatSlideToggleModule,
+        MatInputModule,
+        MatSliderModule,
+    ],
+    providers: [
+        D3Service,
+        SortingService,
+        FilteringService,
+        ConfigService,
+        { provide: AppConfig, useValue: CTF_PROGRESS_CONFIG },
+        { provide: VisualizationDataApi, useClass: VisualizationDataDefaultApi },
+        {
+            provide: VisualizationsDataService,
+            useClass: VisualizationsDataConcreteService,
+        },
+    ],
+    exports: [ProgressComponent, TrainingAnalysisComponent, VisualizationsComponent, TraineeSelectionComponent],
 })
 export class TrainingsHurdlingVisualizationsModule {
-  constructor(@Optional() @SkipSelf() parentModule: TrainingsHurdlingVisualizationsModule) {
-    if (parentModule) {
-      throw new Error('TrainingsHurdlingVisualizationsModule is already loaded. Import it in the main module only');
+    constructor(@Optional() @SkipSelf() parentModule: TrainingsHurdlingVisualizationsModule) {
+        if (parentModule) {
+            throw new Error(
+                'TrainingsHurdlingVisualizationsModule is already loaded. Import it in the main module only',
+            );
+        }
     }
-  }
 
-  static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<TrainingsHurdlingVisualizationsModule> {
-    return {
-      ngModule: TrainingsHurdlingVisualizationsModule,
-      providers: [{ provide: HurdlingVisualizationConfig, useValue: config }],
-    };
-  }
+    static forRoot(config: HurdlingVisualizationConfig): ModuleWithProviders<TrainingsHurdlingVisualizationsModule> {
+        return {
+            ngModule: TrainingsHurdlingVisualizationsModule,
+            providers: [{ provide: HurdlingVisualizationConfig, useValue: config }],
+        };
+    }
 }

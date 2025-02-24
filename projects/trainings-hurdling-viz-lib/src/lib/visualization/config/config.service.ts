@@ -3,58 +3,58 @@ import { HurdlingVisualizationConfig } from './trainings-hurdling-visualizations
 
 @Injectable()
 export class ConfigService {
-  private readonly _config: HurdlingVisualizationConfig;
-  private _trainingDefinitionId: number;
-  private _trainingInstanceId: number;
-  private _trainingColors: string[];
-  private _simulationInterval: number;
-  private _loadDataInterval: number;
+    private readonly _config: HurdlingVisualizationConfig;
+    private _trainingDefinitionId: number;
+    private _trainingInstanceId: number;
+    private _trainingColors: string[];
+    private _simulationInterval: number;
+    private _loadDataInterval: number;
 
-  get trainingColors(): string[] {
-    return this._trainingColors;
-  }
+    get trainingColors(): string[] {
+        return this._trainingColors;
+    }
 
-  set trainingColors(value: string[]) {
-    this._trainingColors = value;
-  }
+    set trainingColors(value: string[]) {
+        this._trainingColors = value;
+    }
 
-  get simulationInterval(): number {
-    return this._simulationInterval;
-  }
+    get simulationInterval(): number {
+        return this._simulationInterval;
+    }
 
-  set simulationInterval(value: number) {
-    this._simulationInterval = value;
-  }
+    set simulationInterval(value: number) {
+        this._simulationInterval = value;
+    }
 
-  get loadDataInterval(): number {
-    return this._loadDataInterval;
-  }
+    get loadDataInterval(): number {
+        return this._loadDataInterval;
+    }
 
-  set loadDataInterval(value: number) {
-    this._loadDataInterval = value;
-  }
+    set loadDataInterval(value: number) {
+        this._loadDataInterval = value;
+    }
 
-  get trainingDefinitionId(): number {
-    return this._trainingDefinitionId;
-  }
+    get trainingDefinitionId(): number {
+        return this._trainingDefinitionId;
+    }
 
-  set trainingDefinitionId(value: number) {
-    this._trainingDefinitionId = value;
-  }
+    set trainingDefinitionId(value: number) {
+        this._trainingDefinitionId = value;
+    }
 
-  get trainingInstanceId(): number {
-    return this._trainingInstanceId;
-  }
+    get trainingInstanceId(): number {
+        return this._trainingInstanceId;
+    }
 
-  set trainingInstanceId(value: number) {
-    this._trainingInstanceId = value;
-  }
+    set trainingInstanceId(value: number) {
+        this._trainingInstanceId = value;
+    }
 
-  get config(): HurdlingVisualizationConfig {
-    return this._config;
-  }
+    get config(): HurdlingVisualizationConfig {
+        return this._config;
+    }
 
-  constructor(config: HurdlingVisualizationConfig) {
-    this._config = config;
-  }
+    constructor(config: HurdlingVisualizationConfig) {
+        this._config = config;
+    }
 }

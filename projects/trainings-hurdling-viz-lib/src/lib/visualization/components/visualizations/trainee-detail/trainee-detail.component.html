@@ -16,7 +16,7 @@
     </div>
 
     <div *ngIf="getCurrentTraineeLevel()">
-        <mat-divider></mat-divider>
+        <mat-divider/>
 
         <div *ngIf="isTrainingLevel()" class="hints-container">
             <div>
@@ -51,7 +51,7 @@
                 <div class="correct-answer-title">{{ getCurrentLevel().answer }}</div>
                 <div>(correct answer)</div>
             </div>
-            <mat-divider class="answer-divider" [vertical]="true"></mat-divider>
+            <mat-divider class="answer-divider" [vertical]="true"/>
             <div class="answer-list">
                 <div *ngFor="let wrongAnswer of getWrongAnswers()" class="wrong-answer">
                     <div class="wrong-answer-title">{{ wrongAnswer.value }}</div>

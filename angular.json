@@ -17,11 +17,19 @@
                         "tsConfig": "src/tsconfig.app.json",
                         "polyfills": "src/polyfills.ts",
                         "assets": [
-                            "src/assets",
-                            "src/favicon.ico"
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/@crczp/theme/assets",
+                                "output": "assets/"
+                            }
                         ],
+                        "stylePreprocessorOptions": {
+                            "includePaths": [
+                                "node_modules/@crczp/theme/"
+                            ]
+                        },
                         "styles": [
-                            "src/styles.css"
+                            "node_modules/@crczp/theme/theming/apply-all.scss"
                         ],
                         "scripts": [],
                         "vendorChunk": true,
@@ -84,29 +92,6 @@
                         }
                     }
                 },
-                "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n",
-                    "options": {
-                        "browserTarget": "example-app:build"
-                    }
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "main": "src/test.ts",
-                        "karmaConfig": "./karma.conf.js",
-                        "polyfills": "src/polyfills.ts",
-                        "tsConfig": "src/tsconfig.spec.json",
-                        "scripts": [],
-                        "styles": [
-                            "src/styles.css"
-                        ],
-                        "assets": [
-                            "src/assets",
-                            "src/favicon.ico"
-                        ]
-                    }
-                },
                 "lint": {
                     "builder": "@angular-eslint/builder:lint",
                     "options": {
@@ -118,25 +103,11 @@
                 }
             }
         },
-        "example-app-e2e": {
-            "root": "e2e",
-            "sourceRoot": "e2e",
-            "projectType": "application",
-            "architect": {
-                "e2e": {
-                    "builder": "@angular-devkit/build-angular:protractor",
-                    "options": {
-                        "protractorConfig": "./protractor.conf.js",
-                        "devServerTarget": "example-app:serve:development"
-                    }
-                }
-            }
-        },
         "trainings-hurdling-viz-lib": {
             "root": "projects/trainings-hurdling-viz-lib",
             "sourceRoot": "projects/trainings-hurdling-viz-lib/src",
             "projectType": "library",
-            "prefix": "viz-hurdling",
+            "prefix": "crczp",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
@@ -148,14 +119,6 @@
                         "production": {
                             "tsConfig": "projects/trainings-hurdling-viz-lib/tsconfig.lib.prod.json"
                         }
-                    }
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "main": "projects/trainings-hurdling-viz-lib/src/test.ts",
-                        "tsConfig": "projects/trainings-hurdling-viz-lib/tsconfig.spec.json",
-                        "karmaConfig": "projects/trainings-hurdling-viz-lib/karma.conf.js"
                     }
                 },
                 "lint": {

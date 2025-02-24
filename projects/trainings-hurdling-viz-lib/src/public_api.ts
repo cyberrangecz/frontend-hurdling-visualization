@@ -11,5 +11,5 @@ export { View } from './lib/visualization/models/view.enum';
 export { VisualizationsComponent } from './lib/visualization/components/visualizations/visualizations.component';
 export { TraineeView } from './lib/visualization/models/enums/trainee-view.enum';
 export { Trainee } from './lib/visualization/models/trainee';
-export { VisualizationData } from './lib/visualization/models/visualization-data';
+export { HurdlingVisualizationData } from './lib/visualization/models/hurdling-visualization-data';
 export { VisualizationsDataService } from './lib/visualization/services/visualizations-data.service';

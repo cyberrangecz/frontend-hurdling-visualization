@@ -5,7 +5,7 @@
             (scaleRestrictionEvent)="scaleRestrictionEvent($event)"
             (restrictByTrainees)="restrictionTypeEvent($event, 'restrictToVisibleTrainees')"
             (restrictToTimeline)="restrictionTypeEvent($event, 'restrictToCustomTimelines')"
-    ></crczp-viz-hurdling-settings>
+    />
     <crczp-viz-progress
             id="viz-progress"
             [visualizationData]="visualizationData$ | async"
@@ -18,7 +18,7 @@
             [restriction]="restriction"
             (getMaxTime)="getMaxTime($event)"
             (getStepSize)="getStepSize($event)"
-    ></crczp-viz-progress>
+    />
 </ng-container>
 
 <ng-container *ngIf="view === getViewEnum().Overview && visualizationData$ | async ">
@@ -34,6 +34,5 @@
             [trainingInstanceId]="trainingInstanceId"
             [selectedTrainees]="selectedTrainees"
             (outputSelectedTrainees)="selectTrainees($event)"
-            (highlightedTrainee)="emitHighlightedTrainee($event)">
-    </crczp-viz-hurdling>
+            (highlightedTrainee)="emitHighlightedTrainee($event)"/>
 </ng-container>

@@ -27,8 +27,7 @@
             [trainee]=getTraineeData(traineeDetailId)
             [visualizationData]="visualizationData"
             [trainingInstanceId]="trainingInstanceId"
-            (hideDetail)="onTraineeDetailChange()">
-    </crczp-trainee-detail>
+            (hideDetail)="onTraineeDetailChange()"/>
 </div>
 
 <div class="visualization-container" [style.display]="traineeDetailId ? 'none' : 'block'">
@@ -39,8 +38,7 @@
                 [sortType]="'name'"
                 [selectedSortType]="sortType"
                 [selectedSortReverse]="sortReverse"
-                [label]="'Trainee'">
-        </crczp-viz-hurdling-column-header>
+                [label]="'Trainee'"/>
 
         <span class="header ctf-progress-header-column"
               id="progress-elapsed-time"
@@ -55,8 +53,7 @@
                 [sortType]="'time'"
                 [selectedSortType]="sortType"
                 [selectedSortReverse]="sortReverse"
-                [label]="'Time'">
-        </crczp-viz-hurdling-column-header>
+                [label]="'Time'"/>
     </div>
     <div class="progress-container"
          (window:resize)="onResize()"></div>
@@ -65,6 +62,5 @@
 <div class="legend-container">
     <crczp-viz-hurdling-legend
             [selectedViewValue]="view"
-            (zoomResetChange)="onZoomReset()">
-    </crczp-viz-hurdling-legend>
+            (zoomResetChange)="onZoomReset()"/>
 </div>

@@ -1,5 +1,5 @@
 export interface ProgressData {
-  firstEvent;
-  estimatedDuration: number;
-  lastEvent;
+    firstEvent;
+    estimatedDuration: number;
+    lastEvent;
 }

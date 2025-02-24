@@ -63,6 +63,7 @@
     height: 43px;
     margin: 6px auto;
     padding: 5px;
+    background: var(--neutral-100);
 }
 
 .trainee-avatar-container {
@@ -82,9 +83,11 @@
 
 .warning {
     position: absolute;
-    transform: translate(-5px, -85px);
+    transform: translate(0, -85px);
     display: flex;
     font-size: 25px;
+    font-weight: 800;
+    text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;
     color: red;
     cursor: pointer;
 }

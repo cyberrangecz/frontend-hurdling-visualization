@@ -1,5 +1,5 @@
 export class JSONTrainingData {
-  information: any;
-  events: any;
-  trainees: any;
+    information: any;
+    events: any;
+    trainees: any;
 }

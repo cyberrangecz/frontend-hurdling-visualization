@@ -1,4 +1,4 @@
 export class DisplayView {
-  id: number;
-  name: string;
+    id: number;
+    name: string;
 }

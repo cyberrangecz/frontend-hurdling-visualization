@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { environment } from '../environments/environment';
 import { SentinelAuthModule } from '@sentinel/auth';
 import { SentinelAuthGuardWithLogin, SentinelNegativeAuthGuard } from '@sentinel/auth/guards';
+import { SentinelLayout1Module } from '@sentinel/layout/layout1';
 
 @NgModule({
     declarations: [
@@ -17,6 +18,7 @@ import { SentinelAuthGuardWithLogin, SentinelNegativeAuthGuard } from '@sentinel
         BrowserAnimationsModule,
         HttpClientModule,
         AppRoutingModule,
+        SentinelLayout1Module,
         SentinelAuthModule.forRoot(environment.authConfig)
     ],
     providers: [

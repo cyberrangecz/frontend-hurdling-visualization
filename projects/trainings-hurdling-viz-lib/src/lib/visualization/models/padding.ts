@@ -1,4 +1,4 @@
 export class Padding {
-  top: number;
-  bottom: number;
+    top: number;
+    bottom: number;
 }

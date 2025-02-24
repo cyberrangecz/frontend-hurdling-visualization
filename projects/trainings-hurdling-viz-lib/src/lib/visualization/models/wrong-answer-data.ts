@@ -1,5 +1,5 @@
 export class WrongAnswerData {
-  value: string;
-  timesUsed: number;
-  lastUsed: string;
+    value: string;
+    timesUsed: number;
+    lastUsed: string;
 }

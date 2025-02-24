@@ -1,11 +1,11 @@
 import { Event } from './event';
 
 export class TrainingRunStartedEvent extends Event {
-  constructor() {
-    super();
-  }
+    constructor() {
+        super();
+    }
 
-  getContent() {
-    return '';
-  }
+    getContent() {
+        return '';
+    }
 }

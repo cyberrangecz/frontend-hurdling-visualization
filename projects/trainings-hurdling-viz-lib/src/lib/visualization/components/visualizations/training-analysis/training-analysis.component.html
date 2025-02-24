@@ -36,8 +36,7 @@
                 [trainee]=getTraineeData(traineeDetailId)
                 [visualizationData]="visualizationData"
                 [trainingInstanceId]="trainingInstanceId"
-                (hideDetail)="onTraineeDetailChange()">
-        </crczp-trainee-detail>
+                (hideDetail)="onTraineeDetailChange()"/>
     </div>
 
     <!-- main view with visualization -->
@@ -50,8 +49,7 @@
                             [sortType]="'name'"
                             [selectedSortType]="sortType"
                             [selectedSortReverse]="sortReverse"
-                            [label]="'Trainee'">
-                    </crczp-viz-hurdling-column-header>
+                            [label]="'Trainee'"/>
                 </div>
             </div>
 
@@ -66,8 +64,7 @@
                             [selectedSortType]="sortType + sortLevel"
                             [selectedSortReverse]="sortReverse"
                             [label]="level.name"
-                            [level]="level">
-                    </crczp-viz-hurdling-column-header>
+                            [level]="level"/>
                 </div>
             </div>
 
@@ -79,8 +76,7 @@
                                 [sortType]="column"
                                 [selectedSortType]="sortType"
                                 [selectedSortReverse]="sortReverse"
-                                [label]="column.charAt(0).toUpperCase() + column.slice(1)">
-                        </crczp-viz-hurdling-column-header>
+                                [label]="column.charAt(0).toUpperCase() + column.slice(1)"/>
                     </div>
                 </div>
             </ng-container>
@@ -126,8 +122,7 @@
         <div class="legend-container">
             <crczp-viz-hurdling-legend
                     [selectedViewValue]="view"
-                    (zoomResetChange)="onZoomReset()">
-            </crczp-viz-hurdling-legend>
+                    (zoomResetChange)="onZoomReset()"/>
         </div>
     </div>
 
