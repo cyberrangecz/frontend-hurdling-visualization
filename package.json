@@ -31,7 +31,7 @@
         "@angular/platform-browser-dynamic": "^18.2.13",
         "@angular/router": "^18.2.13",
         "@crczp/d3-service": "^0.0.3",
-        "@crczp/theme": "^0.0.2",
+        "@crczp/theme": "^0.0.3",
         "@sentinel/auth": "^18.0.3",
         "@sentinel/common": "^18.0.4",
         "@sentinel/layout": "^18.1.5",
