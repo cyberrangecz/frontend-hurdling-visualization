@@ -16,7 +16,7 @@
         "build-and-pack": "npm install && npm run build-library && npm run copy-static-files && npm run create-package",
         "ci-update-version": "cd projects/trainings-hurdling-viz-lib/ && npm version $TAG_VERSION",
         "ci-build-and-pack": "npm ci --cache .npm --prefer-offline && npm run build-library && npm run copy-static-files && npm run create-package",
-        "ci-publish-package": "cd dist/trainings-hurdling-viz-lib && npm publish",
+        "ci-publish-package": "cd dist/trainings-hurdling-viz-lib && npm publish --provenance=false --access public",
         "prepare": "husky"
     },
     "dependencies": {
