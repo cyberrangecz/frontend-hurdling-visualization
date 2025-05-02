@@ -1,5 +1,5 @@
 export class DataEntry {
-    traineeName: string;
+    subjectName: string;
     event: string;
     level: number;
     time: number;

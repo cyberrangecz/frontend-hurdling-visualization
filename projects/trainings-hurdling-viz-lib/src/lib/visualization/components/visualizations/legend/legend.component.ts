@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AppConfig } from '../../../../app.config';
-import { View } from '../../../models/view.enum';
+import { ProgressView } from '../../../models/view.enum';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { D3, D3Service } from '@crczp/d3-service';
@@ -11,7 +11,7 @@ import { D3, D3Service } from '@crczp/d3-service';
     styleUrls: ['./legend.component.css'],
 })
 export class LegendComponent implements OnInit, OnDestroy {
-    @Input() selectedViewValue = View.Progress;
+    @Input() selectedViewValue = ProgressView.Progress;
 
     @Output() zoomResetChange = new EventEmitter();
 
@@ -28,7 +28,7 @@ export class LegendComponent implements OnInit, OnDestroy {
     public activeLevelsDesc = [
         'the level duration is within estimates',
         'the level duration matches the expected time estimation',
-        'the trainee is falling behind the schedule',
+        'the subject is falling behind the schedule',
     ];
 
     constructor(

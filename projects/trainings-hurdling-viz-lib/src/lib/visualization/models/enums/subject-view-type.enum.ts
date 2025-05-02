@@ -1,4 +1,4 @@
-export enum TraineeView {
+export enum SubjectDisplayTypeEnum {
     Name = 'name',
     Avatar = 'avatar',
     Both = 'both',

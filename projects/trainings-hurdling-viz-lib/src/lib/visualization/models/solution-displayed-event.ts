@@ -1,6 +1,6 @@
-import { Event } from './event';
+import { ProgressEvent } from './progress-event';
 
-export class SolutionDisplayedEvent extends Event {
+export class SolutionDisplayedEvent extends ProgressEvent {
     constructor() {
         super();
         this.type = 'solution';

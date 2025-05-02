@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProgressView } from '../../../projects/trainings-hurdling-viz-lib/src/public_api';
 
 // import data from '../../../utils/json/mock.json';
 
@@ -17,4 +18,6 @@ export class HurdlingOverviewComponent implements OnInit {
         this.data = undefined;     //disable simulation
         //this.data = data as any; //enable simulation
     }
+
+    protected readonly ProgressView = ProgressView;
 }

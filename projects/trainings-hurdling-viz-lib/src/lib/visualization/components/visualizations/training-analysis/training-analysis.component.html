@@ -19,7 +19,7 @@
                         <svg class="ctf-progress-select-icon" height="20" width="20" viewBox="0 0 24 24">
                             <path [attr.d]="getEventShapePaths().person"/>
                         </svg>
-                        <select [(ngModel)]="selectedTraineeView" (change)="onTraineeViewChange()">
+                        <select [(ngModel)]="selectedSubjectView" (change)="onSubjectViewChange()">
                             <option [ngValue]="'name'">Name</option>
                             <option [ngValue]="'avatar'">Avatar</option>
                             <option [ngValue]="'both'">Avatar + Name</option>
@@ -31,16 +31,16 @@
     </div>
 
     <!-- detailed individual view? -->
-    <div *ngIf="traineeDetailId" class="trainee-detail-container">
-        <crczp-trainee-detail
-                [trainee]=getTraineeData(traineeDetailId)
+    <div *ngIf="subjectDetailId" class="subject-detail-container">
+        <crczp-subject-detail
+                [progressSubject]=getSubjectData(subjectDetailId)
                 [visualizationData]="visualizationData"
                 [trainingInstanceId]="trainingInstanceId"
-                (hideDetail)="onTraineeDetailChange()"/>
+                (hideDetail)="onSubjectDetailChange()"/>
     </div>
 
     <!-- main view with visualization -->
-    <div *ngIf="!traineeDetailId" class="visualization-container overview" (window:resize)="onResize()">
+    <div *ngIf="!subjectDetailId" class="visualization-container overview" (window:resize)="onResize()">
         <div class="ctfh-row align-items-end ctfh-no-gutters">
             <div *ngIf="hasData" class="ctfh-col-2 final-2-name">
                 <div class="ctf-progress-column ctf-progress-teamcolumn">
@@ -49,7 +49,7 @@
                             [sortType]="'name'"
                             [selectedSortType]="sortType"
                             [selectedSortReverse]="sortReverse"
-                            [label]="'Trainee'"/>
+                            [label]="'Subject'"/>
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
         <div class="ctfh-row ctfh-no-gutters ctf-main-container">
             <div class="ctfh-col-2 final-2-name">
                 <div class="ctf-progress-column ctf-progress-teamcolumn
-                ctf-progress-column-data" id="ctf-progress-teamcolumn" (click)="showTraineeDetail($event)"></div>
+                ctf-progress-column-data" id="ctf-progress-teamcolumn" (click)="showSubjectDetail($event)"></div>
             </div>
 
             <div class="ctfh-col-2 short">

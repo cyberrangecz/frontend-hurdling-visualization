@@ -1,14 +1,14 @@
 import { GenericObject } from './visualization/models/generic-object.type';
-import { View } from './visualization/models/view.enum';
+import { ProgressView } from './visualization/models/view.enum';
 import { DisplayView } from './visualization/models/view';
 
 export class AppConfig {
     levelsTimePlan: number[];
     levelsColorEstimates: string[];
-    traineeRowHeight: number;
+    subjectRowHeight: number;
     defaultEstimatedTime: number;
     trainingColors: string[];
-    traineeColors: string[];
+    subjectColors: string[];
     darkColor: string;
     eventProps: {
         eventIconSize: number;
@@ -21,7 +21,7 @@ export class AppConfig {
     simulationInterval: number;
     loadDataInterval: number;
     retryAttempts: number;
-    defaultView: View;
+    defaultView: ProgressView;
     viewOptions: DisplayView[];
     filterOptions: DisplayView[];
     wrongAnswerWarningThreshold: number;
@@ -36,9 +36,9 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
     levelsTimePlan: [],
     levelsColorEstimates: ['#5A9239', '#FDB100', '#EB1505'],
     defaultEstimatedTime: 5,
-    traineeRowHeight: 30,
+    subjectRowHeight: 30,
     trainingColors: ['#ebebeb', '#dadada', '#c0c0c0', '#aeaeae', '#9b9b9b', '#646464', '#3e3e3c'],
-    traineeColors: ['#D8008C', '#92D88C', '#372A9F', '#9035A6', '#D88C8C', '#7A9EBD', '#D8D88C', '#ADAAE1', '#8CD8C7'],
+    subjectColors: ['#D8008C', '#92D88C', '#372A9F', '#9035A6', '#D88C8C', '#7A9EBD', '#D8D88C', '#ADAAE1', '#8CD8C7'],
     darkColor: '#2f2f2f',
     eventProps: {
         eventIconSize: 17,
@@ -80,7 +80,7 @@ export const CTF_PROGRESS_CONFIG: AppConfig = {
     simulationInterval: 800,
     loadDataInterval: 5000,
     retryAttempts: 3,
-    defaultView: View.Overview,
+    defaultView: ProgressView.Overview,
     viewOptions: [
         {
             id: 1,

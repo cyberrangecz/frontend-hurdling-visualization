@@ -1,5 +1,5 @@
 export class TrainingDataset {
-    traineeId: number;
+    subjectId: number;
     events: Event[];
     eventsGroups;
     totalTime: number;

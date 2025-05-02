@@ -158,8 +158,8 @@ export class SortingService {
             sorted = trainingdataset.slice(0);
             sorted.sort(
                 function (teamA: GenericObject, teamB: GenericObject): number {
-                    const nameA: string = String(teamA.traineeName).toLowerCase(),
-                        nameB: string = String(teamB.traineeName).toLowerCase();
+                    const nameA: string = String(teamA.subjectName).toLowerCase(),
+                        nameB: string = String(teamB.subjectName).toLowerCase();
                     const compared: boolean = order === Order.asc ? nameA > nameB : nameA < nameB;
                     return 0 - (compared ? 1 : -1);
                 }.bind(this),

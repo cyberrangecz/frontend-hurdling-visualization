@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { Level } from '../../../models/level';
-import { Trainee } from '../../../models/trainee';
 import { HurdlingVisualizationData } from '../../../models/hurdling-visualization-data';
+import { ProgressData } from '../../../models/progress-subject-progress-data';
 
 @Component({
     selector: 'crczp-viz-hurdling-level-list',
@@ -10,46 +10,41 @@ import { HurdlingVisualizationData } from '../../../models/hurdling-visualizatio
     encapsulation: ViewEncapsulation.None,
 })
 export class LevelListComponent {
+    @Input() isCoop: boolean = false;
     @Input() visualizationData: HurdlingVisualizationData;
 
-    @Output() filteredTrainees = new EventEmitter<Trainee[]>();
-    @Output() traineeSort = new EventEmitter<Level>();
+    @Output() filteredSubjects = new EventEmitter<ProgressData[]>();
+    @Output() subjectSort = new EventEmitter<Level>();
 
     constructor() {}
 
-    getTraineesForLevel(levelId): Trainee[] {
-        const trainees: Trainee[] = [];
-        this.visualizationData.traineeProgress.forEach((traineeProgress) => {
-            if (traineeProgress.levels.find((level) => level.id == levelId && level.startTime && !level.endTime)) {
-                trainees.push(
-                    this.visualizationData.trainees.find((trainee) => trainee.userRefId === traineeProgress.userRefId),
-                );
+    getSubjectsForLevel(levelId): ProgressData[] {
+        const subjects: ProgressData[] = [];
+        this.visualizationData.progress.forEach((progressData) => {
+            if (progressData.levels.find((level) => level.id == levelId && level.startTime && !level.endTime)) {
+                subjects.push(progressData);
             }
         });
-        return trainees;
+        return subjects;
     }
 
-    getFinishedTrainees() {
-        const trainees: Trainee[] = [];
-        this.visualizationData.traineeProgress.forEach((traineeProgress) => {
-            const finishedLevels = traineeProgress.levels.filter((level) => level.state == 'FINISHED');
+    getFinishedRuns() {
+        const progresses: ProgressData[] = [];
+        this.visualizationData.progress.forEach((progressData) => {
+            const finishedLevels = progressData.levels.filter((level) => level.state == 'FINISHED');
             if (finishedLevels.length == this.visualizationData.levels.length) {
-                trainees.push(
-                    this.visualizationData.trainees.find((trainee) => trainee.userRefId == traineeProgress.userRefId),
-                );
+                progresses.push(progressData);
             }
         });
-        return trainees;
+        return progresses;
     }
 
     isFinished(levelId: number): boolean {
         return (
-            this.visualizationData.traineeProgress
-                .map((traineeProgress) =>
-                    traineeProgress.levels.filter((level) => level.id == levelId && level.state == 'FINISHED'),
-                )
+            this.visualizationData.progress
+                .map((progress) => progress.levels.filter((level) => level.id == levelId && level.state == 'FINISHED'))
                 .reduce((accumulator, value) => accumulator.concat(value), []).length ==
-            this.visualizationData.traineeProgress.length
+            this.visualizationData.progress.length
         );
     }
 
@@ -58,9 +53,9 @@ export class LevelListComponent {
         return this.formatLevelType(level);
     }
 
-    filterTrainees(trainees: Trainee[], level: Level): void {
-        this.filteredTrainees.emit(trainees);
-        if (level) this.traineeSort.emit(level);
+    filterProgressData(subjects: ProgressData[], level: Level): void {
+        this.filteredSubjects.emit(subjects);
+        if (level) this.subjectSort.emit(level);
     }
 
     formatLevelType(level: Level) {

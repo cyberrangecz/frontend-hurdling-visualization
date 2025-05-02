@@ -1,21 +1,21 @@
-<div class="trainee-header">
+<div class="subject-header">
     <div class="navigation-header">
         <span class="overview-button" (click)="onOverviewClick()">Training progress overview</span>
         <span> > </span>
-        <span>Trainee details</span>
+        <span>Run details</span>
 
     </div>
-    <div class="trainee-overview">
+    <div class="subject-overview">
         <div class="circle">
-            <img class="trainee-avatar" src="{{'data:image/jpg;base64,' + trainee.picture}}">
+            <img class="subject-avatar" src="{{'data:image/jpg;base64,' + progressSubject.picture}}">
         </div>
-        <div class="trainee-overview-details">
-            <div>{{ trainee.name }}</div>
+        <div class="subject-overview-details">
+            <div>{{ progressSubject.name }}</div>
             <div class="training-time-overview"></div>
         </div>
     </div>
 
-    <div *ngIf="getCurrentTraineeLevel()">
+    <div *ngIf="getCurrentSubjectLevel()">
         <mat-divider/>
 
         <div *ngIf="isTrainingLevel()" class="hints-container">
@@ -70,7 +70,7 @@
             <div class="command-timeline" (window:resize)="onResize()"></div>
         </div>
     </div>
-    <div *ngIf="!getCurrentTraineeLevel()">
-        Trainee finished
+    <div *ngIf="!getCurrentSubjectLevel()">
+        Run finished
     </div>
 </div>

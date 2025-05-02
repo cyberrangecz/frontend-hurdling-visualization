@@ -1,4 +1,4 @@
-export interface ProgressData {
+export interface ProgressMetadata {
     firstEvent;
     estimatedDuration: number;
     lastEvent;

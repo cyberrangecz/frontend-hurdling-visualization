@@ -58,7 +58,7 @@
     margin-bottom: 1%;
 }
 
-.trainee-container {
+.subject-container {
     width: 43px;
     height: 43px;
     margin: 6px auto;
@@ -66,7 +66,7 @@
     background: var(--neutral-100);
 }
 
-.trainee-avatar-container {
+.subject-avatar-container {
     /*position: absolute;*/
     top: 0;
     left: 0;
@@ -102,11 +102,11 @@
 }
 
 
-::ng-deep .trainee-selection-warning {
+::ng-deep .subject-selection-warning {
     white-space: pre-line !important;
 }
 
-.viz-hurdling-trainee-tooltip {
+.viz-hurdling-subject-tooltip {
     visibility: hidden;
     transition: visibility 0s, opacity 0.1s linear;
     position: absolute;
@@ -125,7 +125,7 @@
     pointer-events: none;
 }
 
-.trainee-selector {
+.subject-selector {
     padding: 0;
     color: rgb(48, 61, 136);
 }

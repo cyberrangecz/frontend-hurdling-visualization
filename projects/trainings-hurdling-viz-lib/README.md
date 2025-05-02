@@ -1,14 +1,16 @@
 # CyberRangeᶜᶻ Platform Trainings Hurdling Visualization
 
 As an instructor, a user can see the ongoing course of the training runs and further filter information on demand. The
-tool gives a full picture of the trainee’s walkthrough. Upon filtering in the preceding sections, selected trainees are
-displayed here.
+tool gives a full picture of the training run subject’s walkthrough. Upon filtering in the preceding sections, 
+selected subjects of the run are displayed here.
 
-Rows represent individual trainees. Bars of each row are training levels - gray levels are finished levels, current
+Rows represent individual subjects; teams or trainees. Bars of each row are training levels - gray levels are finished levels, current
 levels are colored green/yellow/red, according to their delay as opposed to the scheduled amount of time. The stripped
 bars denote the scheduled time for the ongoing or upcoming levels.
 
 ## Input parameters
+
+`isCoop: boolean` Has effect on labels switching from trainee to team description
 
 `trainingDefinitionId: number`
 
@@ -16,9 +18,9 @@ bars denote the scheduled time for the ongoing or upcoming levels.
 
 `JSONData: VisualizationDataDTO` if we use periodical simulation, we use it with a local JSON data for now
 
-`view: enum` determines if we will use the progress or the final mode
+`view: ProgressView` determines if we will use the progress or the final mode
 
-`selectedTraineeView: TraineeView` selects option to see trainee names or avatars
+`selectedSubjectDisplay: SubjectDisplayTypeEnum` selects option to see subject names or avatars
 
 `colorScheme: string[]`
 
@@ -30,9 +32,9 @@ bars denote the scheduled time for the ongoing or upcoming levels.
 
 `trainingColors: string[]`
 
-`traineeColorScheme: string[]`
+`subjectColorScheme: string[]`
 
-`selectedTrainees: Trainee[]` if this array exists, only the given trainees will be provided for visualization
+`selectedTrainees: Trainee[]` if this array exists, only the given subjects will be provided for visualization
 
 `isStandalone: boolean` set true if we want to use the visualization in a standalone mode; in the portal, we use false
 
@@ -42,6 +44,7 @@ An example of use:
 
 ```html
 <crczp-hurdling-visualization
+        [isCoop]="false"
         [isStandalone]="true"
         [trainingInstanceId]="10"
         view="progress"

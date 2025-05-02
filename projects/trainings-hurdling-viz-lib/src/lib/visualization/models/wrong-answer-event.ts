@@ -1,6 +1,6 @@
-import { Event } from './event';
+import { ProgressEvent } from './progress-event';
 
-export class WrongAnswerEvent extends Event {
+export class WrongAnswerEvent extends ProgressEvent {
     type: string;
     answerContent: string;
 

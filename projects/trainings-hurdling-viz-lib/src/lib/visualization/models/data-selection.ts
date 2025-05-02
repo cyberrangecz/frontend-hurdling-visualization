@@ -1,7 +1,7 @@
-import { Trainee } from './trainee';
+import { ProgressData } from './progress-subject-progress-data';
 
-export class TraineeSelectData {
-    trainee: Trainee;
+export class DataSelection {
+    selection: ProgressData;
     isActive: boolean;
     isSelected: boolean;
     warnings: Warnings;

@@ -22,20 +22,20 @@
     font-size: 12px;
 }
 
-.trainee-overview {
+.subject-overview {
     display: flex;
     margin-top: 1%;
     margin-bottom: 2%;
 }
 
-.trainee-overview-details {
+.subject-overview-details {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     flex-grow: 100;
 }
 
-.trainee-header {
+.subject-header {
     padding: 2% 3%;
 }
 
@@ -50,7 +50,7 @@
     margin-right: 2%;
 }
 
-.trainee-avatar {
+.subject-avatar {
     width: 100px;
     transform: scale(0.6, 0.6);
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { HurdlingVisualizationData } from '../../../models/hurdling-visualization-data';
-import { TraineeProgress } from '../../../models/trainee-progress';
+import { ProgressData } from '../../../models/progress-subject-progress-data';
 import { TrainingRunStartedEvent } from '../../../models/training-run-started-event';
 
 @Component({
@@ -83,23 +83,23 @@ export class OverviewProgressBarComponent implements OnInit, OnChanges {
     }
 
     getLongestEstimate(): number {
-        return this.visualizationData.traineeProgress
-            .map((team) => this.getEstimateForTeam(team))
+        return this.visualizationData.progress
+            .map((team) => this.getEstimateForSubject(team))
             .sort()
             .reverse()[0];
     }
 
-    getEstimateForTeam(traineeProgressData: TraineeProgress): number {
+    getEstimateForSubject(progressData: ProgressData): number {
         let estimatedTimeToFinish = 0;
         this.visualizationData.levels.forEach((level) => {
-            if (!traineeProgressData.levels.find((traineeLevel) => traineeLevel.id === level.id)) {
+            if (!progressData.levels.find((subjectLevel) => subjectLevel.id === level.id)) {
                 estimatedTimeToFinish += level.estimatedDuration;
             }
         });
         return this.visualizationData.currentTime - this.visualizationData.startTime + estimatedTimeToFinish * 60;
     }
 
-    getStartEventTimestamp(team: TraineeProgress): number {
+    getStartEventTimestamp(team: ProgressData): number {
         return team.levels
             .reduce((accumulator, value) => accumulator.concat(value), [])
             .map((levels) => levels.events)

@@ -14,7 +14,7 @@ import { AppConfig, CTF_PROGRESS_CONFIG } from './app.config';
 import { D3Service } from '@crczp/d3-service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TraineeSelectionComponent } from './visualization/components/visualizations/trainee-selection/trainee-selection.component';
+import { SubjectSelectionComponent } from './visualization/components/visualizations/subject-selection/subject-selection.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { LevelListComponent } from './visualization/components/visualizations/level-list/level-list.component';
@@ -25,7 +25,7 @@ import { VisualizationDataDefaultApi } from './visualization/api/visualization-d
 import { VisualizationsDataService } from './visualization/services/visualizations-data.service';
 import { VisualizationsDataConcreteService } from './visualization/services/visualizations-data-concrete.service';
 import { VisualizationsComponent } from './visualization/components/visualizations/visualizations.component';
-import { TraineeDetailComponent } from './visualization/components/visualizations/trainee-detail/trainee-detail.component';
+import { SubjectDetailComponent } from './visualization/components/visualizations/subject-detail/subject-detail.component';
 import { SettingsComponent } from './visualization/components/settings/settings/settings.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -39,7 +39,7 @@ import { MatSliderModule } from '@angular/material/slider';
     declarations: [
         ProgressComponent,
         TrainingAnalysisComponent,
-        TraineeSelectionComponent,
+        SubjectSelectionComponent,
         MouseWheelDirective,
         MouseMoveDirective,
         ColumnHeaderComponent,
@@ -47,7 +47,7 @@ import { MatSliderModule } from '@angular/material/slider';
         LevelListComponent,
         LegendComponent,
         VisualizationsComponent,
-        TraineeDetailComponent,
+        SubjectDetailComponent,
         SettingsComponent,
     ],
     imports: [
@@ -77,7 +77,7 @@ import { MatSliderModule } from '@angular/material/slider';
             useClass: VisualizationsDataConcreteService,
         },
     ],
-    exports: [ProgressComponent, TrainingAnalysisComponent, VisualizationsComponent, TraineeSelectionComponent],
+    exports: [ProgressComponent, TrainingAnalysisComponent, VisualizationsComponent, SubjectSelectionComponent],
 })
 export class TrainingsHurdlingVisualizationsModule {
     constructor(@Optional() @SkipSelf() parentModule: TrainingsHurdlingVisualizationsModule) {

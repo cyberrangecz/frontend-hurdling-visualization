@@ -1,16 +1,16 @@
-import { TraineeLevelDTO } from '../DTOs/trainee-level-dto';
-import { TraineeLevel } from '../models/trainee-level';
+import { SubjectLevelDTO } from '../DTOs/subject-level-dto';
+import { SubjectLevel } from '../models/subject-level';
 import { EventMapper } from './event-mapper';
 import { ScoreMapper } from './score-mapper';
 
-export class TraineeLevelMapper {
-    static fromDTOs(dtos: TraineeLevelDTO[]): TraineeLevel[] {
-        const result = dtos.map((dto) => TraineeLevelMapper.fromDTO(dto));
+export class SubjectLevelMapper {
+    static fromDTOs(dtos: SubjectLevelDTO[]): SubjectLevel[] {
+        const result = dtos.map((dto) => SubjectLevelMapper.fromDTO(dto));
         return result;
     }
 
-    static fromDTO(dto: TraineeLevelDTO): TraineeLevel {
-        const result = new TraineeLevel();
+    static fromDTO(dto: SubjectLevelDTO): SubjectLevel {
+        const result = new SubjectLevel();
         result.startTime = dto.start_time / 1000;
         result.endTime = dto.end_time / 1000;
         result.id = dto.id;

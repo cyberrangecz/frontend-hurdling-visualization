@@ -1,6 +1,6 @@
-import { Event } from './event';
+import { ProgressEvent } from './progress-event';
 
-export class TrainingRunStartedEvent extends Event {
+export class TrainingRunStartedEvent extends ProgressEvent {
     constructor() {
         super();
     }

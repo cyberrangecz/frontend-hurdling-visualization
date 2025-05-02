@@ -3,11 +3,11 @@ import { TrainingAnalysisComponent } from '../components/visualizations/training
 export interface TrainingAnalysisEventService {
     trainingAnalysisComponent: TrainingAnalysisComponent;
 
-    trainingAnalysisOnBarMouseover(traineeId: string): void;
+    trainingAnalysisOnBarMouseover(subjectId: string): void;
 
-    trainingAnalysisOnBarMouseout(traineeId: string): void;
+    trainingAnalysisOnBarMouseout(subjectId: string): void;
 
-    trainingAnalysisOnBarClick(traineeId: string): void;
+    trainingAnalysisOnBarClick(subjectId: string): void;
 
     registerTrainingAnalysisComponent(component: TrainingAnalysisComponent): void;
 }

@@ -10,27 +10,27 @@
                 {{ level.title }}
             </div>
             <div *ngIf="isFinished(level.id)">
-                {{ visualizationData.traineeProgress.length }} / {{ visualizationData.traineeProgress.length }}
+                {{ visualizationData.progress.length }} / {{ visualizationData.progress.length }}
             </div>
             <div *ngIf="!isFinished(level.id)"
-                 (click)="getTraineesForLevel(level.id).length !== 0 ? filterTrainees(getTraineesForLevel(level.id), level) : ''"
+                 (click)="getSubjectsForLevel(level.id).length !== 0 ? filterProgressData(getSubjectsForLevel(level.id), level) : ''"
                  [ngClass]="{
-				 	clickable: getTraineesForLevel(level.id).length !== 0,
-				  	faded: getTraineesForLevel(level.id).length === 0
+				 	clickable: getSubjectsForLevel(level.id).length !== 0,
+				  	faded: getSubjectsForLevel(level.id).length === 0
 				 }">
-                {{ getTraineesForLevel(level.id).length }} playing
+                {{ getSubjectsForLevel(level.id).length }} playing
             </div>
         </div>
 
         <div class="level" matTooltip="Training finished">
             <div>Training finished</div>
-            <div (click)="getFinishedTrainees().length !== 0 ? filterTrainees(getFinishedTrainees(), null) : ''"
+            <div (click)="getFinishedRuns().length !== 0 ? filterProgressData(getFinishedRuns(), null) : ''"
                  [ngClass]="{
-					clickable: getFinishedTrainees().length !== 0,
-					faded: getFinishedTrainees().length === 0
+					clickable: getFinishedRuns().length !== 0,
+					faded: getFinishedRuns().length === 0
 				}">
-                {{ getFinishedTrainees().length }}
-                {{ getFinishedTrainees().length !== 1 ? "trainees" : "trainee" }}
+                {{ getFinishedRuns().length }}
+                {{ (isCoop ? "team" : "trainee") + ((getFinishedRuns().length !== 1) ?  "s" : "" )}}
             </div>
         </div>
     </div>

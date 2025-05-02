@@ -1,6 +1,6 @@
 import { EventDTO } from '../DTOs/event-dto';
 import { EventType } from '../models/enums/event-type.enum';
-import { Event } from '../models/event';
+import { ProgressEvent } from '../models/progress-event';
 import { HintTakenEvent } from '../models/hint-taken-event';
 import { SolutionDisplayedEvent } from '../models/solution-displayed-event';
 import { TrainingRunEndedEvent } from '../models/training-run-ended-event';
@@ -8,16 +8,16 @@ import { TrainingRunStartedEvent } from '../models/training-run-started-event';
 import { WrongAnswerEvent } from '../models/wrong-answer-event';
 
 export class EventMapper {
-    static fromDTOs(dtos: EventDTO[]): Event[] {
+    static fromDTOs(dtos: EventDTO[]): ProgressEvent[] {
         const result = dtos.map((dto) => EventMapper.fromDTO(dto)).filter((event) => event);
         return result;
     }
 
-    static fromDTO(dto: EventDTO): Event {
+    static fromDTO(dto: EventDTO): ProgressEvent {
         return EventMapper.eventResolver(dto);
     }
 
-    private static eventResolver(dto: EventDTO): Event {
+    private static eventResolver(dto: EventDTO): ProgressEvent {
         let event;
         switch (dto.type) {
             case EventType.hint: {

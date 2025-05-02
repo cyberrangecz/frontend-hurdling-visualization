@@ -10,7 +10,7 @@ export class SettingsComponent implements OnChanges {
     @Input() maximumTime = 100;
     @Input() timelineStepSize = 10;
     @Output() scaleRestrictionEvent = new EventEmitter<any>();
-    @Output() restrictByTrainees = new EventEmitter<boolean>();
+    @Output() restrictBySubject = new EventEmitter<boolean>();
     @Output() restrictToTimeline = new EventEmitter<boolean>();
 
     public customRestrictedXScale = {
@@ -21,15 +21,15 @@ export class SettingsComponent implements OnChanges {
     };
     public panelOpenState = false;
     public restrictToCustomTimelines = false;
-    public restrictToVisibleTrainees = false;
+    public restrictToVisibleSubjects = false;
 
     formatTime(seconds: number) {
         return getTimeString(seconds);
     }
 
-    restrictTrainees() {
-        this.restrictToVisibleTrainees = !this.restrictToVisibleTrainees;
-        this.restrictByTrainees.emit(this.restrictToVisibleTrainees);
+    restrictRuns() {
+        this.restrictToVisibleSubjects = !this.restrictToVisibleSubjects;
+        this.restrictBySubject.emit(this.restrictToVisibleSubjects);
     }
 
     restrictCustom() {

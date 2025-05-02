@@ -1,7 +1,7 @@
 import { EventDTO } from './event-dto';
 
-export class TraineeLevelDTO {
-    id: number; //level id, not trainee
+export class SubjectLevelDTO {
+    id: number;
     state: string;
     start_time: number;
     end_time: number;

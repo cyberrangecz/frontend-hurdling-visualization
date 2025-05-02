@@ -1,12 +1,12 @@
-import { Event } from './event';
+import { ProgressEvent } from './progress-event';
 
-export class TraineeLevel {
+export class SubjectLevel {
     id: number;
     state: string;
     startTime: number;
     endTime: number;
     hintsTaken: number[];
     wrongAnswers_number: number;
-    events: Event[];
+    events: ProgressEvent[];
     score: number;
 }

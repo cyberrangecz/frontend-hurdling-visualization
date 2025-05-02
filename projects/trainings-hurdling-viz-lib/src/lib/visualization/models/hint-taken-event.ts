@@ -1,6 +1,6 @@
-import { Event } from './event';
+import { ProgressEvent } from './progress-event';
 
-export class HintTakenEvent extends Event {
+export class HintTakenEvent extends ProgressEvent {
     hintId: number;
     hintTitle: string;
 

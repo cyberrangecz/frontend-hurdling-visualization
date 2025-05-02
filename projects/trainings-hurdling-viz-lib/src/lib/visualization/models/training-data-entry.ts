@@ -1,10 +1,10 @@
-import { Event } from './event';
+import { ProgressEvent } from './progress-event';
 
 export class TrainingDataEntry {
-    traineeId: number;
-    traineeName: string;
-    traineeAvatar: string;
-    events: Event[];
+    subjectId: number;
+    subjectName: string;
+    subjectAvatar: string;
+    events: ProgressEvent[];
     eventGroups: [];
     answers: number;
     hints: number;
@@ -13,5 +13,4 @@ export class TrainingDataEntry {
     currentState: string;
     start: number;
     trainingRunId: number;
-    teamIndex: number;
 }

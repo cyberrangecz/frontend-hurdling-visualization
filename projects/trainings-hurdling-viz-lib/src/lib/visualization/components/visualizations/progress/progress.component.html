@@ -4,41 +4,43 @@
     </crczp-viz-hurdling-overview-progress-bar>
 </div>
 
-<div class="trainee-grid-container trainee-selection" [style.display]="traineeDetailId ? 'none' : 'block'">
-    <crczp-viz-hurdling-trainee-selection
+<div class="subject-grid-container subject-selection" [style.display]="subjectDetailId ? 'none' : 'block'">
+    <crczp-viz-hurdling-subject-selection
+            [isCoop]="isCoop"
             [visualizationData]="visualizationData"
-            [selectedTraineeView]="selectedTraineeView"
-            [filteredTrainees]="filteredTrainees"
-            (filteredTraineesChange)="setFilteredTrainees($event)"
-            (highlightTraineeChange)="setHighlightedTrainee($event)">
-    </crczp-viz-hurdling-trainee-selection>
+            [selectedSubjectDisplay]="selectedSubjectDisplay"
+            [filteredSubjects]="filteredData"
+            (filteredSubjectsChange)="setFilteredSubjects($event)"
+            (highlightSubjectsChange)="setHighlightedSubjects($event)">
+    </crczp-viz-hurdling-subject-selection>
 </div>
 
 <div class="level-grid-container">
     <crczp-viz-hurdling-level-list
+            [isCoop]="isCoop"
             [visualizationData]="visualizationData"
-            (filteredTrainees)="setFilteredTrainees($event)"
-            (traineeSort)="setSort($event)">
+            (filteredSubjects)="setFilteredSubjects($event)"
+            (subjectSort)="setSort($event)">
     </crczp-viz-hurdling-level-list>
 </div>
 
-<div *ngIf="traineeDetailId" class="trainee-detail-container">
-    <crczp-trainee-detail
-            [trainee]=getTraineeData(traineeDetailId)
+<div *ngIf="subjectDetailId" class="subject-detail-container">
+    <crczp-subject-detail
+            [progressSubject]=getSubjectData(subjectDetailId)
             [visualizationData]="visualizationData"
             [trainingInstanceId]="trainingInstanceId"
-            (hideDetail)="onTraineeDetailChange()"/>
+            (hideDetail)="onSubjectDetailChange()"/>
 </div>
 
-<div class="visualization-container" [style.display]="traineeDetailId ? 'none' : 'block'">
+<div class="visualization-container" [style.display]="subjectDetailId ? 'none' : 'block'">
     <div class="progress-header">
         <crczp-viz-hurdling-column-header
-                class="header trainee-name-header"
+                class="header subject-name-header"
                 (sortEmitter)="onSortValueChange('name', $event.sortReverse)"
                 [sortType]="'name'"
                 [selectedSortType]="sortType"
                 [selectedSortReverse]="sortReverse"
-                [label]="'Trainee'"/>
+                [label]="'Training run'"/>
 
         <span class="header ctf-progress-header-column"
               id="progress-elapsed-time"
@@ -47,8 +49,8 @@
         </span>
 
         <crczp-viz-hurdling-column-header
-                class="header trainee-time-header"
-                matTooltip="Training times of individual trainees (hh:mm:ss)"
+                class="header subject-time-header"
+                matTooltip="Training times of individual subjects (hh:mm:ss)"
                 (sortEmitter)="onSortValueChange('time', $event.sortReverse)"
                 [sortType]="'time'"
                 [selectedSortType]="sortType"

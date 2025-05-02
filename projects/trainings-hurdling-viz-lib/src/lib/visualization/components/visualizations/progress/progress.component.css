@@ -22,8 +22,8 @@ text.event-number {
     pointer-events: none;
 }
 
-.context .active-estimated-trainee-segments,
-.context .planned-trainee-segments {
+.context .active-estimated-subject-segments,
+.context .planned-subject-segments {
     display: none;
 }
 
@@ -46,7 +46,7 @@ text.event-number {
     height: 25px;
 }
 
-.progress-header .trainee-name-header {
+.progress-header .subject-name-header {
     text-anchor: end;
 }
 
