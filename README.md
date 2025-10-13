@@ -1,3 +1,5 @@
+> The code from this repository has been integrated to the [frontend-platform monorepo](https://github.com/cyberrangecz/frontend-platform), where development and maintenance continue.
+
 # CyberRangeᶜᶻ Platform Trainings Hurdling Visualization
 
 As an instructor, a user can see the ongoing course of the training runs and further filter information on demand. The
